@@ -1,0 +1,19 @@
+{
+  "name": "@kilohealth/rn-fitness-tracker",
+  "version": "0.0.1",
+  "description": "Fitness tracker module",
+  "homepahe": "",
+  "summary": "",
+  "author": "Kilo.Health",
+  "license": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "peerDependencies": {
+    "react-native": "^0.60.5"
+  }
+}
