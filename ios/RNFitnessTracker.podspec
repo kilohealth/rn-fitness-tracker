@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name           = "RNFitnessTracker"
-  s.version        = "0.0.7"
+  s.version        = "0.0.1"
   s.summary        = "Fitness tracker package"
   s.description    = "Fitness tracker package"
   s.author         = "Kilo.Health"
@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
 
   s.platform = :ios, "8.0"
 
-  s.source = { :git => "https://github.com/Dovke/fitnes-tracker.git", :tag => s.version }
+  s.source = { :git => "git clone git@bitbucket.org:dov_ile/rn-fitness-tracker.git", :tag => s.version }
 
   s.preserve_paths = 'LICENSE', 'README.md', 'package.json', 'index.js'
   s.source_files  = "ios/*.{h,m}"
