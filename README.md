@@ -1,52 +1,83 @@
 
-# react-native-fitness-tracker
+# rn-fitness-tracker
+
+React Native library for step tracking based on Google Fit (Android) and CoreMotion (iOS) native API's.
 
 ## Installation
+`$ npm install @kilohealth/rn-fitness-tracker`
 
-`$ yarn add https://dov_ile@bitbucket.org/kilogrupe/fitness-tracker.git#0.0.1`
+or
 
-#### iOS
+`$ yarn add @kilohealth/rn-fitness-tracker`
 
-Add following line to Podfile:
+## iOS
 
-`pod 'RNFitnessTracker', :podspec => '../node_modules/react-native-fitness-tracker/ios/RNFitnesstracker.podspec'`
+#### react-native 0.60.x
+Do the following steps in your RN project ios directory:
+1. Add following line to Podfile:
 
-<ProjectName> directory and inside <dict> tag, add following lines:
+`pod 'RNFitnessTracker', :podspec => '../node_modules/@kilohealth/rn-fitness-tracker/ios/RNFitnessTracker.podspec'`
 
-`<key>NSMotionUsageDescription</key>
-<string>Reason string goes here</string>`
- 
- 
- Alternatively, 
- 
- you can open your app in xcode, 
- navigate to info.plist file
- and add NSMotionUsageDescription key to Information Propery List section. 
- This will create new line with "Privacy - Motion Usage Description" value in Key column.
- Then inside value column add "Reason string goes here" or other string explaining why you are using this library.
- 
- This is needed in order to accesses data that is considered to be private, like step count. Therefore you need to get a permission. 
- The app now will show a pop up dialog requesting for permission as soon as 
-  
- 
+2. add following lines inside info.plist file <dict> tag:
 
-#### Android
+```xml
+<key>NSMotionUsageDescription</key>
+<string>Reason string goes here</string>
+``` 
 
+or open ios project in XCode. Navigated to info.plist file. Press plus button to add new property list key, paste `NSMotionUsageDescription` key. This will add new line in the list - `Privacy - Motion Usage Description`. 
 
-#### Windows
-[Read it! :D](https://github.com/ReactWindows/react-native)
+#### manual linking for projects with older react-native version
 
-1. In Visual Studio add the `RNFitnessTracker.sln` in `node_modules/react-native-fitness-tracker/windows/RNFitnessTracker.sln` folder to their solution, reference from their app.
-2. Open up your `MainPage.cs` app
-  - Add `using Fitness.Tracker.RNFitnessTracker;` to the usings at the top of the file
-  - Add `new RNFitnessTrackerPackage()` to the `List<IReactPackage>` returned by the `Packages` method
+1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
+2. Go to `node_modules` ➜ `@kilohealth/rn-fitness-tracker` and add `RNFitnessTracker.xcodeproj`
+3. In XCode, in the project navigator, select your project. Add `libRNFitnessTracker.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 
+## Android
+
+To get an OAuth 2.0 Client ID for your project, follow steps in Google Fit [documentation](https://developers.google.com/fit/android/get-api-key).
+Ten in [Google API console](https://console.developers.google.com) find Fitness API and enable it. Download your `google-services.json` file from [firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
+
+#### react-native 0.60.x
+
+React Native autolinking will handle the rest.
+
+#### manual linking for projects with older react-native version
+
+1. Open up `android/app/src/main/java/[...]/MainActivity.java`
+  - Add `import com.reactlibrary.RNFitnessTrackerPackage;` to the imports at the top of the file
+  - Add `new RNFitnessTrackerPackage()` to the list returned by the `getPackages()` method
+2. Append the following lines to `android/settings.gradle`:
+  	```
+  	include ':react-native-fitness-tracker'
+  	project(':react-native-fitness-tracker').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-fitness-tracker/android')
+  	```
+3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
+  	```
+      compile project(':react-native-fitness-tracker')
+  	```
 
 ## Usage
 ```javascript
-import RNFitnessTracker from rn-fitness-tracker;
 
-// TODO: What to do with the module?
-RNFitnessTracker;
+import RNFitnessTracker from rn-fitness-tracker
+
+//This step is required in order to use any of the methods below
+//status - boolean
+RNFitnessTracker.authorize( status => {});
+
+//get steps today
+RNFitnessTracker.getStepsToday( steps => {});
+//get 7 days steps
+//steps - integer
+RNFitnessTracker.getWeekData( steps => {});
+//to get 7 days steps
+//data - object 
+// {
+//  '2019-07-08 12:00:00' : 100,
+//  '2019-07-07 12:00:00' : 267,
+// }
+RNFitnessTracker.getDailyWeekData( data => {});
+
 ```
  
