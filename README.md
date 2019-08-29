@@ -64,7 +64,7 @@ React Native autolinking will handle the rest.
 
 import RNFitnessTracker from rn-fitness-tracker
 
-//This step is required in order to use any of the methods below
+//This step is required in order to use any of the methods bellow
 //status - boolean
 RNFitnessTracker.authorize( status => {});
 

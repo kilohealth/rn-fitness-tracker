@@ -1,11 +1,12 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Fitness tracker module",
-  "homepahe": "",
+  "homepahe": "https://github.com/doville/rn-fitness-tracker",
+  "repository": "https://github.com/doville/rn-fitness-tracker",
   "summary": "",
   "author": "Kilo.Health",
-  "license": "",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
