@@ -4,7 +4,7 @@
 React Native library for step tracking based on Google Fit (Android) and CoreMotion (iOS) native API's.
 
 ## Installation
-`$ npm install @kilohealth/rn-fitness-tracker`
+`$ npm install @kilohealth/rn-fitness-tracker --save`
 
 or
 
