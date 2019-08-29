@@ -13,19 +13,21 @@ or
 ## iOS
 
 #### react-native 0.60.x
-Do the following steps in your RN project ios directory:
+
 1. Add following line to Podfile:
 
 `pod 'RNFitnessTracker', :podspec => '../node_modules/@kilohealth/rn-fitness-tracker/ios/RNFitnessTracker.podspec'`
 
-2. add following lines inside info.plist file <dict> tag:
+2. Add following lines inside info.plist file <dict> tag:
 
 ```xml
 <key>NSMotionUsageDescription</key>
 <string>Reason string goes here</string>
 ``` 
 
-or open ios project in XCode. Navigated to info.plist file. Press plus button to add new property list key, paste `NSMotionUsageDescription` key. This will add new line in the list - `Privacy - Motion Usage Description`. 
+or 
+
+open ios project in XCode. Navigated to info.plist file. Add new property list key - `NSMotionUsageDescription`. This will add new line in the containing `Privacy - Motion Usage Description`.
 
 #### manual linking for projects with older react-native version
 
