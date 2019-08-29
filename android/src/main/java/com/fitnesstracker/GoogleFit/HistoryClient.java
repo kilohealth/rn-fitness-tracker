@@ -1,7 +1,6 @@
 package com.fitnesstracker.GoogleFit;
 
 import android.app.Activity;
-import androidx.annotation.NonNull;
 import com.facebook.react.bridge.WritableMap;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.fitness.Fitness;
@@ -40,7 +39,7 @@ class HistoryClient {
             Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity)).readDailyTotal(DataType.AGGREGATE_STEP_COUNT_DELTA)
                 .addOnCompleteListener(new OnCompleteListener<DataSet>() {
                     @Override
-                    public void onComplete(@NonNull Task<DataSet> task) {
+                    public void onComplete(Task<DataSet> task) {
                     List<DataPoint> dataSets = task.getResult().getDataPoints();
                     for (DataPoint dataPoint: dataSets) {
                         Value value = dataPoint.getValue(Field.FIELD_STEPS);
@@ -50,7 +49,7 @@ class HistoryClient {
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
+                    public void onFailure(Exception e) {
 
                     }
                 });
@@ -110,13 +109,13 @@ class HistoryClient {
             .readData(readRequest)
             .addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onFailure(@NonNull Exception e) {
+                public void onFailure(Exception e) {
 
                 }
             })
             .addOnCompleteListener(new OnCompleteListener<DataReadResponse>() {
                 @Override
-                public void onComplete(@NonNull Task<DataReadResponse> task) {
+                public void onComplete(Task<DataReadResponse> task) {
                     DataReadResponse response = task.getResult();
                     int steps = parseAggregateData(response);
                     fetchCompleteCallback.success(steps);

@@ -37,9 +37,14 @@ open ios project in XCode. Navigated to info.plist file. Add new property list k
 
 ## Android
 
-To get an OAuth 2.0 Client ID for your project, follow steps in Google Fit [documentation](https://developers.google.com/fit/android/get-api-key).
-Ten in [Google API console](https://console.developers.google.com) find Fitness API and enable it. Download your `google-services.json` file from [firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
+1. To get an OAuth 2.0 Client ID for your project, follow steps in Google Fit [documentation](https://developers.google.com/fit/android/get-api-key).
+2. Then in [Google API console](https://console.developers.google.com) find Fitness API and enable it. Download your `google-services.json` file from [firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
+3. Add following dependencies to `android/app/build.gradle` file:
 
+```
+implementation 'com.google.android.gms:play-services-fitness:16.0.1'
+implementation 'com.google.android.gms:play-services-auth:16.0.1'
+```
 #### react-native 0.60.x
 
 React Native autolinking will handle the rest.
@@ -50,14 +55,14 @@ React Native autolinking will handle the rest.
   - Add `import com.reactlibrary.RNFitnessTrackerPackage;` to the imports at the top of the file
   - Add `new RNFitnessTrackerPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-fitness-tracker'
-  	project(':react-native-fitness-tracker').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-fitness-tracker/android')
-  	```
+```
+include ':@kilohealth-rn-fitness-tracker'
+project(':@kilohealth-rn-fitness-tracker').projectDir = new File(rootProject.projectDir, 	'../node_modules/@kilohealth/rn-fitness-tracker/android')
+```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
-      compile project(':react-native-fitness-tracker')
-  	```
+```
+implementation project(path: ':@kilohealth-rn-fitness-tracker')
+```
 
 ## Usage
 ```javascript
