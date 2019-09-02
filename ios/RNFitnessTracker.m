@@ -19,13 +19,8 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTResponseSenderBlock)callback) {
-    BOOL isStepCountAvailable = [CMPedometer isStepCountingAvailable];
     NSString *status = [self isCoreMotionAuthorized];
-    if (isStepCountAvailable == YES) {
-        callback(@[status]);
-    }else{
-        callback(@[@"step_count_not_available"]);
-    }
+callback(@[status]);
 }
 
 RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
@@ -45,7 +40,7 @@ RCT_EXPORT_METHOD(getStepsToday:(RCTResponseSenderBlock)callback) {
     if (_pedometer) {
         NSDate *now = [NSDate new];
         NSDate *startDate = [self beginningOfDay:now];
-        
+
         [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
                 NSNumber *steps = pedometerData.numberOfSteps;
@@ -60,7 +55,7 @@ RCT_EXPORT_METHOD(getWeekData:(RCTResponseSenderBlock)callback) {
         NSDate *now = [NSDate new];
         NSDate *todayStart = [self beginningOfDay:now];
         NSDate *sevenDaysAgo = [self sevenDaysAgo: todayStart];
-        
+
         [_pedometer queryPedometerDataFromDate:(NSDate *)sevenDaysAgo toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
                 NSNumber *steps = pedometerData.numberOfSteps;
@@ -81,19 +76,19 @@ RCT_EXPORT_METHOD(getDailyWeekData:(RCTResponseSenderBlock)callback) {
 (int) count :
 (NSMutableDictionary *) data :
 (RCTResponseSenderBlock)callback {
-    
+
     NSDate *start = [self beginningOfDay: date];
     NSDate *end = [self endOfDay: date];
-    
+
     [_pedometer queryPedometerDataFromDate:(NSDate *)start toDate:(NSDate *)end withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
         if (error == nil) {
             NSNumber *steps = pedometerData.numberOfSteps;
-            
+
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
             NSString *dateString = [dateFormatter stringFromDate:date];
             [data setObject:steps forKey:dateString];
-            
+
             if (count < 6) {
                 NSDate *previousDay = [self oneDayAgo: date];
                 int newCount = count + 1;
