@@ -11,13 +11,33 @@
 
 @synthesize bridge = _bridge;
 
+- (instancetype)init {
+    _pedometer = [CMPedometer new];
+    return self;
+}
+
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
-    BOOL isStepCountAvailable = [CMPedometer isFloorCountingAvailable];
+RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTResponseSenderBlock)callback) {
+    BOOL isStepCountAvailable = [CMPedometer isStepCountingAvailable];
+    NSString *status = [self isCoreMotionAuthorized];
     if (isStepCountAvailable == YES) {
-        _pedometer = [CMPedometer new];
-        callback(@[@true]);
+        callback(@[status]);
+    }else{
+        callback(@[@"step_count_not_available"]);
+    }
+}
+
+RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
+    BOOL isStepCountAvailable = [CMPedometer isStepCountingAvailable];
+    if (isStepCountAvailable == YES) {
+        NSDate *now = [NSDate new];
+        NSDate *startDate = [self beginningOfDay:now];
+        [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
+            if (error == nil) {
+                callback(@[@true]);
+            }
+        }];
     }
 }
 
@@ -26,7 +46,7 @@ RCT_EXPORT_METHOD(getStepsToday:(RCTResponseSenderBlock)callback) {
         NSDate *now = [NSDate new];
         NSDate *startDate = [self beginningOfDay:now];
         
-        [self.pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
+        [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
                 NSNumber *steps = pedometerData.numberOfSteps;
                 callback(@[steps]);
@@ -74,7 +94,7 @@ RCT_EXPORT_METHOD(getDailyWeekData:(RCTResponseSenderBlock)callback) {
             NSString *dateString = [dateFormatter stringFromDate:date];
             [data setObject:steps forKey:dateString];
             
-            if (count < 7) {
+            if (count < 6) {
                 NSDate *previousDay = [self oneDayAgo: date];
                 int newCount = count + 1;
                 [self getStep:previousDay :newCount :data :callback];
@@ -118,6 +138,28 @@ RCT_EXPORT_METHOD(getDailyWeekData:(RCTResponseSenderBlock)callback) {
 -(NSDate *)sevenDaysAgo: (NSDate *)date {
     NSDate *sevenDaysAgo = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay value:-7 toDate:date options:0];
     return sevenDaysAgo;
+}
+
+-(NSString *) isCoreMotionAuthorized {
+    if (@available(iOS 11.0, *)) {
+        CMAuthorizationStatus status = [CMPedometer authorizationStatus];
+        if (status == CMAuthorizationStatusAuthorized) {
+            return @"authorized";
+        } else if (status == CMAuthorizationStatusNotDetermined) {
+            return @"notDetermined";
+        } else if (status == CMAuthorizationStatusDenied) {
+            return @"denied";
+        } else if (status == CMAuthorizationStatusRestricted) {
+            return @"restricted";
+        }
+    } else {
+        if([CMSensorRecorder isAuthorizedForRecording]) {
+            return @"authorized";
+        }else{
+            return @"unauthorized";
+        }
+    }
+    return @"undefined";
 }
 
 @end
