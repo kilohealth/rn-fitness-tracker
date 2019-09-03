@@ -2,14 +2,13 @@
 #import <CoreMotion/CoreMotion.h>
 #import "React/RCTBridge.h"
 
-@interface RNFitnessTracker ()
-@property (nonatomic, readonly) CMPedometer *pedometer;
+    @interface RNFitnessTracker ()
+    @property (nonatomic, readonly) CMPedometer *pedometer;
+    @end
 
-@end
+    @implementation RNFitnessTracker
 
-@implementation RNFitnessTracker
-
-@synthesize bridge = _bridge;
+    @synthesize bridge = _bridge;
 
 - (instancetype)init {
     _pedometer = [CMPedometer new];
@@ -20,7 +19,7 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTResponseSenderBlock)callback) {
     NSString *status = [self isCoreMotionAuthorized];
-callback(@[status]);
+    callback(@[status]);
 }
 
 RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
@@ -67,49 +66,46 @@ RCT_EXPORT_METHOD(getWeekData:(RCTResponseSenderBlock)callback) {
 
 RCT_EXPORT_METHOD(getDailyWeekData:(RCTResponseSenderBlock)callback) {
     if (_pedometer) {
-        [self getStep:[NSDate new] : 0 :[NSMutableDictionary new] :callback];
+        [self getSteps:[NSDate new] : 0 :[NSMutableDictionary new] :callback];
     }
 }
 
--(void) getStep:
-(NSDate *)date :
-(int) count :
-(NSMutableDictionary *) data :
-(RCTResponseSenderBlock)callback {
+-(void) getSteps:
+    (NSDate *)date :
+    (int) count :
+    (NSMutableDictionary *) data :
+    (RCTResponseSenderBlock)callback {
+        NSDate *start = [self beginningOfDay: date];
+        NSDate *end = [self endOfDay: date];
 
-    NSDate *start = [self beginningOfDay: date];
-    NSDate *end = [self endOfDay: date];
-
-    [_pedometer queryPedometerDataFromDate:(NSDate *)start toDate:(NSDate *)end withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
-        if (error == nil) {
-            NSNumber *steps = pedometerData.numberOfSteps;
-
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-            NSString *dateString = [dateFormatter stringFromDate:date];
-            [data setObject:steps forKey:dateString];
-
-            if (count < 6) {
-                NSDate *previousDay = [self oneDayAgo: date];
-                int newCount = count + 1;
-                [self getStep:previousDay :newCount :data :callback];
-            } else {
-                callback(@[data]);
+        [_pedometer queryPedometerDataFromDate:(NSDate *)start toDate:(NSDate *)end withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
+            if (error == nil) {
+                if (count < 7) {
+                    NSNumber *steps = pedometerData.numberOfSteps;
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+                    NSString *dateString = [dateFormatter stringFromDate:date];
+                    [data setObject:steps forKey:dateString];
+                    NSDate *previousDay = [self oneDayAgo: date];
+                    int newCount = count + 1;
+                    [self getSteps:previousDay :newCount :data :callback];
+                } else {
+                    callback(@[data]);
+                }
             }
-        }
-    }];
+        }];
 }
 
 -(NSDate *)beginningOfDay:(NSDate *)date {
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *components = [cal components:( NSDayCalendarUnit| NSMonthCalendarUnit | NSYearCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:date];
-    [components setHour:0];
-    [components setMinute:0];
-    [components setSecond:0];
-    [components setMonth: components.month];
-    [components setDay: components.day];
-    [components setYear: components.year];
-    return [cal dateFromComponents:components];
+NSDateComponents *components = [cal components:( NSDayCalendarUnit| NSMonthCalendarUnit | NSYearCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:date];
+[components setHour:0];
+[components setMinute:0];
+[components setSecond:0];
+[components setMonth: components.month];
+[components setDay: components.day];
+[components setYear: components.year];
+return [cal dateFromComponents:components];
 }
 
 -(NSDate *)endOfDay:(NSDate *)date {
@@ -150,7 +146,7 @@ RCT_EXPORT_METHOD(getDailyWeekData:(RCTResponseSenderBlock)callback) {
     } else {
         if([CMSensorRecorder isAuthorizedForRecording]) {
             return @"authorized";
-        }else{
+        } else {
             return @"unauthorized";
         }
     }

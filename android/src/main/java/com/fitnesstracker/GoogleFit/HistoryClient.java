@@ -86,8 +86,8 @@ class HistoryClient {
         getStepHistory(start.getTime(), end.getTime(), 1, new OnFetchComplete() {
             @Override
             public void success(int steps) {
-                stepsData.putInt(formatter.format(date), steps);
                 if (count < 7) {
+                    stepsData.putInt(formatter.format(date), steps);
                     Date previousDate = getOneDayAgo(date);
                     getDailyWeekData(previousDate, stepsData, count+1,  callback);
                 } else {
