@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name           = "RNFitnessTracker"
-  s.version        = "0.0.4"
+  s.version        = "0.0.5"
   s.summary        = "Fitness tracker package"
   s.description    = "Fitness tracker package"
   s.author         = "Kilo.Health"
