@@ -37,22 +37,24 @@ class HistoryClient {
         try {
 
             Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity)).readDailyTotal(DataType.AGGREGATE_STEP_COUNT_DELTA)
-                .addOnCompleteListener(new OnCompleteListener<DataSet>() {
-                    @Override
-                    public void onComplete(Task<DataSet> task) {
-                    List<DataPoint> dataSets = task.getResult().getDataPoints();
-                    for (DataPoint dataPoint: dataSets) {
-                        Value value = dataPoint.getValue(Field.FIELD_STEPS);
-                        callback.sendSteps(value.asInt());
-                    }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(Exception e) {
+                    .addOnCompleteListener(new OnCompleteListener<DataSet>() {
+                        @Override
+                        public void onComplete(Task<DataSet> task) {
+                            List<DataPoint> dataSets = task.getResult().getDataPoints();
+                            int steps = 0;
+                            for (DataPoint dataPoint: dataSets) {
+                                Value value = dataPoint.getValue(Field.FIELD_STEPS);
+                                steps +=value.asInt();
+                            }
+                            callback.sendSteps(steps);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(Exception e) {
 
-                    }
-                });
+                        }
+                    });
 
         } catch (Exception e) {
             e.printStackTrace();
