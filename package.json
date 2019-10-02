@@ -1,8 +1,8 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Fitness tracker module",
-  "homepahe": "https://github.com/doville/rn-fitness-tracker",
+  "homepage": "https://github.com/doville/rn-fitness-tracker",
   "repository": "https://github.com/doville/rn-fitness-tracker",
   "summary": "",
   "author": "Kilo.Health",
