@@ -6,9 +6,14 @@
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
 #
 
+
+require 'json'
+
+package = JSON.parse(File.read(File.join(__dir__, '../package.json')))
+
 Pod::Spec.new do |s|
 
-  s.name           = "RNFitnessTracker"
+  s.name         = "RNFitnessTracker"
   s.version      = package['version']
   s.summary      = package['description']
   s.description  = package['description']
