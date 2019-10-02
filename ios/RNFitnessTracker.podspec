@@ -9,11 +9,12 @@
 Pod::Spec.new do |s|
 
   s.name           = "RNFitnessTracker"
-  s.version        = "0.0.5"
-  s.summary        = "Fitness tracker package"
-  s.description    = "Fitness tracker package"
-  s.author         = "Kilo.Health"
-  s.homepage       = "kilo.health"
+  s.version      = package['version']
+  s.summary      = package['description']
+  s.description  = package['description']
+  s.license      = package['license']
+  s.author       = package['author']
+  s.homepage     = package['homepage']
   s.license = { :type => 'MIT', :text => <<-LICENSE
                      MIT License
                      Copyright © 2019 Dovile Maminskaite
@@ -45,22 +46,21 @@ Pod::Spec.new do |s|
 
   s.dependency 'React'
   s.dependency 'React-Core'
-  s.dependency 'React-DevSupport'
+  s.dependency 'React-Core/DevSupport'
+  s.dependency 'React-Core/RCTWebSocket'
   s.dependency 'React-RCTActionSheet'
   s.dependency 'React-RCTBlob'
-  s.dependency 'React-RCTImage'
   s.dependency 'React-RCTLinking'
   s.dependency 'React-RCTNetwork'
   s.dependency 'React-RCTSettings'
   s.dependency 'React-RCTText'
   s.dependency 'React-RCTVibration'
-  s.dependency 'React-RCTWebSocket'
 
   s.dependency 'React-cxxreact'
   s.dependency 'React-jsi'
   s.dependency 'React-jsiexecutor'
   s.dependency 'React-jsinspector'
-  s.dependency 'yoga'
+  s.dependency 'Yoga'
 
   s.dependency 'DoubleConversion'
   s.dependency 'glog'
