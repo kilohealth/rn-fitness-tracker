@@ -42,6 +42,9 @@ RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
             }
         }];
     }
+     else {
+        callback(@[@false]);
+    }
 }
 
 RCT_EXPORT_METHOD(getStepsToday:(RCTResponseSenderBlock)callback) {

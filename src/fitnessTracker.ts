@@ -5,6 +5,7 @@ const { RNFitnessTracker } = NativeModules;
 export interface IStepTrackerStatus {
   authorized: boolean;
   shouldOpenAppSettings: boolean;
+  trackingNotSupported?: boolean;
 }
 
 export interface IWeekDailySteps {
@@ -29,7 +30,7 @@ const iosAuthorizationStatusCheck = (status: string): IStepTrackerStatus => {
 export const isStepTrackingSupported = (): Promise<boolean> =>
   new Promise(resolve => {
     RNFitnessTracker.isStepTrackingSupported((available: number) => {
-      resolve(available === 1 ? true : false);
+      resolve(available ? true : false);
     });
   });
 
@@ -66,9 +67,17 @@ export const setupStepTracking = (): Promise<IStepTrackerStatus> =>
       if (!global.isIOS) {
         resolve({ authorized, shouldOpenAppSettings: false });
       } else {
-        RNFitnessTracker.isAuthorizedToUseCoreMotion((status: string) => {
-          resolve(iosAuthorizationStatusCheck(status));
-        });
+        if (authorized) {
+          RNFitnessTracker.isAuthorizedToUseCoreMotion((status: string) => {
+            resolve(iosAuthorizationStatusCheck(status));
+          });
+        } else {
+          resolve({
+            authorized: false,
+            shouldOpenAppSettings: false,
+            trackingNotSupported: true,
+          });
+        }
       }
     });
   });
