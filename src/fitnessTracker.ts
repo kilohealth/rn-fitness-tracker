@@ -2,16 +2,16 @@ import { NativeModules } from 'react-native';
 
 const { RNFitnessTracker } = NativeModules;
 
-interface IStepTrackerStatus {
+export interface IStepTrackerStatus {
   authorized: boolean;
   shouldOpenAppSettings: boolean;
 }
 
-interface IWeekDailySteps {
+export interface IWeekDailySteps {
   [key: string]: number;
 }
 
-interface IStepTrackerData {
+export interface IStepTrackerData {
   stepsToday: number;
   stepsThisWeek: IWeekDailySteps;
 }
