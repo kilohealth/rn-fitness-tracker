@@ -38,7 +38,7 @@
     "lint-staged": "^9.4.2",
     "prettier": "^1.19.1",
     "react-native": "^0.60.5",
-    "react-native-device-info": "5.3.1",
+    "react-native-device-info": "^5.5.2",
     "tsc": "^1.20150623.0",
     "typescript": "^3.7.5"
   }

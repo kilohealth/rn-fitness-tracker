@@ -1,4 +1,5 @@
 import { NativeModules } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 
 const { RNFitnessTracker } = NativeModules;
 
@@ -138,17 +139,32 @@ export const getWeeklySteps = (): Promise<IWeekDailySteps> =>
 
 /**
  * Returns steps today and this week steps object
+ * on `iOS simulator` returns mock data
  * @return {Promise<IStepTrackerData>}
  */
 export const getSteps = (): Promise<IStepTrackerData> =>
   new Promise(resolve => {
-    RNFitnessTracker.getStepsToday((steps: number) => {
-      RNFitnessTracker.getDailyWeekData((data: IWeekDailySteps) => {
-        if (data) {
-          resolve({ stepsToday: steps, stepsThisWeek: data });
-        } else {
-          resolve({ stepsToday: steps, stepsThisWeek: {} });
-        }
+    // Return mock data if device is iOS simulator
+    if (global.isIOS && DeviceInfo.isEmulatorSync()) {
+      resolve({
+        stepsToday: 17771,
+        stepsThisWeek: {
+          '2020-01-21': 7770,
+          '2020-01-22': 5000,
+          '2020-01-23': 1200,
+          '2020-01-24': 13210,
+          '2020-01-25': 17771,
+        },
       });
-    });
+    } else {
+      RNFitnessTracker.getStepsToday((steps: number) => {
+        RNFitnessTracker.getDailyWeekData((data: IWeekDailySteps) => {
+          if (data) {
+            resolve({ stepsToday: steps, stepsThisWeek: data });
+          } else {
+            resolve({ stepsToday: steps, stepsThisWeek: {} });
+          }
+        });
+      });
+    }
   });
