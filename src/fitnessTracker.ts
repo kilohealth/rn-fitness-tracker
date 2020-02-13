@@ -27,6 +27,10 @@ const iosAuthorizationStatusCheck = (status: string): IStepTrackerStatus => {
   }
 };
 
+/**
+ * `iOS only!` returns if step tracking is supported on device
+ * @return {Promise<boolean>}
+ */
 export const isStepTrackingSupported = (): Promise<boolean> =>
   new Promise(resolve => {
     RNFitnessTracker.isStepTrackingSupported((available: number) => {
@@ -34,6 +38,10 @@ export const isStepTrackingSupported = (): Promise<boolean> =>
     });
   });
 
+/**
+ * Returns if step tracking is authorized and available on `Android`
+ * @return {Promise<IStepTrackerStatus>}
+ */
 export const isStepTrackingAvailableAndroid = (): Promise<IStepTrackerStatus> =>
   new Promise(resolve => {
     RNFitnessTracker.authorize((authorized: boolean) => {
@@ -41,6 +49,10 @@ export const isStepTrackingAvailableAndroid = (): Promise<IStepTrackerStatus> =>
     });
   });
 
+/**
+ * Returns if step tracking is authorized and available on `iOS`
+ * @return {Promise<IStepTrackerStatus>}
+ */
 export const isStepTrackingAvailableIOS = (): Promise<IStepTrackerStatus> =>
   new Promise(resolve => {
     RNFitnessTracker.isAuthorizedToUseCoreMotion((status: string) => {
@@ -48,6 +60,10 @@ export const isStepTrackingAvailableIOS = (): Promise<IStepTrackerStatus> =>
     });
   });
 
+/**
+ * Returns if step tracking is authorized and available on both platforms
+ * @return {Promise<IStepTrackerStatus>}
+ */
 export const isStepTrackingAvailable = (): Promise<IStepTrackerStatus> =>
   new Promise(resolve => {
     if (global.isIOS) {
@@ -61,6 +77,11 @@ export const isStepTrackingAvailable = (): Promise<IStepTrackerStatus> =>
     }
   });
 
+/**
+ * Sets up step tracking and returns status
+ * not supported iOS devices also return `trackingNotSupported: true` param inside the status object
+ * @return {Promise<IStepTrackerStatus>}
+ */
 export const setupStepTracking = (): Promise<IStepTrackerStatus> =>
   new Promise(resolve => {
     RNFitnessTracker.authorize((authorized: boolean) => {
@@ -82,6 +103,10 @@ export const setupStepTracking = (): Promise<IStepTrackerStatus> =>
     });
   });
 
+/**
+ * Returns number of steps today
+ * @return {Promise<number>}
+ */
 export const getStepsToday = (): Promise<number> =>
   new Promise(resolve => {
     RNFitnessTracker.getStepsToday((steps: number) => {
@@ -89,6 +114,10 @@ export const getStepsToday = (): Promise<number> =>
     });
   });
 
+/**
+ * Returns number of steps this week
+ * @return {Promise<Number>}
+ */
 export const getStepsThisWeek = (): Promise<number> =>
   new Promise(resolve => {
     RNFitnessTracker.getWeekData((steps: number) => {
@@ -96,6 +125,10 @@ export const getStepsThisWeek = (): Promise<number> =>
     });
   });
 
+/**
+ * Returns weekly steps object
+ * @return {Promise<IWeekDailySteps>}
+ */
 export const getWeeklySteps = (): Promise<IWeekDailySteps> =>
   new Promise(resolve => {
     RNFitnessTracker.getDailyWeekData((data: IWeekDailySteps) => {
@@ -103,6 +136,10 @@ export const getWeeklySteps = (): Promise<IWeekDailySteps> =>
     });
   });
 
+/**
+ * Returns steps today and this week steps object
+ * @return {Promise<IStepTrackerData>}
+ */
 export const getSteps = (): Promise<IStepTrackerData> =>
   new Promise(resolve => {
     RNFitnessTracker.getStepsToday((steps: number) => {
