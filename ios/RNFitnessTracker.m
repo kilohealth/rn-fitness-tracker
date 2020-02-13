@@ -22,6 +22,15 @@ RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTResponseSenderBlock)callback) 
     callback(@[status]);
 }
 
+RCT_EXPORT_METHOD(isStepTrackingSupported:(RCTResponseSenderBlock)callback) {
+    BOOL isStepCountAvailable = [CMPedometer isStepCountingAvailable];
+    if (isStepCountAvailable == YES) {
+        callback(@[@true]);
+    } else {
+        callback(@[@false]);
+    }
+}
+
 RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
     BOOL isStepCountAvailable = [CMPedometer isStepCountingAvailable];
     if (isStepCountAvailable == YES) {

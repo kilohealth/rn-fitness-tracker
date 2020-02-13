@@ -26,6 +26,13 @@ const iosAuthorizationStatusCheck = (status: string): IStepTrackerStatus => {
   }
 };
 
+export const isStepTrackingSupported = (): Promise<boolean> =>
+  new Promise(resolve => {
+    RNFitnessTracker.isStepTrackingSupported((available: number) => {
+      resolve(available === 1 ? true : false);
+    });
+  });
+
 export const isStepTrackingAvailableAndroid = (): Promise<IStepTrackerStatus> =>
   new Promise(resolve => {
     RNFitnessTracker.authorize((authorized: boolean) => {
