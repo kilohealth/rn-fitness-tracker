@@ -1,6 +1,5 @@
-
 import { NativeModules } from 'react-native';
 
-const { RNFitnessTracker } = NativeModules;
+export const { RNFitnessTracker } = NativeModules;
 
-export default RNFitnessTracker;
+export { FitnessTrackerAPI as default } from './src/fitnessTracker';
