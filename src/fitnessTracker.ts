@@ -1,7 +1,5 @@
 import { NativeModules } from 'react-native';
 
-import asyncStorage from './helpers/asyncStorage';
-
 const { RNFitnessTracker } = NativeModules;
 
 interface IStepTrackerStatus {
@@ -28,24 +26,31 @@ const iosAuthorizationStatusCheck = (status: string): IStepTrackerStatus => {
   }
 };
 
-export const isStepTrackingAvailableAndroid = (): Promise<any> =>
+export const isStepTrackingAvailableAndroid = (): Promise<IStepTrackerStatus> =>
   new Promise(resolve => {
-    asyncStorage
-      .getFromAsyncStorage('fitnessTrackerAuthorized')
-      .then((stepAuthorizationStatus: boolean) => {
-        if (stepAuthorizationStatus) {
-          resolve({ authorized: true, shouldOpenAppSettings: false });
-        } else {
-          resolve({ authorized: false, shouldOpenAppSettings: false });
-        }
-      });
-  }).then(res => res);
+    RNFitnessTracker.authorize((authorized: boolean) => {
+      resolve({ authorized, shouldOpenAppSettings: false });
+    });
+  });
 
 export const isStepTrackingAvailableIOS = (): Promise<IStepTrackerStatus> =>
   new Promise(resolve => {
     RNFitnessTracker.isAuthorizedToUseCoreMotion((status: string) => {
       resolve(iosAuthorizationStatusCheck(status));
     });
+  });
+
+export const isStepTrackingAvailable = (): Promise<IStepTrackerStatus> =>
+  new Promise(resolve => {
+    if (global.isIOS) {
+      RNFitnessTracker.isAuthorizedToUseCoreMotion((status: string) => {
+        resolve(iosAuthorizationStatusCheck(status));
+      });
+    } else {
+      RNFitnessTracker.authorize((authorized: boolean) => {
+        resolve({ authorized, shouldOpenAppSettings: false });
+      });
+    }
   });
 
 export const setupStepTracking = (): Promise<IStepTrackerStatus> =>
