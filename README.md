@@ -67,7 +67,6 @@ implementation project(path: ':@kilohealth-rn-fitness-tracker')
 
 import RNFitnessTracker from 'rn-fitness-tracker';
 
-
 //Check if this app has a permission to track steps
 //this function can only be used on iOS.
 //Status - String (
@@ -85,10 +84,12 @@ RNFitnessTracker.authorize( status => {});
 
 //get steps today
 RNFitnessTracker.getStepsToday( steps => {});
+
 //get 7 days steps
 //steps - integer
 RNFitnessTracker.getWeekData( steps => {});
-//to get 7 days steps
+
+//To get 7 days steps
 //data - object 
 // {
 //  '2019-07-08 12:00:00' : 100,
