@@ -1,6 +1,6 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
-  "version": "0.0.8-alpha1",
+  "version": "0.0.8",
   "description": "Fitness tracker module",
   "homepage": "https://github.com/doville/rn-fitness-tracker",
   "repository": "https://github.com/doville/rn-fitness-tracker",
@@ -9,6 +9,7 @@
   "license": "MIT",
   "main": "index.ts",
   "scripts": {
+    "docs": "rm -rf dist && tsc && jsdoc2md --files ./dist/*.js --plugin dmd-bitbucket > ./api.md --separators && rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -30,11 +31,14 @@
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
     "babel-eslint": "^10.0.3",
+    "dmd-bitbucket": "^0.1.10",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-react": "^7.18.3",
     "eslint-watch": "^6.0.1",
+    "jsdoc-babel": "^0.5.0",
+    "jsdoc-to-markdown": "^5.0.3",
     "lint-staged": "^9.4.2",
     "prettier": "^1.19.1",
     "react-native": "^0.60.5",
