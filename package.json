@@ -9,7 +9,7 @@
   "license": "MIT",
   "main": "index.ts",
   "scripts": {
-    "docs": "rm -rf dist && tsc && jsdoc2md --files ./dist/*.js --plugin dmd-bitbucket > ./api.md --separators && rm -rf dist",
+    "docs": "rm -rf dist && tsc && jsdoc2md --files ./dist/*.js  > ./api.md --separators && rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -31,7 +31,6 @@
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
     "babel-eslint": "^10.0.3",
-    "dmd-bitbucket": "^0.1.10",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
