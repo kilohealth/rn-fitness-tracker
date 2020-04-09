@@ -36,6 +36,24 @@ RCT_EXPORT_METHOD(isStepTrackingSupported:(RCTResponseSenderBlock)callback) {
     }
 }
 
+RCT_EXPORT_METHOD(isDistanceTrackingSupported:(RCTResponseSenderBlock)callback) {
+    BOOL isDistanceTrackingAvailable = [CMPedometer isDistanceAvailable];
+    if (isDistanceTrackingAvailable == YES) {
+        callback(@[@true]);
+    } else {
+        callback(@[@false]);
+    }
+}
+
+RCT_EXPORT_METHOD(isFloorCountingSupported:(RCTResponseSenderBlock)callback) {
+    BOOL isFloorCountingAvailable = [CMPedometer isFloorCountingAvailable];
+    if (isFloorCountingAvailable == YES) {
+        callback(@[@true]);
+    } else {
+        callback(@[@false]);
+    }
+}
+
 RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
     BOOL isStepCountAvailable = [CMPedometer isStepCountingAvailable];
     if (isStepCountAvailable == YES) {
