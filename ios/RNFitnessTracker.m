@@ -15,6 +15,11 @@
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  return NO;
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTResponseSenderBlock)callback) {
@@ -55,7 +60,9 @@ RCT_EXPORT_METHOD(getStepsToday:(RCTResponseSenderBlock)callback) {
         [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
                 NSNumber *steps = pedometerData.numberOfSteps;
-                callback(@[steps]);
+                NSNumber *distance = pedometerData.distance;
+                NSNumber *flights = pedometerData.floorsAscended;
+                callback(@[steps, distance, flights]);
             }
         }];
     }
@@ -69,8 +76,10 @@ RCT_EXPORT_METHOD(getWeekData:(RCTResponseSenderBlock)callback) {
 
         [_pedometer queryPedometerDataFromDate:(NSDate *)sevenDaysAgo toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
+                NSNumber *distance = pedometerData.distance;
+                NSNumber *flights = pedometerData.floorsAscended;
                 NSNumber *steps = pedometerData.numberOfSteps;
-                callback(@[steps]);
+                callback(@[steps, distance, flights]);
             }
         }];
     }
@@ -94,10 +103,12 @@ RCT_EXPORT_METHOD(getDailyWeekData:(RCTResponseSenderBlock)callback) {
             if (error == nil) {
                 if (count < 7) {
                     NSNumber *steps = pedometerData.numberOfSteps;
+                    NSNumber *distance = pedometerData.distance;
+                    NSNumber *flights = pedometerData.floorsAscended;
                     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
                     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
                     NSString *dateString = [dateFormatter stringFromDate:date];
-                    [data setObject:steps forKey:dateString];
+                    [data setObject:@[steps, distance, flights] forKey:dateString];
                     NSDate *previousDay = [self oneDayAgo: date];
                     int newCount = count + 1;
                     [self getSteps:previousDay :newCount :data :callback];
@@ -110,7 +121,7 @@ RCT_EXPORT_METHOD(getDailyWeekData:(RCTResponseSenderBlock)callback) {
 
 -(NSDate *)beginningOfDay:(NSDate *)date {
     NSCalendar *cal = [NSCalendar currentCalendar];
-NSDateComponents *components = [cal components:( NSDayCalendarUnit| NSMonthCalendarUnit | NSYearCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:date];
+    NSDateComponents *components = [cal components:( NSCalendarUnitDay| NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond ) fromDate:date];
 [components setHour:0];
 [components setMinute:0];
 [components setSecond:0];
@@ -123,7 +134,7 @@ return [cal dateFromComponents:components];
 -(NSDate *)endOfDay:(NSDate *)date {
     NSDate *nextDay = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay value:1 toDate:date options:0];
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *components = [cal components:( NSDayCalendarUnit| NSMonthCalendarUnit | NSYearCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:nextDay];
+    NSDateComponents *components = [cal components:( NSCalendarUnitDay| NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond ) fromDate:nextDay];
     [components setHour:0];
     [components setMinute:0];
     [components setSecond:0];
@@ -156,10 +167,14 @@ return [cal dateFromComponents:components];
             return @"restricted";
         }
     } else {
-        if([CMSensorRecorder isAuthorizedForRecording]) {
-            return @"authorized";
+        if (@available(iOS 9.0, *)) {
+            if([CMSensorRecorder isAuthorizedForRecording]) {
+                return @"authorized";
+            } else {
+                return @"unauthorized";
+            }
         } else {
-            return @"unauthorized";
+            return @"notDetermined";
         }
     }
     return @"undefined";
