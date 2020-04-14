@@ -36,7 +36,6 @@
     "no-var": 2,
     "no-trailing-spaces": 0,
     "eol-last": 0,
-    "no-underscore-dangle": 2,
     "no-alert": 0,
     "no-lone-blocks": 2,
     "no-case-declarations": 0,
@@ -66,7 +65,9 @@
         "mjs": "never",
         "jsx": "never",
         "ts": "never",
-        "tsx": "never"
+        "tsx": "never",
+        "android": "never",
+        "ios": "never"
       }
     ],
     "import/no-duplicates": "error",

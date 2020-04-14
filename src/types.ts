@@ -1,14 +1,38 @@
-export interface IStepTrackerStatus {
+export interface IFitnessTrackerStatus {
   authorized: boolean;
   shouldOpenAppSettings: boolean;
   trackingNotSupported?: boolean;
 }
 
-export interface IWeekDailySteps {
+export interface IFitnessTrackerAvailability {
+  steps: number;
+  distance: number;
+  floors: number;
+}
+
+export interface IStepsDaily {
   [key: string]: number;
 }
 
-export interface IStepTrackerData {
+export interface IStepsData {
   stepsToday: number;
-  stepsThisWeek: IWeekDailySteps;
+  stepsDaily: IStepsDaily;
+}
+
+export interface IDistanceDaily {
+  [key: string]: number;
+}
+
+export interface IDistanceData {
+  distanceToday: number;
+  distanceDaily: IDistanceDaily;
+}
+
+export interface IFloorsDaily {
+  [key: string]: number;
+}
+
+export interface IFloorsData {
+  floorsToday: number;
+  floorsDaily: IDistanceDaily;
 }
