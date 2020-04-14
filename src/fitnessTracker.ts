@@ -9,6 +9,9 @@ const iosAuthorizationStatusCheck = (status: string): IStepTrackerStatus => {
   if (status === 'authorized') {
     return { authorized: true, shouldOpenAppSettings: false };
   } else if (status === 'notDetermined') {
+    if (global.__DEV__ && DeviceInfo.isEmulatorSync()) {
+      return { authorized: true, shouldOpenAppSettings: false };
+    }
     return { authorized: false, shouldOpenAppSettings: false };
   } else {
     return { authorized: false, shouldOpenAppSettings: true };
@@ -81,6 +84,9 @@ const setupStepTracking = (): Promise<IStepTrackerStatus> =>
             resolve(iosAuthorizationStatusCheck(status));
           });
         } else {
+          if (global.__DEV__ && DeviceInfo.isEmulatorSync()) {
+            resolve({ authorized: true, shouldOpenAppSettings: false });
+          }
           resolve({
             authorized: false,
             shouldOpenAppSettings: false,
@@ -97,6 +103,9 @@ const setupStepTracking = (): Promise<IStepTrackerStatus> =>
  */
 const getStepsToday = (): Promise<number> =>
   new Promise(resolve => {
+    if (global.__DEV__ && DeviceInfo.isEmulatorSync()) {
+      resolve(420);
+    }
     RNFitnessTracker.getStepsToday((steps: number) => {
       resolve(steps);
     });
@@ -132,7 +141,7 @@ const getWeeklySteps = (): Promise<IWeekDailySteps> =>
 const getSteps = (): Promise<IStepTrackerData> =>
   new Promise(resolve => {
     // Return mock data if device is iOS simulator
-    if (global.isIOS && DeviceInfo.isEmulatorSync()) {
+    if (global.__DEV__ && DeviceInfo.isEmulatorSync()) {
       resolve({
         stepsToday: 17771,
         stepsThisWeek: {
