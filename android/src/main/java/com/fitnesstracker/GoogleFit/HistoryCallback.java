@@ -1,5 +1,5 @@
 package com.fitnesstracker.GoogleFit;
 
 public interface HistoryCallback {
-    void sendSteps(Object steps);
+    void sendData(Object data);
 }

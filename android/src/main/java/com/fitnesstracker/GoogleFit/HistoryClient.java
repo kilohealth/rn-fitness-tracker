@@ -40,13 +40,17 @@ class HistoryClient {
                     .addOnCompleteListener(new OnCompleteListener<DataSet>() {
                         @Override
                         public void onComplete(Task<DataSet> task) {
+
                             List<DataPoint> dataSets = task.getResult().getDataPoints();
                             int steps = 0;
+
                             for (DataPoint dataPoint: dataSets) {
+
                                 Value value = dataPoint.getValue(Field.FIELD_STEPS);
+
                                 steps +=value.asInt();
                             }
-                            callback.sendSteps(steps);
+                            callback.sendData(steps);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -71,7 +75,7 @@ class HistoryClient {
             getStepHistory(startTime, now, 7, new OnFetchComplete() {
                 @Override
                 public void success(int steps) {
-                    callback.sendSteps(steps);
+                    callback.sendData(steps);
                 }
             });
         } catch (Exception e) {
@@ -93,11 +97,44 @@ class HistoryClient {
                     Date previousDate = getOneDayAgo(date);
                     getDailyWeekData(previousDate, stepsData, count+1,  callback);
                 } else {
-                   callback.sendSteps(stepsData);
+                   callback.sendData(stepsData);
                 }
             }
         });
     }
+
+    void getDistanceToday(final HistoryCallback callback) {
+        try {
+
+            Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity)).readDailyTotal(DataType.AGGREGATE_DISTANCE_DELTA)
+                    .addOnCompleteListener(new OnCompleteListener<DataSet>() {
+                        @Override
+                        public void onComplete(Task<DataSet> task) {
+
+                            List<DataPoint> dataSets = task.getResult().getDataPoints();
+                            float distance = 0;
+
+                            for (DataPoint dataPoint: dataSets) {
+
+                                Value value = dataPoint.getValue(Field.FIELD_DISTANCE);
+
+                                distance +=value.asFloat();
+                            }
+                            callback.sendData(distance);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(Exception e) {
+
+                        }
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void getStepHistory (final long startTime, long endTime, int dayCount, final OnFetchComplete fetchCompleteCallback) {
 

@@ -2,6 +2,8 @@ package com.fitnesstracker.GoogleFit;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
+
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -26,6 +28,8 @@ public class GoogleFitManager implements ActivityEventListener {
 
     FitnessOptions fitnessOptions = FitnessOptions.builder()
             .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
             .build();
 
@@ -93,7 +97,7 @@ public class GoogleFitManager implements ActivityEventListener {
     public void getStepsToday(final Callback callback) {
         this.historyClient.getStepCountToday(new HistoryCallback() {
             @Override
-            public void sendSteps(Object steps) {
+            public void sendData(Object steps) {
                 callback.invoke((int)steps);
             }
         });
@@ -102,7 +106,7 @@ public class GoogleFitManager implements ActivityEventListener {
     public void getWeekData(final Callback callback) {
         this.historyClient.getWeekData(new HistoryCallback() {
             @Override
-            public void sendSteps(Object steps) {
+            public void sendData(Object steps) {
                 callback.invoke((int)steps);
             }
         });
@@ -111,11 +115,21 @@ public class GoogleFitManager implements ActivityEventListener {
     public void getDailyWeekData(final Callback callback) {
         this.historyClient.getDailyWeekData(new Date(), Arguments.createMap(), 0,  new HistoryCallback() {
             @Override
-            public void sendSteps(Object steps) {
+            public void sendData(Object steps) {
                 WritableMap map = (WritableMap)steps;
                 callback.invoke(map);
             }
         });
     }
+
+    public void getDistanceToday(final Callback callback) {
+        this.historyClient.getDistanceToday(new HistoryCallback() {
+            @Override
+            public void sendData(Object distance) {
+                callback.invoke((float)distance);
+            }
+        });
+    }
+
 
 }
