@@ -12,7 +12,7 @@ or
 
 ## iOS
 
-#### react-native 0.60.x
+#### React-Native > 0.61
 
 1. Add following lines to info.plist file `<dict>` tag:
 
@@ -25,7 +25,7 @@ or
 
 open ios project in XCode. Navigate to info.plist file. Add new property list key - `NSMotionUsageDescription`. This will add new line in the containing `Privacy - Motion Usage Description`.
 
-#### Manual linking for projects with older react-native version
+#### React-Native < 0.60 - Manual linking for projects with older react-native version
 
 1. Add following line to Podfile:
    `pod 'RNFitnessTracker', :podspec => '../node_modules/@kilohealth/rn-fitness-tracker/ios/RNFitnessTracker.podspec'`.
@@ -34,6 +34,8 @@ open ios project in XCode. Navigate to info.plist file. Add new property list ke
 4. In XCode, in the project navigator, select your project. Add `libRNFitnessTracker.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 
 ## Android
+
+#### React-Native > 0.61
 
 1. To get an OAuth 2.0 Client ID for your project, follow steps in Google Fit [documentation](https://developers.google.com/fit/android/get-api-key).
 2. Then in [Google API console](https://console.developers.google.com) find Fitness API and enable it. Download your `google-services.json` file from [firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
@@ -44,11 +46,9 @@ implementation 'com.google.android.gms:play-services-fitness:16.0.1'
 implementation 'com.google.android.gms:play-services-auth:16.0.1'
 ```
 
-#### react-native 0.60.x
+4. React Native autolinking will handle the rest.
 
-React Native autolinking will handle the rest.
-
-#### manual linking for projects with older react-native version
+#### React-Native < 0.60 - Manual linking for projects with older react-native version
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
    Add `import com.fitnesstracker.RNFitnessTrackerPackage;` to the imports at the top of the file.
