@@ -14,23 +14,24 @@ or
 
 #### react-native 0.60.x
 
-1. Add following line to Podfile:
-   `pod 'RNFitnessTracker', :podspec => '../node_modules/@kilohealth/rn-fitness-tracker/ios/RNFitnessTracker.podspec'`
-2. Add following lines to info.plist file `<dict>` tag:
+1. Add following lines to info.plist file `<dict>` tag:
 
 ```xml
 <key>NSMotionUsageDescription</key>
 <string>Reason string goes here</string>
 ```
 
-or
-open ios project in XCode. Navigated to info.plist file. Add new property list key - `NSMotionUsageDescription`. This will add new line in the containing `Privacy - Motion Usage Description`.
+**or**
 
-#### manual linking for projects with older react-native version
+open ios project in XCode. Navigate to info.plist file. Add new property list key - `NSMotionUsageDescription`. This will add new line in the containing `Privacy - Motion Usage Description`.
 
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `@kilohealth/rn-fitness-tracker` and add `RNFitnessTracker.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libRNFitnessTracker.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
+#### Manual linking for projects with older react-native version
+
+1. Add following line to Podfile:
+   `pod 'RNFitnessTracker', :podspec => '../node_modules/@kilohealth/rn-fitness-tracker/ios/RNFitnessTracker.podspec'`.
+2. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
+3. Go to `node_modules` ➜ `@kilohealth/rn-fitness-tracker` and add `RNFitnessTracker.xcodeproj`
+4. In XCode, in the project navigator, select your project. Add `libRNFitnessTracker.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 
 ## Android
 
