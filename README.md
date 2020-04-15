@@ -23,7 +23,8 @@ or
 
 **or**
 
-open ios project in XCode. Navigate to info.plist file. Add new property list key - `NSMotionUsageDescription`. This will add new line in the containing `Privacy - Motion Usage Description`.
+Navigate to info.plist file in XCode → Add new property list key - `NSMotionUsageDescription`. 
+This will add new line in the containing `Privacy - Motion Usage Description`.
 
 <details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
 <p>
