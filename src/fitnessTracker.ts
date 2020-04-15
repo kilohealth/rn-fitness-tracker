@@ -15,7 +15,8 @@ import {
 
 const { RNFitnessTracker } = NativeModules;
 
-const isSimulator = global.__DEV__ && DeviceInfo.isEmulatorSync();
+const isSimulator =
+  global.__DEV__ && global.isIOS && DeviceInfo.isEmulatorSync();
 
 const iosAuthorizationStatusCheck = (status: string): IFitnessTrackerStatus => {
   if (status === 'authorized') {
@@ -126,7 +127,7 @@ const getStepsWeekTotal = (): Promise<number> =>
  */
 const getStepsDaily = (): Promise<IStepsDaily> =>
   new Promise(resolve => {
-    RNFitnessTracker.getDailyWeekData((data: IStepsDaily) => {
+    RNFitnessTracker.getStepsDaily((data: IStepsDaily) => {
       resolve(data);
     });
   });
@@ -142,7 +143,7 @@ const getStepsData = (): Promise<IStepsData> =>
       resolve(mockData.steps);
     } else {
       RNFitnessTracker.getStepsToday((stepsToday: number) => {
-        RNFitnessTracker.getDailyWeekData((stepsDaily: IStepsDaily) => {
+        RNFitnessTracker.getStepsDaily((stepsDaily: IStepsDaily) => {
           resolve({ stepsToday, stepsDaily: stepsDaily || {} });
         });
       });
@@ -181,7 +182,7 @@ const getDistanceWeekTotal = (): Promise<number> =>
  */
 const getDistanceDaily = (): Promise<IDistanceDaily> =>
   new Promise(resolve => {
-    RNFitnessTracker.getWeeklyDistance((data: IDistanceDaily) => {
+    RNFitnessTracker.getDistanceDaily((data: IDistanceDaily) => {
       resolve(data);
     });
   });
@@ -198,7 +199,7 @@ const getDistanceData = (): Promise<IDistanceData> =>
       resolve(mockData.distance);
     } else {
       RNFitnessTracker.getDistanceToday((distanceToday: number) => {
-        RNFitnessTracker.getDailyWeekData((distanceDaily: IDistanceDaily) => {
+        RNFitnessTracker.getDistanceDaily((distanceDaily: IDistanceDaily) => {
           resolve({ distanceToday, distanceDaily: distanceDaily || {} });
         });
       });
@@ -254,7 +255,7 @@ const getFloorsDataIOS = (): Promise<IFloorsData> =>
       resolve(mockData.floors);
     } else {
       RNFitnessTracker.getDistanceToday((floorsToday: number) => {
-        RNFitnessTracker.getDailyWeekData((floorsDaily: IDistanceDaily) => {
+        RNFitnessTracker.getDailyWeekData((floorsDaily: IFloorsDaily) => {
           resolve({ floorsToday, floorsDaily: floorsDaily || {} });
         });
       });
