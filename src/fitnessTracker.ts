@@ -105,6 +105,9 @@ const setupTracking = (): Promise<IFitnessTrackerStatus> =>
  */
 const getStepsToday = (): Promise<number> =>
   new Promise(resolve => {
+    if (global.__DEV__ && DeviceInfo.isEmulatorSync()) {
+      resolve(420);
+    }
     RNFitnessTracker.getStepsToday((steps: number) => {
       resolve(steps);
     });
@@ -194,7 +197,6 @@ const getDistanceDaily = (): Promise<IDistanceDaily> =>
  */
 const getDistanceData = (): Promise<IDistanceData> =>
   new Promise(resolve => {
-    // Return mock data if device is iOS simulator
     if (isSimulator) {
       resolve(mockData.distance);
     } else {
@@ -250,7 +252,6 @@ const getFloorsDailyIOS = (): Promise<IFloorsDaily> =>
  */
 const getFloorsDataIOS = (): Promise<IFloorsData> =>
   new Promise(resolve => {
-    // Return mock data if device is iOS simulator
     if (isSimulator) {
       resolve(mockData.floors);
     } else {
