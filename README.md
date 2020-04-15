@@ -66,40 +66,20 @@ project(':@kilohealth-rn-fitness-tracker').projectDir = new File(rootProject.pro
 implementation project(path: ':@kilohealth-rn-fitness-tracker')
 ```
 
-[API Methods documentation](api.md)
-
 ## Usage
 
-```javascript
+```js
 import RNFitnessTracker from 'rn-fitness-tracker';
 
-//Check if this app has a permission to track steps
-//this function can only be used on iOS.
-//Status - String (
-// 'authorized'/
-// 'notDetermined'/
-// 'denied'/
-// 'restricted'/
-// 'unauthorized'/
-// 'undefined')
-RNFitnessTracker.isAuthorizedToUseCoreMotion(status => {});
+// This step is required in order to use any of the methods bellow
+// Returns an object:
+// authorized: boolean;
+// shouldOpenAppSettings: boolean;
+// trackingNotSupported?: boolean;
+RNFitnessTracker.setupTracking(status => {});
 
-//This step is required in order to use any of the methods bellow
-//status - boolean
-RNFitnessTracker.authorize(status => {});
-
-//get steps today
+// Get steps today
 RNFitnessTracker.getStepsToday(steps => {});
-
-//get 7 days steps
-//steps - integer
-RNFitnessTracker.getWeekData(steps => {});
-
-//To get 7 days steps
-//data - object
-// {
-//  '2019-07-08 12:00:00' : 100,
-//  '2019-07-07 12:00:00' : 267,
-// }
-RNFitnessTracker.getDailyWeekData(data => {});
 ```
+
+[API Methods documentation](api.md)
