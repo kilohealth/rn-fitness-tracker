@@ -25,13 +25,18 @@ or
 
 open ios project in XCode. Navigate to info.plist file. Add new property list key - `NSMotionUsageDescription`. This will add new line in the containing `Privacy - Motion Usage Description`.
 
-#### React-Native < 0.60 - Manual linking for projects with older react-native version
+<details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
+<p>
 
 1. Add following line to Podfile:
    `pod 'RNFitnessTracker', :podspec => '../node_modules/@kilohealth/rn-fitness-tracker/ios/RNFitnessTracker.podspec'`.
 2. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
 3. Go to `node_modules` ➜ `@kilohealth/rn-fitness-tracker` and add `RNFitnessTracker.xcodeproj`
 4. In XCode, in the project navigator, select your project. Add `libRNFitnessTracker.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
+
+</p>
+</details>
+
 
 ## Android
 
@@ -48,7 +53,8 @@ implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
 4. React Native autolinking will handle the rest.
 
-#### React-Native < 0.60 - Manual linking for projects with older react-native version
+<details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
+<p>
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
    Add `import com.fitnesstracker.RNFitnessTrackerPackage;` to the imports at the top of the file.
@@ -66,6 +72,9 @@ project(':@kilohealth-rn-fitness-tracker').projectDir = new File(rootProject.pro
 ```
 implementation project(path: ':@kilohealth-rn-fitness-tracker')
 ```
+
+</p>
+</details>
 
 ## Usage
 
