@@ -39,6 +39,8 @@ RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
         [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
                 callback(@[@true]);
+            } else {
+                callback(@[@false]);
             }
         }];
     }
