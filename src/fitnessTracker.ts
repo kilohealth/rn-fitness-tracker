@@ -89,8 +89,7 @@ const setupStepTracking = (): Promise<IStepTrackerStatus> =>
           }
           resolve({
             authorized: false,
-            shouldOpenAppSettings: false,
-            trackingNotSupported: true,
+            shouldOpenAppSettings: true,
           });
         }
       }
