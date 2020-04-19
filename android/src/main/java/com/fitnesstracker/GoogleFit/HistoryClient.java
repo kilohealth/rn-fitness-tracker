@@ -80,7 +80,7 @@ class HistoryClient {
     }
 
     void getDailyWeekData(final Date date, final WritableMap stepsData, final int count, final HistoryCallback callback) {
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         Date end = getEndOfDay(date);

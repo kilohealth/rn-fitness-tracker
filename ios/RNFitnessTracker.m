@@ -97,7 +97,7 @@ RCT_EXPORT_METHOD(getDailyWeekData:(RCTResponseSenderBlock)callback) {
                 if (count < 7) {
                     NSNumber *steps = pedometerData.numberOfSteps;
                     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+                    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
                     NSString *dateString = [dateFormatter stringFromDate:date];
                     [data setObject:steps forKey:dateString];
                     NSDate *previousDay = [self oneDayAgo: date];
