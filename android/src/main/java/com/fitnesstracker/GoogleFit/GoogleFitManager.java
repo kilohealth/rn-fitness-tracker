@@ -74,6 +74,23 @@ public class GoogleFitManager implements ActivityEventListener {
         }
     }
 
+    public void isTrackingAvailable(Callback callback, Activity activity) {
+        try {
+            this.activity = activity;
+            this.authorisationCallback = callback;
+
+            /* Check if app has google fit permissions */
+            if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this.reactContext), this.fitnessOptions)) {
+                authorisationCallback.invoke(false);
+            } else {
+                authorisationCallback.invoke(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private void requestFitnessPermissions(GoogleSignInAccount googleSignInAccount) {
         GoogleSignIn.requestPermissions(
             activity,

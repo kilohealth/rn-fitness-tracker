@@ -60,7 +60,7 @@ const isTrackingAvailable = (): Promise<IFitnessTrackerStatus> =>
         resolve(iosAuthorizationStatusCheck(status));
       });
     } else {
-      RNFitnessTracker.authorize((authorized: boolean) => {
+      RNFitnessTracker.isTrackingAvailable((authorized: boolean) => {
         resolve({ authorized, shouldOpenAppSettings: false });
       });
     }
@@ -87,8 +87,7 @@ const setupTracking = (): Promise<IFitnessTrackerStatus> =>
           }
           resolve({
             authorized: false,
-            shouldOpenAppSettings: false,
-            trackingNotSupported: true,
+            shouldOpenAppSettings: true,
           });
         }
       }

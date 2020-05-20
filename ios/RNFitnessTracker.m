@@ -63,6 +63,8 @@ RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
         [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
                 callback(@[@true]);
+            } else {
+                callback(@[@false]);
             }
         }];
     }
@@ -166,7 +168,7 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTResponseSenderBlock)callback) {
                     NSNumber *flights = pedometerData.floorsAscended;
                     NSArray *fitnessData = @[steps, distance, flights];
                     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+                    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
                     NSString *dateString = [dateFormatter stringFromDate:date];
                     [data setObject:@[fitnessData[dataType]] forKey:dateString];
                     NSDate *previousDay = [self oneDayAgo: date];

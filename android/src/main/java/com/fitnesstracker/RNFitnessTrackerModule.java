@@ -29,6 +29,13 @@ public class RNFitnessTrackerModule extends ReactContextBaseJavaModule {
     this.googleFitManager.authorize(callback, activity);
   }
 
+
+  @ReactMethod
+  public void isTrackingAvailable(Callback callback) {
+    Activity activity = getCurrentActivity();
+    this.googleFitManager.isTrackingAvailable(callback, activity);
+  }
+
   @ReactMethod
   public void getStepsToday(Callback callback) {
     this.googleFitManager.getStepsToday(callback);

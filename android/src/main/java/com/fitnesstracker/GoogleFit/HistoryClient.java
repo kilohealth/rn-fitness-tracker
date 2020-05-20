@@ -94,7 +94,7 @@ class HistoryClient {
     }
 
     void getStepsDaily(final Date date, final WritableMap stepsData, final int count, final HistoryCallback callback) {
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         Date end = getEndOfDay(date);
@@ -114,7 +114,7 @@ class HistoryClient {
     }
 
     void getDistanceDaily(final Date date, final WritableMap distanceData, final int count, final HistoryCallback callback) {
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         Date end = getEndOfDay(date);
