@@ -39,16 +39,16 @@ This will add new line in the containing `Privacy - Motion Usage Description`.
 
 #### React-Native > 0.61
 
-1. To get an OAuth 2.0 Client ID for your project, follow steps in Google Fit [documentation](https://developers.google.com/fit/android/get-api-key).
-2. Then in [Google API console](https://console.developers.google.com) find Fitness API and enable it. Download your `google-services.json` file from [firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
-3. Add following dependencies to `android/app/build.gradle` file:
+1. Add following dependencies to `android/app/build.gradle` file:
 
 ```
 implementation 'com.google.android.gms:play-services-fitness:16.0.1'
 implementation 'com.google.android.gms:play-services-auth:16.0.1'
 ```
 
-4. React Native autolinking will handle the rest.
+2. React Native autolinking will handle the rest.
+
+3. Enable Google Fitness Api 
 
 <details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
 <p>
@@ -72,6 +72,35 @@ implementation project(path: ':@kilohealth-rn-fitness-tracker')
 
 </p>
 </details>
+
+
+<details><summary><b>Setting up Android Fit API permissions</b></summary>
+<p>
+
+1. Make sure your Google account has access to app firebase project.
+
+2. [Create an OAuth screen](https://console.developers.google.com/apis/credentials/consent) for your project.
+
+3. Select `User Type: External` and fill out the form. Add `../auth/fitness.activity.read` to 
+**Scopes for Google APIs**.
+
+4. Fill out next popup forms with a brief explanation why you're using the activity tracker (no need to write much).
+
+5. Go to [Google console](https://console.developers.google.com/flows/enableapi?apiid=fitness&pli=1)
+
+6. Select your app's project, `Continue`, and `Go to Credentials`.
+
+7. Where will you be calling the API from? Select `Android`. 
+
+8. What data will you be accessing? Select `User data` and click next. 
+
+9. The **Signing-certificate fingerprint** generation command must be pointed to your app release / staging keystore file.
+
+10. Save and submit everything. If you haven't got your google services config inside your app - download your `google-services.json` file from [firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
+
+</p>
+</details>
+
 
 ## Usage
 
