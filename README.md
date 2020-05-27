@@ -48,7 +48,7 @@ implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
 2. React Native autolinking will handle the rest.
 
-3. Enable Google Fitness Api 
+3. Enable Google Fitness Api (see *Setting up Android Fit API permissions* below)
 
 <details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
 <p>
@@ -72,7 +72,6 @@ implementation project(path: ':@kilohealth-rn-fitness-tracker')
 
 </p>
 </details>
-
 
 <details><summary><b>Setting up Android Fit API permissions</b></summary>
 <p>
