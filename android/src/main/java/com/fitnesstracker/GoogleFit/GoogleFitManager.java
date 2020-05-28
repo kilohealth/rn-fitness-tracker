@@ -98,10 +98,10 @@ public class GoogleFitManager implements ActivityEventListener {
 
     private void requestFitnessPermissions(GoogleSignInAccount googleSignInAccount) {
         GoogleSignIn.requestPermissions(
-                activity,
-                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-                googleSignInAccount,
-                fitnessOptions
+            activity,
+            GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+            googleSignInAccount,
+            fitnessOptions
         );
     }
 
