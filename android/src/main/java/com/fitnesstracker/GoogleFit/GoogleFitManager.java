@@ -2,6 +2,7 @@ package com.fitnesstracker.GoogleFit;
 
 import android.app.Activity;
 import android.content.Intent;
+
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -9,8 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataType;
+
 import java.util.Date;
 
 public class GoogleFitManager implements ActivityEventListener {
@@ -34,6 +37,11 @@ public class GoogleFitManager implements ActivityEventListener {
         reactContext.addActivityEventListener(this);
     }
 
+    public void subscribeToActivityData() {
+        Fitness.getRecordingClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity))
+                .subscribe(DataType.TYPE_STEP_COUNT_DELTA);
+    }
+
     @Override
     public void onNewIntent(Intent intent) {
 
@@ -43,6 +51,7 @@ public class GoogleFitManager implements ActivityEventListener {
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         if (requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
+                subscribeToActivityData();
                 accessGoogleFit();
             } else {
                 this.authorisationCallback.invoke(false);
@@ -89,10 +98,10 @@ public class GoogleFitManager implements ActivityEventListener {
 
     private void requestFitnessPermissions(GoogleSignInAccount googleSignInAccount) {
         GoogleSignIn.requestPermissions(
-            activity,
-            GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-            googleSignInAccount,
-            fitnessOptions
+                activity,
+                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                googleSignInAccount,
+                fitnessOptions
         );
     }
 
