@@ -39,35 +39,7 @@ This will add new line in the containing `Privacy - Motion Usage Description`.
 
 #### React-Native > 0.61
 
-1. Enable Google Fitness Api (see *Setting up Android Fit API permissions* below).
-
-2. React Native autolinking should handle the rest.
-
-<details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
-<p>
-
-1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-   Add `import com.fitnesstracker.RNFitnessTrackerPackage;` to the imports at the top of the file.
-   Add `new RNFitnessTrackerPackage()` to the list returned by the `getPackages()` method.
-
-2. Append the following lines to `android/settings.gradle`:
-
-```
-include ':@kilohealth-rn-fitness-tracker'
-project(':@kilohealth-rn-fitness-tracker').projectDir = new File(rootProject.projectDir, 	'../node_modules/@kilohealth/rn-fitness-tracker/android')
-```
-
-3.Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-
-```
-implementation project(path: ':@kilohealth-rn-fitness-tracker')
-
-implementation 'com.google.android.gms:play-services-fitness:16.0.1'
-implementation 'com.google.android.gms:play-services-auth:16.0.1'
-```
-
-</p>
-</details>
+1. Enable Google Fitness Api:
 
 <details><summary><b>Setting up Android Fit API permissions</b></summary>
 <p>
@@ -96,6 +68,34 @@ implementation 'com.google.android.gms:play-services-auth:16.0.1'
 </p>
 </details>
 
+
+2. React Native autolinking should handle the rest.
+
+<details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
+<p>
+
+1. Open up `android/app/src/main/java/[...]/MainActivity.java`
+   Add `import com.fitnesstracker.RNFitnessTrackerPackage;` to the imports at the top of the file.
+   Add `new RNFitnessTrackerPackage()` to the list returned by the `getPackages()` method.
+
+2. Append the following lines to `android/settings.gradle`:
+
+```
+include ':@kilohealth-rn-fitness-tracker'
+project(':@kilohealth-rn-fitness-tracker').projectDir = new File(rootProject.projectDir, 	'../node_modules/@kilohealth/rn-fitness-tracker/android')
+```
+
+3.Insert the following lines inside the dependencies block in `android/app/build.gradle`:
+
+```
+implementation project(path: ':@kilohealth-rn-fitness-tracker')
+
+implementation 'com.google.android.gms:play-services-fitness:16.0.1'
+implementation 'com.google.android.gms:play-services-auth:16.0.1'
+```
+
+</p>
+</details>
 
 ## Usage
 
