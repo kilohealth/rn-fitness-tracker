@@ -71,7 +71,9 @@ This will add new line in the containing `Privacy - Motion Usage Description`.
 
 2. React Native autolinking should handle the rest.
 
-<details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
+#### React-Native < 0.60
+
+<details><summary><b>Manual linking for projects with older react-native version</b></summary>
 <p>
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
