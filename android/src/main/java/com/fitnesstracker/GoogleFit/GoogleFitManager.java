@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataType;
 
@@ -38,6 +39,11 @@ public class GoogleFitManager implements ActivityEventListener {
         reactContext.addActivityEventListener(this);
     }
 
+    public void subscribeToActivityData() {
+        Fitness.getRecordingClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity))
+                .subscribe(DataType.TYPE_STEP_COUNT_DELTA);
+    }
+
     @Override
     public void onNewIntent(Intent intent) {
 
@@ -47,6 +53,7 @@ public class GoogleFitManager implements ActivityEventListener {
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         if (requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
+                subscribeToActivityData();
                 accessGoogleFit();
             } else {
                 this.authorisationCallback.invoke(false);
