@@ -39,16 +39,9 @@ This will add new line in the containing `Privacy - Motion Usage Description`.
 
 #### React-Native > 0.61
 
-1. Add following dependencies to `android/app/build.gradle` file:
+1. Enable Google Fitness Api (see *Setting up Android Fit API permissions* below).
 
-```
-implementation 'com.google.android.gms:play-services-fitness:16.0.1'
-implementation 'com.google.android.gms:play-services-auth:16.0.1'
-```
-
-2. React Native autolinking will handle the rest.
-
-3. Enable Google Fitness Api (see *Setting up Android Fit API permissions* below)
+2. React Native autolinking should handle the rest.
 
 <details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
 <p>
@@ -68,6 +61,9 @@ project(':@kilohealth-rn-fitness-tracker').projectDir = new File(rootProject.pro
 
 ```
 implementation project(path: ':@kilohealth-rn-fitness-tracker')
+
+implementation 'com.google.android.gms:play-services-fitness:16.0.1'
+implementation 'com.google.android.gms:play-services-auth:16.0.1'
 ```
 
 </p>
