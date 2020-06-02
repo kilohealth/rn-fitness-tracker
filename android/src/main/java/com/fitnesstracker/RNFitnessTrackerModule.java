@@ -42,12 +42,27 @@ public class RNFitnessTrackerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void getWeekData(Callback callback) {
-    this.googleFitManager.getWeekData(callback);
+  public void getStepsWeekTotal(Callback callback) {
+    this.googleFitManager.getStepsWeekTotal(callback);
   }
 
   @ReactMethod
-  public void getDailyWeekData(Callback callback) {
-    this.googleFitManager.getDailyWeekData(callback);
+  public void getStepsDaily(Callback callback) {
+    this.googleFitManager.getStepsDaily(callback);
+  }
+
+  @ReactMethod
+  public void getDistanceToday(Callback callback) {
+    this.googleFitManager.getDistanceToday(callback);
+  }
+
+  @ReactMethod
+  public void getDistanceWeekTotal(Callback callback) {
+    this.googleFitManager.getDistanceWeekTotal(callback);
+  }
+
+  @ReactMethod
+  public void getDistanceDaily(Callback callback) {
+    this.googleFitManager.getDistanceDaily(callback);
   }
 }

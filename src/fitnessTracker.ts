@@ -1,15 +1,28 @@
 import { NativeModules } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
-import { IStepTrackerData, IStepTrackerStatus, IWeekDailySteps } from './types';
+import { mockData } from './utils/mockData';
+import {
+  IDistanceDaily,
+  IDistanceData,
+  IFitnessTrackerAvailability,
+  IFitnessTrackerStatus,
+  IFloorsDaily,
+  IFloorsData,
+  IStepsDaily,
+  IStepsData,
+} from './types';
 
 const { RNFitnessTracker } = NativeModules;
 
-const iosAuthorizationStatusCheck = (status: string): IStepTrackerStatus => {
+const isSimulator =
+  global.__DEV__ && global.isIOS && DeviceInfo.isEmulatorSync();
+
+const iosAuthorizationStatusCheck = (status: string): IFitnessTrackerStatus => {
   if (status === 'authorized') {
     return { authorized: true, shouldOpenAppSettings: false };
   } else if (status === 'notDetermined') {
-    if (global.__DEV__ && DeviceInfo.isEmulatorSync()) {
+    if (isSimulator) {
       return { authorized: true, shouldOpenAppSettings: false };
     }
     return { authorized: false, shouldOpenAppSettings: false };
@@ -19,43 +32,28 @@ const iosAuthorizationStatusCheck = (status: string): IStepTrackerStatus => {
 };
 
 /**
- * `iOS only!` returns if step tracking is supported on device
- * @return {Promise<boolean>}
+ * @module TrackingSetup
  */
-const isStepTrackingSupported = (): Promise<boolean> =>
-  new Promise(resolve => {
-    RNFitnessTracker.isStepTrackingSupported((available: number) => {
-      resolve(available ? true : false);
-    });
-  });
 
 /**
- * Returns if step tracking is authorized and available on `Android`
- * @return {Promise<IStepTrackerStatus>}
+ * `iOS only!` returns if step, distance and floor tracking is supported on device
+ * equals to 1 if supported or 0 if not.
+ * @return {Promise<IFitnessTrackerAvailability>}
  */
-const isStepTrackingAvailableAndroid = (): Promise<IStepTrackerStatus> =>
+const isTrackingSupportedIOS = (): Promise<IFitnessTrackerAvailability> =>
   new Promise(resolve => {
-    RNFitnessTracker.isTrackingAvailable((authorized: boolean) => {
-      resolve({ authorized, shouldOpenAppSettings: false });
-    });
-  });
-
-/**
- * Returns if step tracking is authorized and available on `iOS`
- * @return {Promise<IStepTrackerStatus>}
- */
-const isStepTrackingAvailableIOS = (): Promise<IStepTrackerStatus> =>
-  new Promise(resolve => {
-    RNFitnessTracker.isAuthorizedToUseCoreMotion((status: string) => {
-      resolve(iosAuthorizationStatusCheck(status));
-    });
+    RNFitnessTracker.isTrackingSupported(
+      (steps: number, distance: number, floors: number) => {
+        resolve({ steps, distance, floors });
+      },
+    );
   });
 
 /**
  * Returns if step tracking is authorized and available on both platforms
- * @return {Promise<IStepTrackerStatus>}
+ * @return {Promise<IFitnessTrackerStatus>}
  */
-const isStepTrackingAvailable = (): Promise<IStepTrackerStatus> =>
+const isTrackingAvailable = (): Promise<IFitnessTrackerStatus> =>
   new Promise(resolve => {
     if (global.isIOS) {
       RNFitnessTracker.isAuthorizedToUseCoreMotion((status: string) => {
@@ -71,9 +69,9 @@ const isStepTrackingAvailable = (): Promise<IStepTrackerStatus> =>
 /**
  * Sets up step tracking and returns status
  * not supported iOS devices also return `trackingNotSupported: true` param inside the status object
- * @return {Promise<IStepTrackerStatus>}
+ * @return {Promise<IFitnessTrackerStatus>}
  */
-const setupStepTracking = (): Promise<IStepTrackerStatus> =>
+const setupTracking = (): Promise<IFitnessTrackerStatus> =>
   new Promise(resolve => {
     RNFitnessTracker.authorize((authorized: boolean) => {
       if (!global.isIOS) {
@@ -84,7 +82,7 @@ const setupStepTracking = (): Promise<IStepTrackerStatus> =>
             resolve(iosAuthorizationStatusCheck(status));
           });
         } else {
-          if (global.__DEV__ && DeviceInfo.isEmulatorSync()) {
+          if (isSimulator) {
             resolve({ authorized: true, shouldOpenAppSettings: false });
           }
           resolve({
@@ -95,6 +93,10 @@ const setupStepTracking = (): Promise<IStepTrackerStatus> =>
       }
     });
   });
+
+/**
+ * @module StepTracking
+ */
 
 /**
  * Returns number of steps today
@@ -114,9 +116,9 @@ const getStepsToday = (): Promise<number> =>
  * Returns number of steps this week
  * @return {Promise<Number>}
  */
-const getStepsThisWeek = (): Promise<number> =>
+const getStepsWeekTotal = (): Promise<number> =>
   new Promise(resolve => {
-    RNFitnessTracker.getWeekData((steps: number) => {
+    RNFitnessTracker.getStepsWeekTotal((steps: number) => {
       resolve(steps);
     });
   });
@@ -125,53 +127,155 @@ const getStepsThisWeek = (): Promise<number> =>
  * Returns weekly steps object
  * @return {Promise<IWeekDailySteps>}
  */
-const getWeeklySteps = (): Promise<IWeekDailySteps> =>
+const getStepsDaily = (): Promise<IStepsDaily> =>
   new Promise(resolve => {
-    RNFitnessTracker.getDailyWeekData((data: IWeekDailySteps) => {
+    RNFitnessTracker.getStepsDaily((data: IStepsDaily) => {
       resolve(data);
     });
   });
 
 /**
- * Returns steps today and this week steps object
+ * Returns steps today and this week's steps object
  * on `iOS simulator` returns mock data
  * @return {Promise<IStepTrackerData>}
  */
-const getSteps = (): Promise<IStepTrackerData> =>
+const getStepsData = (): Promise<IStepsData> =>
   new Promise(resolve => {
-    // Return mock data if device is iOS simulator
-    if (global.__DEV__ && DeviceInfo.isEmulatorSync()) {
-      resolve({
-        stepsToday: 17771,
-        stepsThisWeek: {
-          '2020-01-21': 7770,
-          '2020-01-22': 5000,
-          '2020-01-23': 1200,
-          '2020-01-24': 13210,
-          '2020-01-25': 17771,
-        },
-      });
+    if (isSimulator) {
+      resolve(mockData.steps);
     } else {
-      RNFitnessTracker.getStepsToday((steps: number) => {
-        RNFitnessTracker.getDailyWeekData((data: IWeekDailySteps) => {
-          if (data) {
-            resolve({ stepsToday: steps, stepsThisWeek: data });
-          } else {
-            resolve({ stepsToday: steps, stepsThisWeek: {} });
-          }
+      RNFitnessTracker.getStepsToday((stepsToday: number) => {
+        RNFitnessTracker.getStepsDaily((stepsDaily: IStepsDaily) => {
+          resolve({ stepsToday, stepsDaily: stepsDaily || {} });
+        });
+      });
+    }
+  });
+
+/**
+ * @module DistanceTracking
+ */
+
+/**
+ * Returns walking and running distance today in meters
+ * @return {Promise<number>} number of meters
+ */
+const getDistanceToday = (): Promise<number> =>
+  new Promise(resolve => {
+    RNFitnessTracker.getDistanceToday((distance: number) => {
+      resolve(distance);
+    });
+  });
+
+/**
+ * Returns walking and running distance this week in meters
+ * @return {Promise<Number>} number of meters
+ */
+const getDistanceWeekTotal = (): Promise<number> =>
+  new Promise(resolve => {
+    RNFitnessTracker.getDistanceWeekTotal((steps: number) => {
+      resolve(steps);
+    });
+  });
+
+/**
+ * Returns daily distance object
+ * @return {Promise<IDistanceDaily>}
+ */
+const getDistanceDaily = (): Promise<IDistanceDaily> =>
+  new Promise(resolve => {
+    RNFitnessTracker.getDistanceDaily((data: IDistanceDaily) => {
+      resolve(data);
+    });
+  });
+
+/**
+ * Returns distance today and this week's distance object
+ * on `iOS simulator` returns mock data
+ * @return {Promise<IDistanceData>}
+ */
+const getDistanceData = (): Promise<IDistanceData> =>
+  new Promise(resolve => {
+    if (isSimulator) {
+      resolve(mockData.distance);
+    } else {
+      RNFitnessTracker.getDistanceToday((distanceToday: number) => {
+        RNFitnessTracker.getDistanceDaily((distanceDaily: IDistanceDaily) => {
+          resolve({ distanceToday, distanceDaily: distanceDaily || {} });
+        });
+      });
+    }
+  });
+
+/**
+ * @module FloorTracking
+ */
+
+/**
+ * Returns walking and running distance today in meters
+ * @return {Promise<number>} number of meters
+ */
+const getFloorsTodayIOS = (): Promise<number> =>
+  new Promise(resolve => {
+    RNFitnessTracker.getDistanceToday((distance: number) => {
+      resolve(distance);
+    });
+  });
+
+/**
+ * Returns walking and running distance this week in meters
+ * @return {Promise<Number>} number of meters
+ */
+const getFloorsWeekTotalIOS = (): Promise<number> =>
+  new Promise(resolve => {
+    RNFitnessTracker.getDistanceWeekTotal((steps: number) => {
+      resolve(steps);
+    });
+  });
+
+/**
+ * Returns daily distance object
+ * @return {Promise<IFloorsDaily>}
+ */
+const getFloorsDailyIOS = (): Promise<IFloorsDaily> =>
+  new Promise(resolve => {
+    RNFitnessTracker.getWeeklyDistance((data: IFloorsDaily) => {
+      resolve(data);
+    });
+  });
+
+/**
+ * Returns distance today and this week's distance object
+ * on `iOS simulator` returns mock data
+ * @return {Promise<IFloorsData>}
+ */
+const getFloorsDataIOS = (): Promise<IFloorsData> =>
+  new Promise(resolve => {
+    if (isSimulator) {
+      resolve(mockData.floors);
+    } else {
+      RNFitnessTracker.getDistanceToday((floorsToday: number) => {
+        RNFitnessTracker.getDailyWeekData((floorsDaily: IFloorsDaily) => {
+          resolve({ floorsToday, floorsDaily: floorsDaily || {} });
         });
       });
     }
   });
 
 export const FitnessTrackerAPI = {
-  getSteps,
-  getStepsThisWeek,
   getStepsToday,
-  getWeeklySteps,
-  isStepTrackingAvailable,
-  isStepTrackingAvailableAndroid,
-  isStepTrackingAvailableIOS,
-  isStepTrackingSupported,
-  setupStepTracking,
+  getStepsWeekTotal,
+  getStepsDaily,
+  getStepsData,
+  getDistanceToday,
+  getDistanceWeekTotal,
+  getDistanceDaily,
+  getDistanceData,
+  getFloorsTodayIOS,
+  getFloorsWeekTotalIOS,
+  getFloorsDailyIOS,
+  getFloorsDataIOS,
+  isTrackingAvailable,
+  isTrackingSupportedIOS,
+  setupTracking,
 };

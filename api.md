@@ -1,117 +1,208 @@
-## Functions
+## Modules
 
 <dl>
-<dt><a href="#isStepTrackingSupported">isStepTrackingSupported()</a> ⇒ <code>Promise.&lt;boolean&gt;</code></dt>
-<dd><p><code>iOS only!</code> returns if step tracking is supported on device</p>
-</dd>
-<dt><a href="#isStepTrackingAvailableAndroid">isStepTrackingAvailableAndroid()</a> ⇒ <code>Promise.&lt;IStepTrackerStatus&gt;</code></dt>
-<dd><p>Returns if step tracking is authorized and available on <code>Android</code></p>
-</dd>
-<dt><a href="#isStepTrackingAvailableIOS">isStepTrackingAvailableIOS()</a> ⇒ <code>Promise.&lt;IStepTrackerStatus&gt;</code></dt>
-<dd><p>Returns if step tracking is authorized and available on <code>iOS</code></p>
-</dd>
-<dt><a href="#isStepTrackingAvailable">isStepTrackingAvailable()</a> ⇒ <code>Promise.&lt;IStepTrackerStatus&gt;</code></dt>
-<dd><p>Returns if step tracking is authorized and available on both platforms</p>
-</dd>
-<dt><a href="#setupStepTracking">setupStepTracking()</a> ⇒ <code>Promise.&lt;IStepTrackerStatus&gt;</code></dt>
-<dd><p>Sets up step tracking and returns status
-not supported iOS devices also return <code>trackingNotSupported: true</code> param inside the status object</p>
-</dd>
-<dt><a href="#getStepsToday">getStepsToday()</a> ⇒ <code>Promise.&lt;number&gt;</code></dt>
-<dd><p>Returns number of steps today</p>
-</dd>
-<dt><a href="#getStepsThisWeek">getStepsThisWeek()</a> ⇒ <code>Promise.&lt;Number&gt;</code></dt>
-<dd><p>Returns number of steps this week</p>
-</dd>
-<dt><a href="#getWeeklySteps">getWeeklySteps()</a> ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code></dt>
-<dd><p>Returns weekly steps object</p>
-</dd>
-<dt><a href="#getSteps">getSteps()</a> ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code></dt>
-<dd><p>Returns steps today and this week steps object
-on <code>iOS simulator</code> returns mock data</p>
-</dd>
+<dt><a href="#module_TrackingSetup">TrackingSetup</a></dt>
+<dd></dd>
+<dt><a href="#module_StepTracking">StepTracking</a></dt>
+<dd></dd>
+<dt><a href="#module_DistanceTracking">DistanceTracking</a></dt>
+<dd></dd>
+<dt><a href="#module_FloorTracking">FloorTracking</a></dt>
+<dd></dd>
 </dl>
 
-<a name="isStepTrackingSupported"></a>
+<a name="module_TrackingSetup"></a>
 
-## isStepTrackingSupported() ⇒ <code>Promise.&lt;boolean&gt;</code>
-`iOS only!` returns if step tracking is supported on device
+## TrackingSetup
 
-**Kind**: global function  
+* [TrackingSetup](#module_TrackingSetup)
+    * [~isTrackingSupportedIOS()](#module_TrackingSetup..isTrackingSupportedIOS) ⇒ <code>Promise.&lt;IFitnessTrackerAvailability&gt;</code>
+    * [~isTrackingAvailable()](#module_TrackingSetup..isTrackingAvailable) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+    * [~setupTracking()](#module_TrackingSetup..setupTracking) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
 
-* * *
-
-<a name="isStepTrackingAvailableAndroid"></a>
-
-## isStepTrackingAvailableAndroid() ⇒ <code>Promise.&lt;IStepTrackerStatus&gt;</code>
-Returns if step tracking is authorized and available on `Android`
-
-**Kind**: global function  
 
 * * *
 
-<a name="isStepTrackingAvailableIOS"></a>
+<a name="module_TrackingSetup..isTrackingSupportedIOS"></a>
 
-## isStepTrackingAvailableIOS() ⇒ <code>Promise.&lt;IStepTrackerStatus&gt;</code>
-Returns if step tracking is authorized and available on `iOS`
+### TrackingSetup~isTrackingSupportedIOS() ⇒ <code>Promise.&lt;IFitnessTrackerAvailability&gt;</code>
+`iOS only!` returns if step, distance and floor tracking is supported on device
+equals to 1 if supported or 0 if not.
 
-**Kind**: global function  
+**Kind**: inner method of [<code>TrackingSetup</code>](#module_TrackingSetup)  
 
 * * *
 
-<a name="isStepTrackingAvailable"></a>
+<a name="module_TrackingSetup..isTrackingAvailable"></a>
 
-## isStepTrackingAvailable() ⇒ <code>Promise.&lt;IStepTrackerStatus&gt;</code>
+### TrackingSetup~isTrackingAvailable() ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
 Returns if step tracking is authorized and available on both platforms
 
-**Kind**: global function  
+**Kind**: inner method of [<code>TrackingSetup</code>](#module_TrackingSetup)  
 
 * * *
 
-<a name="setupStepTracking"></a>
+<a name="module_TrackingSetup..setupTracking"></a>
 
-## setupStepTracking() ⇒ <code>Promise.&lt;IStepTrackerStatus&gt;</code>
+### TrackingSetup~setupTracking() ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
 Sets up step tracking and returns status
 not supported iOS devices also return `trackingNotSupported: true` param inside the status object
 
-**Kind**: global function  
+**Kind**: inner method of [<code>TrackingSetup</code>](#module_TrackingSetup)  
 
 * * *
 
-<a name="getStepsToday"></a>
+<a name="module_StepTracking"></a>
 
-## getStepsToday() ⇒ <code>Promise.&lt;number&gt;</code>
+## StepTracking
+
+* [StepTracking](#module_StepTracking)
+    * [~getStepsToday()](#module_StepTracking..getStepsToday) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getStepsWeekTotal()](#module_StepTracking..getStepsWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
+    * [~getStepsDaily()](#module_StepTracking..getStepsDaily) ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
+    * [~getStepsData()](#module_StepTracking..getStepsData) ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
+
+
+* * *
+
+<a name="module_StepTracking..getStepsToday"></a>
+
+### StepTracking~getStepsToday() ⇒ <code>Promise.&lt;number&gt;</code>
 Returns number of steps today
 
-**Kind**: global function  
+**Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
 
 * * *
 
-<a name="getStepsThisWeek"></a>
+<a name="module_StepTracking..getStepsWeekTotal"></a>
 
-## getStepsThisWeek() ⇒ <code>Promise.&lt;Number&gt;</code>
+### StepTracking~getStepsWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
 Returns number of steps this week
 
-**Kind**: global function  
+**Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
 
 * * *
 
-<a name="getWeeklySteps"></a>
+<a name="module_StepTracking..getStepsDaily"></a>
 
-## getWeeklySteps() ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
+### StepTracking~getStepsDaily() ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
 Returns weekly steps object
 
-**Kind**: global function  
+**Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
 
 * * *
 
-<a name="getSteps"></a>
+<a name="module_StepTracking..getStepsData"></a>
 
-## getSteps() ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
-Returns steps today and this week steps object
+### StepTracking~getStepsData() ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
+Returns steps today and this week's steps object
 on `iOS simulator` returns mock data
 
-**Kind**: global function  
+**Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
+
+* * *
+
+<a name="module_DistanceTracking"></a>
+
+## DistanceTracking
+
+* [DistanceTracking](#module_DistanceTracking)
+    * [~getDistanceToday()](#module_DistanceTracking..getDistanceToday) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getDistanceWeekTotal()](#module_DistanceTracking..getDistanceWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
+    * [~getDistanceDaily()](#module_DistanceTracking..getDistanceDaily) ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
+    * [~getDistanceData()](#module_DistanceTracking..getDistanceData) ⇒ <code>Promise.&lt;IDistanceData&gt;</code>
+
+
+* * *
+
+<a name="module_DistanceTracking..getDistanceToday"></a>
+
+### DistanceTracking~getDistanceToday() ⇒ <code>Promise.&lt;number&gt;</code>
+Returns walking and running distance today in meters
+
+**Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
+**Returns**: <code>Promise.&lt;number&gt;</code> - number of meters  
+
+* * *
+
+<a name="module_DistanceTracking..getDistanceWeekTotal"></a>
+
+### DistanceTracking~getDistanceWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
+Returns walking and running distance this week in meters
+
+**Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
+**Returns**: <code>Promise.&lt;Number&gt;</code> - number of meters  
+
+* * *
+
+<a name="module_DistanceTracking..getDistanceDaily"></a>
+
+### DistanceTracking~getDistanceDaily() ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
+Returns daily distance object
+
+**Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
+
+* * *
+
+<a name="module_DistanceTracking..getDistanceData"></a>
+
+### DistanceTracking~getDistanceData() ⇒ <code>Promise.&lt;IDistanceData&gt;</code>
+Returns distance today and this week's distance object
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
+
+* * *
+
+<a name="module_FloorTracking"></a>
+
+## FloorTracking
+
+* [FloorTracking](#module_FloorTracking)
+    * [~getFloorsTodayIOS()](#module_FloorTracking..getFloorsTodayIOS) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getFloorsWeekTotalIOS()](#module_FloorTracking..getFloorsWeekTotalIOS) ⇒ <code>Promise.&lt;Number&gt;</code>
+    * [~getFloorsDailyIOS()](#module_FloorTracking..getFloorsDailyIOS) ⇒ <code>Promise.&lt;IFloorsDaily&gt;</code>
+    * [~getFloorsDataIOS()](#module_FloorTracking..getFloorsDataIOS) ⇒ <code>Promise.&lt;IFloorsData&gt;</code>
+
+
+* * *
+
+<a name="module_FloorTracking..getFloorsTodayIOS"></a>
+
+### FloorTracking~getFloorsTodayIOS() ⇒ <code>Promise.&lt;number&gt;</code>
+Returns walking and running distance today in meters
+
+**Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
+**Returns**: <code>Promise.&lt;number&gt;</code> - number of meters  
+
+* * *
+
+<a name="module_FloorTracking..getFloorsWeekTotalIOS"></a>
+
+### FloorTracking~getFloorsWeekTotalIOS() ⇒ <code>Promise.&lt;Number&gt;</code>
+Returns walking and running distance this week in meters
+
+**Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
+**Returns**: <code>Promise.&lt;Number&gt;</code> - number of meters  
+
+* * *
+
+<a name="module_FloorTracking..getFloorsDailyIOS"></a>
+
+### FloorTracking~getFloorsDailyIOS() ⇒ <code>Promise.&lt;IFloorsDaily&gt;</code>
+Returns daily distance object
+
+**Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
+
+* * *
+
+<a name="module_FloorTracking..getFloorsDataIOS"></a>
+
+### FloorTracking~getFloorsDataIOS() ⇒ <code>Promise.&lt;IFloorsData&gt;</code>
+Returns distance today and this week's distance object
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
 
 * * *
 

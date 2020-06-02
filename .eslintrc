@@ -65,7 +65,9 @@
         "mjs": "never",
         "jsx": "never",
         "ts": "never",
-        "tsx": "never"
+        "tsx": "never",
+        "android": "never",
+        "ios": "never"
       }
     ],
     "import/no-duplicates": "error",
