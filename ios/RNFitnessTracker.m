@@ -170,7 +170,7 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTResponseSenderBlock)callback) {
                     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
                     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
                     NSString *dateString = [dateFormatter stringFromDate:date];
-                    [data setObject:@[fitnessData[dataType]] forKey:dateString];
+                    [data setValue:fitnessData[dataType] forKey:dateString];
                     NSDate *previousDay = [self oneDayAgo: date];
                     int newCount = count + 1;
                     [self getDailyWeekData:previousDay :newCount :dataType :data :callback];
