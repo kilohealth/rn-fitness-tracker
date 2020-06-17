@@ -31,8 +31,15 @@ const floors = {
   },
 };
 
+const stepsWeekTotal = 204251;
+const distanceWeekTotal = 11600.88;
+const floorsWeekTotal = 21;
+
 export const mockData = {
   distance,
   floors,
   steps,
+  stepsWeekTotal,
+  distanceWeekTotal,
+  floorsWeekTotal,
 };

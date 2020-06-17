@@ -1,7 +1,7 @@
 package com.fitnesstracker;
 
 import android.app.Activity;
-import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -24,45 +24,45 @@ public class RNFitnessTrackerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void authorize(Callback callback) {
+  public void authorize(Promise promise) {
     Activity activity = getCurrentActivity();
-    this.googleFitManager.authorize(callback, activity);
+    this.googleFitManager.authorize(promise, activity);
   }
 
 
   @ReactMethod
-  public void isTrackingAvailable(Callback callback) {
+  public void isTrackingAvailable(Promise promise) {
     Activity activity = getCurrentActivity();
-    this.googleFitManager.isTrackingAvailable(callback, activity);
+    this.googleFitManager.isTrackingAvailable(promise, activity);
   }
 
   @ReactMethod
-  public void getStepsToday(Callback callback) {
-    this.googleFitManager.getStepsToday(callback);
+  public void getStepsToday(Promise promise) {
+    this.googleFitManager.getStepsToday(promise);
   }
 
   @ReactMethod
-  public void getStepsWeekTotal(Callback callback) {
-    this.googleFitManager.getStepsWeekTotal(callback);
+  public void getStepsWeekTotal(Promise promise) {
+    this.googleFitManager.getStepsWeekTotal(promise);
   }
 
   @ReactMethod
-  public void getStepsDaily(Callback callback) {
-    this.googleFitManager.getStepsDaily(callback);
+  public void getStepsDaily(Promise promise) {
+    this.googleFitManager.getStepsDaily(promise);
   }
 
   @ReactMethod
-  public void getDistanceToday(Callback callback) {
-    this.googleFitManager.getDistanceToday(callback);
+  public void getDistanceToday(Promise promise) {
+    this.googleFitManager.getDistanceToday(promise);
   }
 
   @ReactMethod
-  public void getDistanceWeekTotal(Callback callback) {
-    this.googleFitManager.getDistanceWeekTotal(callback);
+  public void getDistanceWeekTotal(Promise promise) {
+    this.googleFitManager.getDistanceWeekTotal(promise);
   }
 
   @ReactMethod
-  public void getDistanceDaily(Callback callback) {
-    this.googleFitManager.getDistanceDaily(callback);
+  public void getDistanceDaily(Promise promise) {
+    this.googleFitManager.getDistanceDaily(promise);
   }
 }
