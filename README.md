@@ -1,5 +1,7 @@
 # rn-fitness-tracker
 
+[![npm version](https://badgen.net/npm/v/@kilohealth/rn-fitness-tracker)](https://www.npmjs.com/package/@kilohealth/rn-fitness-tracker)
+
 React Native library for step tracking based on Google Fit (Android) and CoreMotion (iOS) native API's.
 
 ## Installation
@@ -19,7 +21,7 @@ React Native library for step tracking based on Google Fit (Android) and CoreMot
 
 **or**
 
-Navigate to info.plist file in XCode ➜ Add new property list key - `NSMotionUsageDescription`. 
+Navigate to info.plist file in XCode ➜ Add new property list key - `NSMotionUsageDescription`.
 This will add new line in the containing `Privacy - Motion Usage Description`.
 
 <details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
@@ -34,7 +36,6 @@ This will add new line in the containing `Privacy - Motion Usage Description`.
 </p>
 </details>
 
-
 ## Android
 
 #### React-Native > 0.61
@@ -48,8 +49,8 @@ This will add new line in the containing `Privacy - Motion Usage Description`.
 
 2. [Create an OAuth screen](https://console.developers.google.com/apis/credentials/consent) for your project.
 
-3. Select `User Type: External` and fill out the form. Add `../auth/fitness.activity.read` to 
-**Scopes for Google APIs**.
+3. Select `User Type: External` and fill out the form. Add `../auth/fitness.activity.read` to
+   **Scopes for Google APIs**.
 
 4. Fill out next popup forms with a brief explanation why you're using the activity tracker (no need to write much).
 
@@ -57,9 +58,9 @@ This will add new line in the containing `Privacy - Motion Usage Description`.
 
 6. Select your app's project, `Continue`, and `Go to Credentials`.
 
-7. Where will you be calling the API from? Select `Android`. 
+7. Where will you be calling the API from? Select `Android`.
 
-8. What data will you be accessing? Select `User data` and click next. 
+8. What data will you be accessing? Select `User data` and click next.
 
 9. The **Signing-certificate fingerprint** generation command must be pointed to your app release / staging keystore file.
 
@@ -67,7 +68,6 @@ This will add new line in the containing `Privacy - Motion Usage Description`.
 
 </p>
 </details>
-
 
 2. React Native autolinking should handle the rest.
 
