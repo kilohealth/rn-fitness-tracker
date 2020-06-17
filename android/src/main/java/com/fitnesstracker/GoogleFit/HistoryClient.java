@@ -1,6 +1,8 @@
 package com.fitnesstracker.GoogleFit;
 
 import android.app.Activity;
+
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.fitness.Fitness;
@@ -29,13 +31,12 @@ class HistoryClient {
 
     private Activity activity;
 
-    HistoryClient(Activity activity){
+    HistoryClient(Activity activity) {
         this.activity = activity;
     }
 
-    void getStepsToday(final HistoryCallback callback) {
+    void getStepsToday(final Promise promise) {
         try {
-
             Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity)).readDailyTotal(DataType.AGGREGATE_STEP_COUNT_DELTA)
                     .addOnCompleteListener(new OnCompleteListener<DataSet>() {
                         @Override
@@ -44,97 +45,109 @@ class HistoryClient {
                             List<DataPoint> dataSets = task.getResult().getDataPoints();
                             int steps = 0;
 
-                            for (DataPoint dataPoint: dataSets) {
+                            for (DataPoint dataPoint : dataSets) {
 
                                 Value value = dataPoint.getValue(Field.FIELD_STEPS);
 
-                                steps +=value.asInt();
+                                steps += value.asInt();
                             }
-                            callback.sendData(steps);
+                            promise.resolve(steps);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(Exception e) {
-
+                            promise.reject(e);
                         }
                     });
 
         } catch (Exception e) {
+            promise.reject(e);
             e.printStackTrace();
         }
     }
 
-    void getWeekData(final HistoryCallback callback, int dataType) {
+    void getWeekData(final Promise promise, int dataType) {
         try {
             long startTime = getSevenDaysAgo(new Date()).getTime();
             final Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             long now = cal.getTimeInMillis();
 
-            if(dataType == 0) {
+            if (dataType == 0) {
                 getStepHistory(startTime, now, 7, new OnStepsFetchComplete() {
                     @Override
                     public void success(int steps) {
-                        callback.sendData(steps);
+                        promise.resolve(steps);
                     }
                 });
-            } else if(dataType == 1) {
+            } else if (dataType == 1) {
                 getDistanceHistory(startTime, now, 7, new OnDistanceFetchComplete() {
                     @Override
                     public void success(float distance) {
-                        callback.sendData(distance);
+                        promise.resolve(distance);
                     }
                 });
             }
 
         } catch (Exception e) {
+            promise.reject(e);
             e.printStackTrace();
         }
     }
 
-    void getStepsDaily(final Date date, final WritableMap stepsData, final int count, final HistoryCallback callback) {
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    void getStepsDaily(final Date date, final WritableMap stepsData, final int count, final Promise promise) {
+        try {
+            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        Date end = getEndOfDay(date);
-        Date start = getStartOfDay(date);
-        getStepHistory(start.getTime(), end.getTime(), 1, new OnStepsFetchComplete() {
-            @Override
-            public void success(int steps) {
-                if (count < 7) {
-                    stepsData.putInt(formatter.format(date), steps);
-                    Date previousDate = getOneDayAgo(date);
-                    getStepsDaily(previousDate, stepsData, count+1,  callback);
-                } else {
-                   callback.sendData(stepsData);
+            Date end = getEndOfDay(date);
+            Date start = getStartOfDay(date);
+            getStepHistory(start.getTime(), end.getTime(), 1, new OnStepsFetchComplete() {
+                @Override
+                public void success(int steps) {
+                    if (count < 7) {
+                        stepsData.putInt(formatter.format(date), steps);
+                        Date previousDate = getOneDayAgo(date);
+                        getStepsDaily(previousDate, stepsData, count + 1, promise);
+                    } else {
+                        promise.resolve(stepsData);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            promise.reject(e);
+            e.printStackTrace();
+        }
     }
 
-    void getDistanceDaily(final Date date, final WritableMap distanceData, final int count, final HistoryCallback callback) {
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    void getDistanceDaily(final Date date, final WritableMap distanceData, final int count, final Promise promise) {
+        try {
+            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        Date end = getEndOfDay(date);
-        Date start = getStartOfDay(date);
-        getDistanceHistory(start.getTime(), end.getTime(), 1, new OnDistanceFetchComplete() {
-            @Override
-            public void success(float distance) {
-                if (count < 7) {
-                    distanceData.putDouble(formatter.format(date), distance);
-                    Date previousDate = getOneDayAgo(date);
-                    getDistanceDaily(previousDate, distanceData, count+1,  callback);
-                } else {
-                    callback.sendData(distanceData);
+            Date end = getEndOfDay(date);
+            Date start = getStartOfDay(date);
+            getDistanceHistory(start.getTime(), end.getTime(), 1, new OnDistanceFetchComplete() {
+                @Override
+                public void success(float distance) {
+                    if (count < 7) {
+                        distanceData.putDouble(formatter.format(date), distance);
+                        Date previousDate = getOneDayAgo(date);
+                        getDistanceDaily(previousDate, distanceData, count + 1, promise);
+                    } else {
+                        promise.resolve(distanceData);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            promise.reject(e);
+            e.printStackTrace();
+        }
     }
 
 
-    void getDistanceToday(final HistoryCallback callback) {
+    void getDistanceToday(final Promise promise) {
         try {
 
             Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity)).readDailyTotal(DataType.AGGREGATE_DISTANCE_DELTA)
@@ -145,13 +158,13 @@ class HistoryClient {
                             List<DataPoint> dataSets = task.getResult().getDataPoints();
                             float distance = 0;
 
-                            for (DataPoint dataPoint: dataSets) {
+                            for (DataPoint dataPoint : dataSets) {
 
                                 Value value = dataPoint.getValue(Field.FIELD_DISTANCE);
 
-                                distance +=value.asFloat();
+                                distance += value.asFloat();
                             }
-                            callback.sendData(distance);
+                            promise.resolve(distance);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -162,38 +175,39 @@ class HistoryClient {
                     });
 
         } catch (Exception e) {
+            promise.reject(e);
             e.printStackTrace();
         }
     }
 
 
-    private void getStepHistory (final long startTime, long endTime, int dayCount, final OnStepsFetchComplete fetchCompleteCallback) {
+    private void getStepHistory(final long startTime, long endTime, int dayCount, final OnStepsFetchComplete fetchCompleteCallback) {
 
         DataReadRequest readRequest = new DataReadRequest.Builder()
-            .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
-            .bucketByTime(dayCount, TimeUnit.DAYS)
-            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-            .build();
+                .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
+                .bucketByTime(dayCount, TimeUnit.DAYS)
+                .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+                .build();
 
         Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity))
-            .readData(readRequest)
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(Exception e) {
+                .readData(readRequest)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
 
-                }
-            })
-            .addOnCompleteListener(new OnCompleteListener<DataReadResponse>() {
-                @Override
-                public void onComplete(Task<DataReadResponse> task) {
-                    DataReadResponse response = task.getResult();
-                    int steps = parseAggregateData(response);
-                    fetchCompleteCallback.success(steps);
-                }
-            });
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<DataReadResponse>() {
+                    @Override
+                    public void onComplete(Task<DataReadResponse> task) {
+                        DataReadResponse response = task.getResult();
+                        int steps = parseAggregateData(response);
+                        fetchCompleteCallback.success(steps);
+                    }
+                });
     }
 
-    private void getDistanceHistory (final long startTime, long endTime, int dayCount, final OnDistanceFetchComplete fetchCompleteCallback) {
+    private void getDistanceHistory(final long startTime, long endTime, int dayCount, final OnDistanceFetchComplete fetchCompleteCallback) {
 
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
@@ -223,11 +237,11 @@ class HistoryClient {
         List<Bucket> buckets = response.getBuckets();
 //        DateFormat dateFormat = DateFormat.getDateInstance();
         int stepCount = 0;
-        for (Bucket bucket: buckets) {
+        for (Bucket bucket : buckets) {
             List<DataSet> dataSets = bucket.getDataSets();
-            for (DataSet dataSet: dataSets) {
+            for (DataSet dataSet : dataSets) {
                 List<DataPoint> dataPoints = dataSet.getDataPoints();
-                for (DataPoint dataPoint: dataPoints) {
+                for (DataPoint dataPoint : dataPoints) {
                     if (dataPoint.getDataType().equals(DataType.TYPE_STEP_COUNT_DELTA)) {
 //                        Log.i("!!!!!!!!!!!!!!!!!", "Data point:");
 //                        Log.i("!!!!!!!!!!!!!!!!!", "\tType: " + dataPoint.getDataType().getName());
@@ -243,17 +257,17 @@ class HistoryClient {
                 }
             }
         }
-        return  stepCount;
+        return stepCount;
     }
 
     private float parseDistanceDelta(DataReadResponse response) {
         List<Bucket> buckets = response.getBuckets();
         float distanceTotal = 0;
-        for (Bucket bucket: buckets) {
+        for (Bucket bucket : buckets) {
             List<DataSet> dataSets = bucket.getDataSets();
-            for (DataSet dataSet: dataSets) {
+            for (DataSet dataSet : dataSets) {
                 List<DataPoint> dataPoints = dataSet.getDataPoints();
-                for (DataPoint dataPoint: dataPoints) {
+                for (DataPoint dataPoint : dataPoints) {
                     if (dataPoint.getDataType().equals(DataType.TYPE_DISTANCE_DELTA)) {
                         for (Field field : dataPoint.getDataType().getFields()) {
                             distanceTotal += dataPoint.getValue(field).asFloat();
@@ -262,7 +276,7 @@ class HistoryClient {
                 }
             }
         }
-        return  distanceTotal;
+        return distanceTotal;
     }
 
     private Date getStartOfDay(Date date) {
@@ -276,7 +290,7 @@ class HistoryClient {
         return calendar.getTime();
     }
 
-    private Date getEndOfDay (Date date) {
+    private Date getEndOfDay(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, 1);

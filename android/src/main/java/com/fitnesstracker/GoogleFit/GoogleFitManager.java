@@ -77,6 +77,7 @@ public class GoogleFitManager implements ActivityEventListener {
                 accessGoogleFit();
             }
         } catch (Exception e) {
+            authorisationPromise.reject(e);
             e.printStackTrace();
         }
     }
@@ -93,6 +94,7 @@ public class GoogleFitManager implements ActivityEventListener {
                 authorisationPromise.resolve(true);
             }
         } catch (Exception e) {
+            authorisationPromise.reject(e);
             e.printStackTrace();
         }
     }
@@ -100,10 +102,10 @@ public class GoogleFitManager implements ActivityEventListener {
 
     private void requestFitnessPermissions(GoogleSignInAccount googleSignInAccount) {
         GoogleSignIn.requestPermissions(
-            activity,
-            GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-            googleSignInAccount,
-            fitnessOptions
+                activity,
+                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                googleSignInAccount,
+                fitnessOptions
         );
     }
 
@@ -113,67 +115,35 @@ public class GoogleFitManager implements ActivityEventListener {
             this.recordingService.subscribe();
             this.historyClient = new HistoryClient(activity);
             authorisationPromise.resolve(true);
-        }catch (Exception e) {
+        } catch (Exception e) {
+            authorisationPromise.reject(e);
             e.printStackTrace();
         }
     }
 
     public void getStepsToday(final Promise promise) {
-        this.historyClient.getStepsToday(new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                promise.resolve(steps);
-            }
-        });
+        this.historyClient.getStepsToday(promise);
     }
 
     public void getStepsWeekTotal(final Promise promise) {
-        this.historyClient.getWeekData(new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                promise.resolve(steps);
-            }
-        }, 0);
+        this.historyClient.getWeekData(promise, 0);
     }
 
     public void getStepsDaily(final Promise promise) {
-        this.historyClient.getStepsDaily(new Date(), Arguments.createMap(), 0,  new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                WritableMap map = (WritableMap)steps;
-                promise.resolve(map);
-            }
-        });
+        this.historyClient.getStepsDaily(new Date(), Arguments.createMap(), 0, promise);
     }
 
     public void getDistanceToday(final Promise promise) {
-        this.historyClient.getDistanceToday(new HistoryCallback() {
-            @Override
-            public void sendData(Object distance) {
-                promise.resolve(distance);
-            }
-        });
+        this.historyClient.getDistanceToday(promise);
     }
 
     public void getDistanceWeekTotal(final Promise promise) {
-        this.historyClient.getWeekData(new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                promise.resolve(steps);
-            }
-        }, 1);
+        this.historyClient.getWeekData(promise, 1);
     }
 
     public void getDistanceDaily(final Promise promise) {
-        this.historyClient.getDistanceDaily(new Date(), Arguments.createMap(), 0,  new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                WritableMap map = (WritableMap)steps;
-                promise.resolve(map);
-            }
-        });
+        this.historyClient.getDistanceDaily(new Date(), Arguments.createMap(), 0, promise);
+
     }
-
-
 
 }
