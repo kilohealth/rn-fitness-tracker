@@ -22,12 +22,14 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTPromiseResolveBlock) resolve) {
+RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTPromiseResolveBlock) resolve :
+                  (RCTPromiseRejectBlock) reject) {
     NSString *status = [self isCoreMotionAuthorized];
     resolve(@[status]);
 }
 
-RCT_EXPORT_METHOD(isTrackingSupported:(RCTPromiseResolveBlock) resolve) {
+RCT_EXPORT_METHOD(isTrackingSupported:(RCTPromiseResolveBlock) resolve :
+                  (RCTPromiseRejectBlock) reject) {
     BOOL isStepCountingAvailable = [CMPedometer isStepCountingAvailable];
     BOOL isDistanceAvailable = [CMPedometer isDistanceAvailable];
     BOOL isFloorCountingAvailable = [CMPedometer isFloorCountingAvailable];
@@ -35,7 +37,8 @@ RCT_EXPORT_METHOD(isTrackingSupported:(RCTPromiseResolveBlock) resolve) {
     resolve(@[isStepCountingAvailable ? @true : @false, isDistanceAvailable ? @true : @false, isFloorCountingAvailable? @true : @false]);
 }
 
-RCT_EXPORT_METHOD(isStepTrackingSupported:(RCTPromiseResolveBlock) resolve) {
+RCT_EXPORT_METHOD(isStepTrackingSupported:(RCTPromiseResolveBlock) resolve :
+                  (RCTPromiseRejectBlock) reject) {
     BOOL isStepTrackingAvailable = [CMPedometer isStepCountingAvailable];
     if (isStepTrackingAvailable == YES) {
         resolve(@[@true]);
@@ -45,7 +48,8 @@ RCT_EXPORT_METHOD(isStepTrackingSupported:(RCTPromiseResolveBlock) resolve) {
 }
 
 
-RCT_EXPORT_METHOD(isDistanceTrackingSupported:(RCTPromiseResolveBlock) resolve) {
+RCT_EXPORT_METHOD(isDistanceTrackingSupported:(RCTPromiseResolveBlock) resolve :
+                  (RCTPromiseRejectBlock) reject) {
     BOOL isDistanceTrackingAvailable = [CMPedometer isDistanceAvailable];
     if (isDistanceTrackingAvailable == YES) {
         resolve(@[@true]);
@@ -54,7 +58,8 @@ RCT_EXPORT_METHOD(isDistanceTrackingSupported:(RCTPromiseResolveBlock) resolve) 
     }
 }
 
-RCT_EXPORT_METHOD(isFloorCountingSupported:(RCTPromiseResolveBlock) resolve) {
+RCT_EXPORT_METHOD(isFloorCountingSupported:(RCTPromiseResolveBlock) resolve :
+                  (RCTPromiseRejectBlock) reject) {
     BOOL isFloorCountingAvailable = [CMPedometer isFloorCountingAvailable];
     if (isFloorCountingAvailable == YES) {
         resolve(@[@true]);
