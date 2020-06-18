@@ -55,44 +55,52 @@ RCT_EXPORT_METHOD(isFloorCountingSupported:(RCTResponseSenderBlock)callback) {
 
 
 
-RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(authorize:(RCTPromiseResolveBlock) resolve :
+                  (RCTPromiseRejectBlock) reject) {
     BOOL isStepCountAvailable = [CMPedometer isStepCountingAvailable];
     if (isStepCountAvailable == YES) {
         NSDate *now = [NSDate new];
         NSDate *startDate = [self beginningOfDay:now];
         [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
-                callback(@[@true]);
+                resolve(@[@true]);
             } else {
-                callback(@[@false]);
+                resolve(@[@false]);
             }
         }];
     }
     else {
-        callback(@[@false]);
+        resolve(@[@false]);
     }
 }
 
--(void) getTodaysData:
-(RCTResponseSenderBlock)callback  {
-    callback(@[@false]);
+-(void) rejectError:
+(NSError * _Nullable) error :
+(RCTPromiseRejectBlock) reject {
+    reject([@(error.code) stringValue], error.localizedDescription, error);
 }
 
+-(void) pedometerUnavailable:
+(RCTPromiseRejectBlock) reject {
+    NSError * _Nullable error;
+    reject(@"0", @"Pedometer unavailable", error);
+}
 
 -(void) queryPedometerData:
 (NSDate *) startDate :
 (NSDate *) endDate :
 (int) dataType :
-(RCTResponseSenderBlock)callback {
+(RCTPromiseResolveBlock) resolve :
+(RCTPromiseRejectBlock) reject {
     [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)endDate withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
         if (error == nil) {
             NSNumber *steps = pedometerData.numberOfSteps;
             NSNumber *distance = pedometerData.distance;
             NSNumber *flights = pedometerData.floorsAscended;
             NSArray *data = (@[steps, distance, flights]);
-            callback(@[data[dataType]]);
+            resolve(@[data[dataType]]);
         } else {
-            [self errorCallback:error :callback];
+            [self rejectError:error :reject];
         }
     }];
 }
@@ -100,82 +108,76 @@ RCT_EXPORT_METHOD(authorize:(RCTResponseSenderBlock)callback) {
 
 -(void) getTodaysData:
 (int) dataType :
-(RCTResponseSenderBlock)callback {
+(RCTPromiseResolveBlock) resolve :
+(RCTPromiseRejectBlock) reject {
     if (_pedometer) {
         NSDate *now = [NSDate new];
         NSDate *startDate = [self beginningOfDay:now];
-        [self queryPedometerData:startDate :now :dataType :callback];
-    }  else {
-        [self pedometerUnavailable:callback];
+        [self queryPedometerData:startDate :now :dataType :resolve :reject];
+    } else {
+        [self pedometerUnavailable:reject];
     }
 }
 
-RCT_EXPORT_METHOD(getStepsToday:(RCTResponseSenderBlock)callback) {
-    [self getTodaysData:0 :callback];
+RCT_EXPORT_METHOD(getStepsToday:(RCTPromiseResolveBlock) resolve :(RCTPromiseRejectBlock) reject) {
+    [self getTodaysData:0 :resolve :reject];
 }
-RCT_EXPORT_METHOD(getDistanceToday:(RCTResponseSenderBlock)callback) {
-    [self getTodaysData:1 :callback];
+RCT_EXPORT_METHOD(getDistanceToday:(RCTPromiseResolveBlock) resolve :(RCTPromiseRejectBlock) reject) {
+    [self getTodaysData:1 :resolve :reject];
 }
-RCT_EXPORT_METHOD(getFloorsToday:(RCTResponseSenderBlock)callback) {
-    [self getTodaysData:2 :callback];
+RCT_EXPORT_METHOD(getFloorsToday:(RCTPromiseResolveBlock) resolve :(RCTPromiseRejectBlock) reject) {
+    [self getTodaysData:2 :resolve :reject];
 }
 
 
 -(void) getWeekTotalData:
 (int) dataType :
-(RCTResponseSenderBlock)callback {
+(RCTPromiseResolveBlock) resolve :
+(RCTPromiseRejectBlock) reject {
     if (_pedometer) {
         NSDate *now = [NSDate new];
         NSDate *todayStart = [self beginningOfDay:now];
         NSDate *sevenDaysAgo = [self sevenDaysAgo: todayStart];
         
-        [self queryPedometerData:sevenDaysAgo :now :dataType :callback];
+        [self queryPedometerData:sevenDaysAgo :now :dataType :resolve :reject];
     } else {
-        [self pedometerUnavailable:callback];
+        [self pedometerUnavailable:reject];
     }
 }
 
-RCT_EXPORT_METHOD(getStepsWeekTotal:(RCTResponseSenderBlock)callback) {
-    [self getWeekTotalData: 0 : callback];
+RCT_EXPORT_METHOD(getStepsWeekTotal:(RCTPromiseResolveBlock) resolve :(RCTPromiseRejectBlock) reject) {
+    [self getWeekTotalData :0 :resolve :reject];
 }
-RCT_EXPORT_METHOD(getDistanceWeekTotal:(RCTResponseSenderBlock)callback) {
-    [self getWeekTotalData: 1 : callback];
+RCT_EXPORT_METHOD(getDistanceWeekTotal:(RCTPromiseResolveBlock) resolve :(RCTPromiseRejectBlock) reject) {
+    [self getWeekTotalData :1 :resolve :reject];
 }
-RCT_EXPORT_METHOD(getFloorsWeekTotal:(RCTResponseSenderBlock)callback) {
-    [self getWeekTotalData: 2 : callback];
-}
-
-
-RCT_EXPORT_METHOD(getStepsDaily:(RCTResponseSenderBlock)callback) {
-    [self getDailyWeekData:[NSDate new] : 0 : 0 :[NSMutableDictionary new] :callback];
+RCT_EXPORT_METHOD(getFloorsWeekTotal:(RCTPromiseResolveBlock) resolve :(RCTPromiseRejectBlock) reject) {
+    [self getWeekTotalData :2 :resolve :reject];
 }
 
-RCT_EXPORT_METHOD(getDistanceDaily:(RCTResponseSenderBlock)callback) {
-    [self getDailyWeekData:[NSDate new] : 0 : 1 :[NSMutableDictionary new] :callback];
+
+RCT_EXPORT_METHOD(getStepsDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRejectBlock) reject) {
+    if (_pedometer) {
+        [self getDailyWeekData :[NSDate new] :0 :0 :[NSMutableDictionary new] :resolve :reject];
+    } else {
+        [self pedometerUnavailable:reject];
+    }
 }
 
-RCT_EXPORT_METHOD(getFloorsDaily:(RCTResponseSenderBlock)callback) {
-    [self getDailyWeekData:[NSDate new] : 0 : 2 :[NSMutableDictionary new] :callback];
+RCT_EXPORT_METHOD(getDistanceDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRejectBlock) reject) {
+    if (_pedometer) {
+        [self getDailyWeekData:[NSDate new] :0 :1 :[NSMutableDictionary new] :resolve :reject];
+    } else {
+        [self pedometerUnavailable:reject];
+    }
 }
 
--(void) pedometerUnavailable:
-(RCTResponseSenderBlock)callback  {
-    NSMutableDictionary *callbackObj = [NSMutableDictionary new];
-    [callbackObj setValue:0 forKey:@"errorCode"];
-    [callbackObj setValue:@"Pedometer unavailable" forKey:@"errorDescription"];
-    callback(@[callbackObj]);
-}
-
--(void) errorCallback:
-(NSError * _Nullable) error :
-(RCTResponseSenderBlock)callback  {
-    NSMutableDictionary *callbackObj = [NSMutableDictionary new];
-    NSInteger errorCode = error.code;
-    NSString *errorDescription = error.localizedDescription;
-    [callbackObj setValue:[NSNumber numberWithInteger:errorCode] forKey:@"errorCode"];
-    [callbackObj setValue:errorDescription forKey:@"errorDescription"];
-    callback(@[callbackObj]);
-    
+RCT_EXPORT_METHOD(getFloorsDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRejectBlock) reject) {
+    if (_pedometer) {
+        [self getDailyWeekData :[NSDate new] :0 :2 :[NSMutableDictionary new] :resolve :reject];
+    } else {
+        [self pedometerUnavailable :reject];
+    }
 }
 
 -(void) getDailyWeekData:
@@ -183,35 +185,32 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTResponseSenderBlock)callback) {
 (int) count :
 (int) dataType :
 (NSMutableDictionary *) data :
-(RCTResponseSenderBlock)callback {
-    if (_pedometer){
-        NSDate *start = [self beginningOfDay: date];
-        NSDate *end = [self endOfDay: date];
-        
-        [_pedometer queryPedometerDataFromDate:(NSDate *)start toDate:(NSDate *)end withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
-            if (error == nil) {
-                if (count < 7) {
-                    NSNumber *steps = pedometerData.numberOfSteps;
-                    NSNumber *distance = pedometerData.distance;
-                    NSNumber *flights = pedometerData.floorsAscended;
-                    NSArray *fitnessData = @[steps, distance, flights];
-                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-                    NSString *dateString = [dateFormatter stringFromDate:date];
-                    [data setValue:fitnessData[dataType] forKey:dateString];
-                    NSDate *previousDay = [self oneDayAgo: date];
-                    int newCount = count + 1;
-                    [self getDailyWeekData:previousDay :newCount :dataType :data :callback];
-                } else {
-                    callback(@[data]);
-                }
+(RCTPromiseResolveBlock) resolve :
+(RCTPromiseRejectBlock) reject {
+    NSDate *start = [self beginningOfDay: date];
+    NSDate *end = [self endOfDay: date];
+    
+    [_pedometer queryPedometerDataFromDate:(NSDate *)start toDate:(NSDate *)end withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
+        if (error == nil) {
+            if (count < 7) {
+                NSNumber *steps = pedometerData.numberOfSteps;
+                NSNumber *distance = pedometerData.distance;
+                NSNumber *flights = pedometerData.floorsAscended;
+                NSArray *fitnessData = @[steps, distance, flights];
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+                NSString *dateString = [dateFormatter stringFromDate:date];
+                [data setValue:fitnessData[dataType] forKey:dateString];
+                NSDate *previousDay = [self oneDayAgo: date];
+                int newCount = count + 1;
+                [self getDailyWeekData:previousDay :newCount :dataType :data :resolve :reject];
             } else {
-                [self errorCallback:error :callback];
+                resolve(@[data]);
             }
-        }];
-    } else {
-        [self pedometerUnavailable:callback];
-    }
+        } else {
+            [self rejectError:error :reject];
+        }
+    }];
 }
 
 -(NSDate *)beginningOfDay:(NSDate *)date {
@@ -263,7 +262,7 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTResponseSenderBlock)callback) {
         }
     } else {
         if (@available(iOS 9.0, *)) {
-            if ([CMSensorRecorder isAuthorizedForRecording]) {
+            if([CMSensorRecorder isAuthorizedForRecording]) {
                 return @"authorized";
             } else {
                 return @"unauthorized";
