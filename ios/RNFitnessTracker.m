@@ -22,34 +22,44 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTPromiseResolveBlock) resolve {
     NSString *status = [self isCoreMotionAuthorized];
-    callback(@[status]);
+    resolve(@[status]);
 }
 
-RCT_EXPORT_METHOD(isTrackingSupported:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(isTrackingSupported:(RCTPromiseResolveBlock) resolve {
     BOOL isStepCountingAvailable = [CMPedometer isStepCountingAvailable];
     BOOL isDistanceAvailable = [CMPedometer isDistanceAvailable];
     BOOL isFloorCountingAvailable = [CMPedometer isFloorCountingAvailable];
     
-    callback(@[isStepCountingAvailable ? @true : @false, isDistanceAvailable ? @true : @false, isFloorCountingAvailable? @true : @false]);
+    resolve(@[isStepCountingAvailable ? @true : @false, isDistanceAvailable ? @true : @false, isFloorCountingAvailable? @true : @false]);
 }
 
-RCT_EXPORT_METHOD(isDistanceTrackingSupported:(RCTResponseSenderBlock)callback) {
-    BOOL isDistanceTrackingAvailable = [CMPedometer isDistanceAvailable];
-    if (isDistanceTrackingAvailable == YES) {
-        callback(@[@true]);
+RCT_EXPORT_METHOD(isStepTrackingSupported:(RCTPromiseResolveBlock) resolve {
+    BOOL isStepTrackingAvailable = [CMPedometer isStepCountingAvailable];
+    if (isStepTrackingAvailable == YES) {
+        resolve(@[@true]);
     } else {
-        callback(@[@false]);
+        resolve(@[@false]);
     }
 }
 
-RCT_EXPORT_METHOD(isFloorCountingSupported:(RCTResponseSenderBlock)callback) {
+
+RCT_EXPORT_METHOD(isDistanceTrackingSupported:(RCTPromiseResolveBlock) resolve {
+    BOOL isDistanceTrackingAvailable = [CMPedometer isDistanceAvailable];
+    if (isDistanceTrackingAvailable == YES) {
+        resolve(@[@true]);
+    } else {
+        resolve(@[@false]);
+    }
+}
+
+RCT_EXPORT_METHOD(isFloorCountingSupported:(RCTPromiseResolveBlock) resolve {
     BOOL isFloorCountingAvailable = [CMPedometer isFloorCountingAvailable];
     if (isFloorCountingAvailable == YES) {
-        callback(@[@true]);
+        resolve(@[@true]);
     } else {
-        callback(@[@false]);
+        resolve(@[@false]);
     }
 }
 
