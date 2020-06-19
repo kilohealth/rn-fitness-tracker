@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(isAuthorizedToUseCoreMotion:(RCTPromiseResolveBlock) resolve :
                   (RCTPromiseRejectBlock) reject) {
     NSString *status = [self isCoreMotionAuthorized];
-    resolve(@[status]);
+    resolve(status);
 }
 
 RCT_EXPORT_METHOD(isTrackingSupported:(RCTPromiseResolveBlock) resolve :
@@ -41,9 +41,9 @@ RCT_EXPORT_METHOD(isStepTrackingSupported:(RCTPromiseResolveBlock) resolve :
                   (RCTPromiseRejectBlock) reject) {
     BOOL isStepTrackingAvailable = [CMPedometer isStepCountingAvailable];
     if (isStepTrackingAvailable == YES) {
-        resolve(@[@true]);
+        resolve(@true);
     } else {
-        resolve(@[@false]);
+        resolve(@false);
     }
 }
 
@@ -52,9 +52,9 @@ RCT_EXPORT_METHOD(isDistanceTrackingSupported:(RCTPromiseResolveBlock) resolve :
                   (RCTPromiseRejectBlock) reject) {
     BOOL isDistanceTrackingAvailable = [CMPedometer isDistanceAvailable];
     if (isDistanceTrackingAvailable == YES) {
-        resolve(@[@true]);
+        resolve(@true);
     } else {
-        resolve(@[@false]);
+        resolve(@false);
     }
 }
 
@@ -62,9 +62,9 @@ RCT_EXPORT_METHOD(isFloorCountingSupported:(RCTPromiseResolveBlock) resolve :
                   (RCTPromiseRejectBlock) reject) {
     BOOL isFloorCountingAvailable = [CMPedometer isFloorCountingAvailable];
     if (isFloorCountingAvailable == YES) {
-        resolve(@[@true]);
+        resolve(@true);
     } else {
-        resolve(@[@false]);
+        resolve(@false);
     }
 }
 
@@ -78,14 +78,13 @@ RCT_EXPORT_METHOD(authorize:(RCTPromiseResolveBlock) resolve :
         NSDate *startDate = [self beginningOfDay:now];
         [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
-                resolve(@[@true]);
+                resolve(@true);
             } else {
-                resolve(@[@false]);
+                resolve(@false);
             }
         }];
-    }
-    else {
-        resolve(@[@false]);
+    } else {
+        resolve(@false);
     }
 }
 
@@ -113,7 +112,7 @@ RCT_EXPORT_METHOD(authorize:(RCTPromiseResolveBlock) resolve :
             NSNumber *distance = pedometerData.distance;
             NSNumber *flights = pedometerData.floorsAscended;
             NSArray *data = (@[steps, distance, flights]);
-            resolve(@[data[dataType]]);
+            resolve(data[dataType]);
         } else {
             [self rejectError:error :reject];
         }
@@ -220,7 +219,7 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRe
                 int newCount = count + 1;
                 [self getDailyWeekData:previousDay :newCount :dataType :data :resolve :reject];
             } else {
-                resolve(@[data]);
+                resolve(data);
             }
         } else {
             [self rejectError:error :reject];
