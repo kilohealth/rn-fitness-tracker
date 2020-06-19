@@ -40,59 +40,50 @@ const iosAuthorizationStatusCheck = (status: string): IFitnessTrackerStatus => {
  * equals to 1 if supported or 0 if not.
  * @return {Promise<IFitnessTrackerAvailability>}
  */
-const isTrackingSupportedIOS = (): Promise<IFitnessTrackerAvailability> =>
-  new Promise(resolve => {
-    RNFitnessTracker.isTrackingSupported(
-      (steps: number, distance: number, floors: number) => {
-        resolve({ steps, distance, floors });
-      },
-    );
-  });
+const isTrackingSupportedIOS = async (): Promise<IFitnessTrackerAvailability> => {
+  const response = await RNFitnessTracker.isTrackingSupported();
+  return { steps: response[0], distance: response[1], floors: response[2] };
+};
 
 /**
  * Returns if step tracking is authorized and available on both platforms
  * @return {Promise<IFitnessTrackerStatus>}
  */
-const isTrackingAvailable = (): Promise<IFitnessTrackerStatus> =>
-  new Promise(resolve => {
-    if (global.isIOS) {
-      RNFitnessTracker.isAuthorizedToUseCoreMotion((status: string) => {
-        resolve(iosAuthorizationStatusCheck(status));
-      });
-    } else {
-      RNFitnessTracker.isTrackingAvailable((authorized: boolean) => {
-        resolve({ authorized, shouldOpenAppSettings: false });
-      });
-    }
-  });
+const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
+  if (global.isIOS) {
+    const status: string = await RNFitnessTracker.isAuthorizedToUseCoreMotion();
+    return iosAuthorizationStatusCheck(status);
+  } else {
+    const authorized: boolean = await RNFitnessTracker.isTrackingAvailable();
+    return { authorized, shouldOpenAppSettings: false };
+  }
+};
 
 /**
  * Sets up step tracking and returns status
  * not supported iOS devices also return `trackingNotSupported: true` param inside the status object
  * @return {Promise<IFitnessTrackerStatus>}
  */
-const setupTracking = (): Promise<IFitnessTrackerStatus> =>
-  new Promise(resolve => {
-    RNFitnessTracker.authorize((authorized: boolean) => {
-      if (!global.isIOS) {
-        resolve({ authorized, shouldOpenAppSettings: false });
-      } else {
-        if (authorized) {
-          RNFitnessTracker.isAuthorizedToUseCoreMotion((status: string) => {
-            resolve(iosAuthorizationStatusCheck(status));
-          });
-        } else {
-          if (isSimulator) {
-            resolve({ authorized: true, shouldOpenAppSettings: false });
-          }
-          resolve({
-            authorized: false,
-            shouldOpenAppSettings: true,
-          });
-        }
+const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
+  const authorized: boolean = await RNFitnessTracker.authorize();
+
+  if (!global.isIOS) {
+    return { authorized, shouldOpenAppSettings: false };
+  } else {
+    if (authorized) {
+      const status: string = await RNFitnessTracker.isAuthorizedToUseCoreMotion();
+      return iosAuthorizationStatusCheck(status);
+    } else {
+      if (isSimulator) {
+        return { authorized: true, shouldOpenAppSettings: false };
       }
-    });
-  });
+      return {
+        authorized: false,
+        shouldOpenAppSettings: true,
+      };
+    }
+  }
+};
 
 /**
  * @module StepTracking
@@ -100,57 +91,58 @@ const setupTracking = (): Promise<IFitnessTrackerStatus> =>
 
 /**
  * Returns number of steps today
+ * on `iOS simulator` returns mock data
  * @return {Promise<number>}
  */
-const getStepsToday = (): Promise<number> =>
-  new Promise(resolve => {
-    if (global.__DEV__ && DeviceInfo.isEmulatorSync()) {
-      resolve(420);
-    }
-    RNFitnessTracker.getStepsToday((steps: number) => {
-      resolve(steps);
-    });
-  });
+const getStepsToday = async (): Promise<number> => {
+  if (isSimulator) {
+    return mockData.steps.stepsToday;
+  }
+
+  return RNFitnessTracker.getStepsToday();
+};
 
 /**
  * Returns number of steps this week
+ * on `iOS simulator` returns mock data
  * @return {Promise<Number>}
  */
-const getStepsWeekTotal = (): Promise<number> =>
-  new Promise(resolve => {
-    RNFitnessTracker.getStepsWeekTotal((steps: number) => {
-      resolve(steps);
-    });
-  });
+const getStepsWeekTotal = async (): Promise<number> => {
+  if (isSimulator) {
+    return mockData.stepsWeekTotal;
+  }
+
+  return RNFitnessTracker.getStepsWeekTotal();
+};
 
 /**
  * Returns weekly steps object
+ * on `iOS simulator` returns mock data
  * @return {Promise<IWeekDailySteps>}
  */
-const getStepsDaily = (): Promise<IStepsDaily> =>
-  new Promise(resolve => {
-    RNFitnessTracker.getStepsDaily((data: IStepsDaily) => {
-      resolve(data);
-    });
-  });
+const getStepsDaily = async (): Promise<IStepsDaily> => {
+  if (isSimulator) {
+    return mockData.steps.stepsDaily;
+  }
+
+  return RNFitnessTracker.getStepsDaily();
+};
 
 /**
  * Returns steps today and this week's steps object
  * on `iOS simulator` returns mock data
  * @return {Promise<IStepTrackerData>}
  */
-const getStepsData = (): Promise<IStepsData> =>
-  new Promise(resolve => {
-    if (isSimulator) {
-      resolve(mockData.steps);
-    } else {
-      RNFitnessTracker.getStepsToday((stepsToday: number) => {
-        RNFitnessTracker.getStepsDaily((stepsDaily: IStepsDaily) => {
-          resolve({ stepsToday, stepsDaily: stepsDaily || {} });
-        });
-      });
-    }
-  });
+const getStepsData = async (): Promise<IStepsData> => {
+  if (isSimulator) {
+    return mockData.steps;
+  }
+
+  const stepsToday: number = await RNFitnessTracker.getStepsToday();
+  const stepsDaily: IStepsDaily = await RNFitnessTracker.getStepsDaily();
+
+  return { stepsToday, stepsDaily: stepsDaily || {} };
+};
 
 /**
  * @module DistanceTracking
@@ -158,54 +150,57 @@ const getStepsData = (): Promise<IStepsData> =>
 
 /**
  * Returns walking and running distance today in meters
+ * on `iOS simulator` returns mock data
  * @return {Promise<number>} number of meters
  */
-const getDistanceToday = (): Promise<number> =>
-  new Promise(resolve => {
-    RNFitnessTracker.getDistanceToday((distance: number) => {
-      resolve(distance);
-    });
-  });
+const getDistanceToday = async (): Promise<number> => {
+  if (isSimulator) {
+    return mockData.distance.distanceToday;
+  }
+
+  return RNFitnessTracker.getDistanceToday();
+};
 
 /**
  * Returns walking and running distance this week in meters
+ * on `iOS simulator` returns mock data
  * @return {Promise<Number>} number of meters
  */
-const getDistanceWeekTotal = (): Promise<number> =>
-  new Promise(resolve => {
-    RNFitnessTracker.getDistanceWeekTotal((steps: number) => {
-      resolve(steps);
-    });
-  });
+const getDistanceWeekTotal = async (): Promise<number> => {
+  if (isSimulator) {
+    return mockData.distanceWeekTotal;
+  }
+
+  return RNFitnessTracker.getDistanceWeekTotal();
+};
 
 /**
  * Returns daily distance object
+ * on `iOS simulator` returns mock data
  * @return {Promise<IDistanceDaily>}
  */
-const getDistanceDaily = (): Promise<IDistanceDaily> =>
-  new Promise(resolve => {
-    RNFitnessTracker.getDistanceDaily((data: IDistanceDaily) => {
-      resolve(data);
-    });
-  });
+const getDistanceDaily = async (): Promise<IDistanceDaily> => {
+  if (isSimulator) {
+    return mockData.distance.distanceDaily;
+  }
+
+  return RNFitnessTracker.getDistanceDaily();
+};
 
 /**
  * Returns distance today and this week's distance object
  * on `iOS simulator` returns mock data
  * @return {Promise<IDistanceData>}
  */
-const getDistanceData = (): Promise<IDistanceData> =>
-  new Promise(resolve => {
-    if (isSimulator) {
-      resolve(mockData.distance);
-    } else {
-      RNFitnessTracker.getDistanceToday((distanceToday: number) => {
-        RNFitnessTracker.getDistanceDaily((distanceDaily: IDistanceDaily) => {
-          resolve({ distanceToday, distanceDaily: distanceDaily || {} });
-        });
-      });
-    }
-  });
+const getDistanceData = async (): Promise<IDistanceData> => {
+  if (isSimulator) {
+    return mockData.distance;
+  }
+
+  const distanceToday: number = await RNFitnessTracker.getDistanceToday();
+  const distanceDaily: IDistanceDaily = await RNFitnessTracker.getDistanceDaily();
+  return { distanceToday, distanceDaily: distanceDaily || {} };
+};
 
 /**
  * @module FloorTracking
@@ -213,54 +208,56 @@ const getDistanceData = (): Promise<IDistanceData> =>
 
 /**
  * Returns walking and running distance today in meters
+ * on `iOS simulator` returns mock data
  * @return {Promise<number>} number of meters
  */
-const getFloorsTodayIOS = (): Promise<number> =>
-  new Promise(resolve => {
-    RNFitnessTracker.getDistanceToday((distance: number) => {
-      resolve(distance);
-    });
-  });
+const getFloorsTodayIOS = async (): Promise<number> => {
+  if (isSimulator) {
+    return mockData.floors.floorsToday;
+  }
+
+  return RNFitnessTracker.getFloorsToday();
+};
 
 /**
  * Returns walking and running distance this week in meters
+ * on `iOS simulator` returns mock data
  * @return {Promise<Number>} number of meters
  */
-const getFloorsWeekTotalIOS = (): Promise<number> =>
-  new Promise(resolve => {
-    RNFitnessTracker.getDistanceWeekTotal((steps: number) => {
-      resolve(steps);
-    });
-  });
+const getFloorsWeekTotalIOS = async (): Promise<number> => {
+  if (isSimulator) {
+    return mockData.floorsWeekTotal;
+  }
 
+  return RNFitnessTracker.getFloorsWeekTotal();
+};
 /**
  * Returns daily distance object
+ * on `iOS simulator` returns mock data
  * @return {Promise<IFloorsDaily>}
  */
-const getFloorsDailyIOS = (): Promise<IFloorsDaily> =>
-  new Promise(resolve => {
-    RNFitnessTracker.getWeeklyDistance((data: IFloorsDaily) => {
-      resolve(data);
-    });
-  });
+const getFloorsDailyIOS = async (): Promise<IFloorsDaily> => {
+  if (isSimulator) {
+    return mockData.floors.floorsDaily;
+  }
+
+  return RNFitnessTracker.getFloorsDistance();
+};
 
 /**
  * Returns distance today and this week's distance object
  * on `iOS simulator` returns mock data
  * @return {Promise<IFloorsData>}
  */
-const getFloorsDataIOS = (): Promise<IFloorsData> =>
-  new Promise(resolve => {
-    if (isSimulator) {
-      resolve(mockData.floors);
-    } else {
-      RNFitnessTracker.getDistanceToday((floorsToday: number) => {
-        RNFitnessTracker.getDailyWeekData((floorsDaily: IFloorsDaily) => {
-          resolve({ floorsToday, floorsDaily: floorsDaily || {} });
-        });
-      });
-    }
-  });
+const getFloorsDataIOS = async (): Promise<IFloorsData> => {
+  if (isSimulator) {
+    return mockData.floors;
+  }
+
+  const floorsToday: number = await RNFitnessTracker.getFloorsToday();
+  const floorsDaily: IFloorsDaily = await RNFitnessTracker.getFloorsWeekData();
+  return { floorsToday, floorsDaily: floorsDaily || {} };
+};
 
 export const FitnessTrackerAPI = {
   getStepsToday,

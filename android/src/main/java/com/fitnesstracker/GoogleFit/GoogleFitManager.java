@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -25,7 +25,7 @@ public class GoogleFitManager implements ActivityEventListener {
     private RecordingService recordingService;
     private Activity activity;
     private ReactApplicationContext reactContext;
-    private Callback authorisationCallback;
+    private Promise authorisationPromise;
 
     FitnessOptions fitnessOptions = FitnessOptions.builder()
             .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
@@ -56,7 +56,7 @@ public class GoogleFitManager implements ActivityEventListener {
                 subscribeToActivityData();
                 accessGoogleFit();
             } else {
-                this.authorisationCallback.invoke(false);
+                this.authorisationPromise.resolve(false);
             }
         } else if (requestCode == SIGN_IN_REQUEST_CODE) {
             GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(activity);
@@ -64,10 +64,10 @@ public class GoogleFitManager implements ActivityEventListener {
         }
     }
 
-    public void authorize(Callback callback, Activity activity) {
+    public void authorize(Promise promise, Activity activity) {
         try {
             this.activity = activity;
-            this.authorisationCallback = callback;
+            this.authorisationPromise = promise;
 
             /* Check if app has google fit permissions */
             if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this.reactContext), this.fitnessOptions)) {
@@ -77,22 +77,24 @@ public class GoogleFitManager implements ActivityEventListener {
                 accessGoogleFit();
             }
         } catch (Exception e) {
+            authorisationPromise.reject(e);
             e.printStackTrace();
         }
     }
 
-    public void isTrackingAvailable(Callback callback, Activity activity) {
+    public void isTrackingAvailable(Promise promise, Activity activity) {
         try {
             this.activity = activity;
-            this.authorisationCallback = callback;
+            this.authorisationPromise = promise;
 
             /* Check if app has google fit permissions */
             if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this.reactContext), this.fitnessOptions)) {
-                authorisationCallback.invoke(false);
+                authorisationPromise.resolve(false);
             } else {
-                authorisationCallback.invoke(true);
+                authorisationPromise.resolve(true);
             }
         } catch (Exception e) {
+            authorisationPromise.reject(e);
             e.printStackTrace();
         }
     }
@@ -100,10 +102,10 @@ public class GoogleFitManager implements ActivityEventListener {
 
     private void requestFitnessPermissions(GoogleSignInAccount googleSignInAccount) {
         GoogleSignIn.requestPermissions(
-            activity,
-            GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-            googleSignInAccount,
-            fitnessOptions
+                activity,
+                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                googleSignInAccount,
+                fitnessOptions
         );
     }
 
@@ -112,68 +114,36 @@ public class GoogleFitManager implements ActivityEventListener {
             this.recordingService = new RecordingService(activity);
             this.recordingService.subscribe();
             this.historyClient = new HistoryClient(activity);
-            authorisationCallback.invoke(true);
-        }catch (Exception e) {
+            authorisationPromise.resolve(true);
+        } catch (Exception e) {
+            authorisationPromise.reject(e);
             e.printStackTrace();
         }
     }
 
-    public void getStepsToday(final Callback callback) {
-        this.historyClient.getStepsToday(new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                callback.invoke((int)steps);
-            }
-        });
+    public void getStepsToday(final Promise promise) {
+        this.historyClient.getStepsToday(promise);
     }
 
-    public void getStepsWeekTotal(final Callback callback) {
-        this.historyClient.getWeekData(new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                callback.invoke((int)steps);
-            }
-        }, 0);
+    public void getStepsWeekTotal(final Promise promise) {
+        this.historyClient.getWeekData(promise, 0);
     }
 
-    public void getStepsDaily(final Callback callback) {
-        this.historyClient.getStepsDaily(new Date(), Arguments.createMap(), 0,  new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                WritableMap map = (WritableMap)steps;
-                callback.invoke(map);
-            }
-        });
+    public void getStepsDaily(final Promise promise) {
+        this.historyClient.getStepsDaily(new Date(), Arguments.createMap(), 0, promise);
     }
 
-    public void getDistanceToday(final Callback callback) {
-        this.historyClient.getDistanceToday(new HistoryCallback() {
-            @Override
-            public void sendData(Object distance) {
-                callback.invoke((float)distance);
-            }
-        });
+    public void getDistanceToday(final Promise promise) {
+        this.historyClient.getDistanceToday(promise);
     }
 
-    public void getDistanceWeekTotal(final Callback callback) {
-        this.historyClient.getWeekData(new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                callback.invoke((float)steps);
-            }
-        }, 1);
+    public void getDistanceWeekTotal(final Promise promise) {
+        this.historyClient.getWeekData(promise, 1);
     }
 
-    public void getDistanceDaily(final Callback callback) {
-        this.historyClient.getDistanceDaily(new Date(), Arguments.createMap(), 0,  new HistoryCallback() {
-            @Override
-            public void sendData(Object steps) {
-                WritableMap map = (WritableMap)steps;
-                callback.invoke(map);
-            }
-        });
+    public void getDistanceDaily(final Promise promise) {
+        this.historyClient.getDistanceDaily(new Date(), Arguments.createMap(), 0, promise);
+
     }
-
-
 
 }
