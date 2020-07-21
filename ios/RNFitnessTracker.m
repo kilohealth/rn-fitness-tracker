@@ -275,18 +275,13 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRe
             return @"restricted";
         }
     } else {
-        if (@available(iOS 9.0, *)) {
-            if([CMSensorRecorder isAuthorizedForRecording]) {
-                return @"authorized";
-            } else {
-                return @"unauthorized";
-            }
+        if([CMSensorRecorder isAuthorizedForRecording]) {
+            return @"authorized";
         } else {
-            return @"notDetermined";
+            return @"unauthorized";
         }
     }
     return @"undefined";
 }
 
 @end
-
