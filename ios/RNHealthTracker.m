@@ -1,4 +1,5 @@
 #import "RNHealthTracker.h"
+#import "RNFitnessUtils.h"
 #import <HealthKit/HealthKit.h>
 
 #import "React/RCTBridge.h"
@@ -42,13 +43,14 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(authorize:(NSArray*) shareTypes
-                  readTypes:(NSArray*) readTypes
-                  resolver:(RCTPromiseResolveBlock) resolve
-                  rejecter:(RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(authorize
+                  :(NSArray*) shareTypes
+                  :(NSArray*) readTypes
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
     if ([HKHealthStore isHealthDataAvailable] == NO) {
         // If our device doesn't support HealthKit -> return.
-        [self rejectError:@"false" :reject];
+        reject(@"0", @"Health data is not supported", [NSError new]);
     }
     
     NSArray *readTypesTransformed = readTypes.count > 0
@@ -83,24 +85,25 @@ RCT_EXPORT_METHOD(isTrackingSupported:(RCTPromiseResolveBlock) resolve :
     if (HKHealthStore.isHealthDataAvailable) {
         resolve(@true);
     } else {
-        [self rejectError:@"false" :reject];
+        resolve(@false);
     }
 }
 
 
-RCT_EXPORT_METHOD(writeData:(NSString*) dataTypeIdentifier
-                  amount:(double) amount
-                  unit:(NSString*) unit
-                  metadata:(NSDictionary*) metadata
-                  resolver:(RCTPromiseResolveBlock) resolve
-                  rejecter:(RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(writeData
+                  :(NSString*) dataTypeIdentifier
+                  :(double) amount
+                  :(NSString*) unit
+                  :(NSDictionary*) metadata
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
     
     HKQuantityType *quantityType =
     [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
-     
+    
     HKQuantity *quantity = [HKQuantity quantityWithUnit:[HKUnit unitFromString:unit]
                                             doubleValue:amount];
-     
+    
     HKQuantitySample *dataObject =
     [HKQuantitySample quantitySampleWithType:quantityType quantity:quantity startDate:NSDate.date endDate:NSDate.date metadata:metadata];
     
@@ -111,6 +114,37 @@ RCT_EXPORT_METHOD(writeData:(NSString*) dataTypeIdentifier
     }];
 }
 
+RCT_EXPORT_METHOD(getTotalForToday
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *start = [RNFitnessUtils beginningOfDay: NSDate.date];
+    NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
+    
+    HKSampleType *sampleType = [HKSampleType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate :start endDate:end options:0];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:HKSampleSortIdentifierStartDate ascending:YES];
+        
+    HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:sampleType predicate:predicate limit:HKObjectQueryNoLimit sortDescriptors:@[sortDescriptor] resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error) {
+        if (!error && results) {
+            double quantitySum = 0;
+            
+            for (HKQuantitySample *sample in results) {
+                double value = [sample.quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+                quantitySum += value;
+            }
+            resolve([NSString stringWithFormat :@"%f",quantitySum]);
+            
+        } else {
+            [self rejectError:error :reject];
+        }
+    }];
+    
+    // Execute the query
+    [_healthStore executeQuery:sampleQuery];
+}
 
 
 @end

@@ -1,4 +1,4 @@
-const healthDataTypes = {
+export const HealthDataTypes = {
   // Dietary
   Biotin: 'DietaryBiotin',
   Caffeine: 'DietaryCaffeine',
@@ -47,4 +47,49 @@ const healthDataTypes = {
   LeanBodyMass: 'LeanBodyMass',
   BodyFatPercentage: 'BodyFatPercentage',
   WaistCircumference: 'WaistCircumference',
+};
+
+// SI units can be prefixed as follows:
+// da   (deca-)   = 10                 d    (deci-)   = 1/10
+// h    (hecto-)  = 100                c    (centi-)  = 1/100
+// k    (kilo-)   = 1000               m    (milli-)  = 1/1000
+// M    (mega-)   = 10^6               mc   (micro-)  = 10^-6
+// G    (giga-)   = 10^9               n    (nano-)   = 10^-9
+// T    (tera-)   = 10^12              p    (pico-)   = 10^-12
+export const UnitTypes = {
+  grams: 'g',
+  miligrams: 'mg',
+  kilograms: 'kg',
+  meters: 'm',
+  milimeters: 'mm',
+  centimeters: 'cm',
+  kilometers: 'km',
+  liters: 'l',
+  pascals: 'Pa',
+  seconds: 's',
+  joules: 'J',
+  kelvin: 'K',
+  siemens: 'S',
+  hertz: 'hz',
+  moles: 'mol',
+  decibelHearingLevel: 'dBHL',
+  celsius: 'degC',
+  fahrenheit: 'degF',
+  calories: 'cal',
+  kilocalories: 'kcal',
+  minutes: 'min',
+  hours: 'hr',
+  days: 'd',
+  inches: 'in',
+  feet: 'ft',
+  miles: 'mi',
+  ounces: 'oz',
+  pounds: 'lb',
+  stones: 'st',
+  fluidOuncesImperial: 'fl_oz_imp',
+  fluidOuncesUS: 'fl_oz_us',
+  pintImperial: 'pt_imp',
+  pintUS: 'pt_us',
+  cupImperial: 'cup_us',
+  cupUS: 'cup_imp',
 };

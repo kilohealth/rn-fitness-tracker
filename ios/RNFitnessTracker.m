@@ -1,4 +1,5 @@
 #import "RNFitnessTracker.h"
+#import "RNFitnessUtils.h"
 #import <CoreMotion/CoreMotion.h>
 #import "React/RCTBridge.h"
 
@@ -75,7 +76,7 @@ RCT_EXPORT_METHOD(authorize:(RCTPromiseResolveBlock) resolve :
     BOOL isStepCountAvailable = [CMPedometer isStepCountingAvailable];
     if (isStepCountAvailable == YES) {
         NSDate *now = [NSDate new];
-        NSDate *startDate = [self beginningOfDay:now];
+        NSDate *startDate = [RNFitnessUtils beginningOfDay:now];
         [_pedometer queryPedometerDataFromDate:(NSDate *)startDate toDate:(NSDate *)now withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
             if (error == nil) {
                 resolve(@true);
@@ -126,7 +127,7 @@ RCT_EXPORT_METHOD(authorize:(RCTPromiseResolveBlock) resolve :
 (RCTPromiseRejectBlock) reject {
     if (_pedometer) {
         NSDate *now = [NSDate new];
-        NSDate *startDate = [self beginningOfDay:now];
+        NSDate *startDate = [RNFitnessUtils beginningOfDay:now];
         [self queryPedometerData:startDate :now :dataType :resolve :reject];
     } else {
         [self pedometerUnavailable:reject];
@@ -150,8 +151,8 @@ RCT_EXPORT_METHOD(getFloorsToday:(RCTPromiseResolveBlock) resolve :(RCTPromiseRe
 (RCTPromiseRejectBlock) reject {
     if (_pedometer) {
         NSDate *now = [NSDate new];
-        NSDate *todayStart = [self beginningOfDay:now];
-        NSDate *sevenDaysAgo = [self sevenDaysAgo: todayStart];
+        NSDate *todayStart = [RNFitnessUtils beginningOfDay:now];
+        NSDate *sevenDaysAgo = [RNFitnessUtils daysAgo: todayStart :7];
         
         [self queryPedometerData:sevenDaysAgo :now :dataType :resolve :reject];
     } else {
@@ -194,6 +195,7 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRe
     }
 }
 
+
 -(void) getDailyWeekData:
 (NSDate *)date :
 (int) count :
@@ -201,8 +203,8 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRe
 (NSMutableDictionary *) data :
 (RCTPromiseResolveBlock) resolve :
 (RCTPromiseRejectBlock) reject {
-    NSDate *start = [self beginningOfDay: date];
-    NSDate *end = [self endOfDay: date];
+    NSDate *start = [RNFitnessUtils beginningOfDay: date];
+    NSDate *end = [RNFitnessUtils endOfDay: date];
     
     [_pedometer queryPedometerDataFromDate:(NSDate *)start toDate:(NSDate *)end withHandler:^(CMPedometerData * _Nullable pedometerData, NSError * _Nullable error) {
         if (error == nil) {
@@ -215,7 +217,7 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRe
                 [dateFormatter setDateFormat:@"yyyy-MM-dd"];
                 NSString *dateString = [dateFormatter stringFromDate:date];
                 [data setValue:fitnessData[dataType] forKey:dateString];
-                NSDate *previousDay = [self oneDayAgo: date];
+                NSDate *previousDay = [RNFitnessUtils daysAgo: date :1];
                 int newCount = count + 1;
                 [self getDailyWeekData:previousDay :newCount :dataType :data :resolve :reject];
             } else {
@@ -225,41 +227,6 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRe
             [self rejectError:error :reject];
         }
     }];
-}
-
--(NSDate *)beginningOfDay:(NSDate *)date {
-    NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *components = [cal components:( NSCalendarUnitDay| NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond ) fromDate:date];
-    [components setHour:0];
-    [components setMinute:0];
-    [components setSecond:0];
-    [components setMonth: components.month];
-    [components setDay: components.day];
-    [components setYear: components.year];
-    return [cal dateFromComponents:components];
-}
-
--(NSDate *)endOfDay:(NSDate *)date {
-    NSDate *nextDay = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay value:1 toDate:date options:0];
-    NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *components = [cal components:( NSCalendarUnitDay| NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond ) fromDate:nextDay];
-    [components setHour:0];
-    [components setMinute:0];
-    [components setSecond:0];
-    [components setMonth: components.month];
-    [components setDay: components.day];
-    [components setYear: components.year];
-    return [cal dateFromComponents:components];
-}
-
--(NSDate *)oneDayAgo: (NSDate *)date {
-    NSDate *day = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay value:-1 toDate:date options:0];
-    return day;
-}
-
--(NSDate *)sevenDaysAgo: (NSDate *)date {
-    NSDate *sevenDaysAgo = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay value:-7 toDate:date options:0];
-    return sevenDaysAgo;
 }
 
 -(NSString *) isCoreMotionAuthorized {
