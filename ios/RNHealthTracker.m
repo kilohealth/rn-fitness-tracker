@@ -154,7 +154,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
                   :(RCTPromiseRejectBlock) reject) {
     
     NSDate *start = [RNFitnessUtils beginningOfDay: NSDate.date];
-    NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
+    NSDate *end = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:86399 toDate:start options:0]; // Today 23:59
     
     NSDateComponents *interval = [[NSDateComponents alloc] init];
     interval.day = 1;
@@ -169,9 +169,9 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
      initWithQuantityType:quantityType
      quantitySamplePredicate:nil
      options:HKStatisticsOptionCumulativeSum
-     anchorDate:start // Set the anchor date to Today at 00:00
+     anchorDate:start
      intervalComponents:interval];
-    
+        
     // Set the results handler
     query.initialResultsHandler =
     ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
@@ -192,7 +192,6 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
             HKQuantity *quantity = result.sumQuantity;
             if (quantity) {
                 double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
-                
                 resolve([NSString stringWithFormat :@"%f", value]);
                 
             }
