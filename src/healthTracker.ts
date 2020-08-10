@@ -52,12 +52,12 @@ const writeData = async <
 }): Promise<number> => RNHealthTracker.writeData(key, quantity, unit, metadata);
 
 /**
- * Gets total for given health data type and unit for current day
+ * Gets absolute total for given health data type and unit for current day
  * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param unit {UnitType} e.g. `UnitTypes.grams`
  * @return {Promise<number>}
  */
-const getTotalForToday = async <
+const getAbsoluteTotalForToday = async <
   DataKey extends keyof typeof HealthDataTypes,
   UnitKey extends keyof typeof UnitTypes
 >({
@@ -67,12 +67,33 @@ const getTotalForToday = async <
   key: DataKey;
   unit: UnitKey;
 }): Promise<number> => {
-  const total = await RNHealthTracker.getTotalForToday(key, unit);
+  const total = await RNHealthTracker.getAbsoluteTotalForToday(key, unit);
+  return Number(total);
+};
+
+/**
+ * Gets statistic total for given health data type and unit for current day, same number as in health app
+ * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @return {Promise<number>}
+ */
+const getStatisticTotalForToday = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>({
+  key,
+  unit,
+}: {
+  key: DataKey;
+  unit: UnitKey;
+}): Promise<number> => {
+  const total = await RNHealthTracker.getStatisticTotalForToday(key, unit);
   return Number(total);
 };
 
 export const HealthTrackerAPI = {
-  getTotalForToday,
+  getAbsoluteTotalForToday,
+  getStatisticTotalForToday,
   isTrackingSupportedIOS,
   setupTracking,
   writeData,

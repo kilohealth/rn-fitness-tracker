@@ -114,7 +114,7 @@ RCT_EXPORT_METHOD(writeData
     }];
 }
 
-RCT_EXPORT_METHOD(getTotalForToday
+RCT_EXPORT_METHOD(getAbsoluteTotalForToday
                   :(NSString*) dataTypeIdentifier
                   :(NSString*) unit
                   :(RCTPromiseResolveBlock) resolve
@@ -126,7 +126,7 @@ RCT_EXPORT_METHOD(getTotalForToday
     HKSampleType *sampleType = [HKSampleType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
     NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate :start endDate:end options:0];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:HKSampleSortIdentifierStartDate ascending:YES];
-        
+    
     HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:sampleType predicate:predicate limit:HKObjectQueryNoLimit sortDescriptors:@[sortDescriptor] resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error) {
         if (!error && results) {
             double quantitySum = 0;
@@ -144,6 +144,64 @@ RCT_EXPORT_METHOD(getTotalForToday
     
     // Execute the query
     [_healthStore executeQuery:sampleQuery];
+}
+
+
+RCT_EXPORT_METHOD(getStatisticTotalForToday
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *start = [RNFitnessUtils beginningOfDay: NSDate.date];
+    NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
+    
+    NSDateComponents *interval = [[NSDateComponents alloc] init];
+    interval.day = 1;
+    
+    
+    HKQuantityType *quantityType =
+    [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietarySugar];
+    
+    // Create the query
+    HKStatisticsCollectionQuery *query =
+    [[HKStatisticsCollectionQuery alloc]
+     initWithQuantityType:quantityType
+     quantitySamplePredicate:nil
+     options:HKStatisticsOptionCumulativeSum
+     anchorDate:start // Set the anchor date to Today at 00:00
+     intervalComponents:interval];
+    
+    // Set the results handler
+    query.initialResultsHandler =
+    ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
+        
+        if (error) {
+            // Perform proper error handling here
+            NSLog(@"*** An error occurred while calculating the statistics: %@ ***",
+                  error.localizedDescription);
+            [self rejectError :error :reject];
+            abort();
+        }
+        
+        [results
+         enumerateStatisticsFromDate:start
+         toDate:end
+         withBlock:^(HKStatistics *result, BOOL *stop) {
+            
+            HKQuantity *quantity = result.sumQuantity;
+            if (quantity) {
+                double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+                
+                resolve([NSString stringWithFormat :@"%f", value]);
+                
+            }
+            
+        }];
+    };
+    
+    // Execute the query
+    [_healthStore executeQuery:query];
 }
 
 
