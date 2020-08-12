@@ -1,8 +1,10 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 
 import { HealthDataTypes, UnitTypes } from './utils/dataTypes';
 
 const { RNHealthTracker } = NativeModules;
+
+const isIOS = Platform.OS === 'ios';
 
 /**
  * @module RNHealthTracker
@@ -13,8 +15,10 @@ const { RNHealthTracker } = NativeModules;
  * @return {Promise<boolean>}
  */
 const isTrackingSupportedIOS = async (): Promise<boolean> => {
-  const response = await RNHealthTracker.isTrackingSupported();
-  return !!response;
+  if (isIOS) {
+    const response = await RNHealthTracker.isTrackingSupported();
+    return !!response;
+  }
 };
 
 /**
@@ -27,9 +31,10 @@ const setupTracking = async <DataKey extends keyof typeof HealthDataTypes>(
   shareTypes: DataKey,
   readTypes: DataKey,
 ): Promise<boolean> => {
-  const authorized = await RNHealthTracker.authorize(shareTypes, readTypes);
-
-  return !!authorized;
+  if (isIOS) {
+    const authorized = await RNHealthTracker.authorize(shareTypes, readTypes);
+    return !!authorized;
+  }
 };
 
 /**
@@ -49,8 +54,11 @@ const writeData = async <
   unit: UnitKey;
   quantity: number;
   metadata: {};
-}): Promise<boolean> =>
-  RNHealthTracker.writeData(key, quantity, unit, metadata);
+}): Promise<boolean> => {
+  if (isIOS) {
+    return await RNHealthTracker.writeData(key, quantity, unit, metadata);
+  }
+};
 
 /**
  * Writes given health data array to Health API
@@ -66,7 +74,11 @@ const writeDataArray = async <
     quantity: number;
     metadata: {};
   }>,
-): Promise<boolean> => RNHealthTracker.writeDataArray(dataArray);
+): Promise<boolean> => {
+  if (isIOS) {
+    return await RNHealthTracker.writeDataArray(dataArray);
+  }
+};
 
 /**
  * Gets absolute total for given health data type and unit for current day
@@ -84,8 +96,10 @@ const getAbsoluteTotalForToday = async <
   key: DataKey;
   unit: UnitKey;
 }): Promise<number> => {
-  const total = await RNHealthTracker.getAbsoluteTotalForToday(key, unit);
-  return Number(total);
+  if (isIOS) {
+    const total = await RNHealthTracker.getAbsoluteTotalForToday(key, unit);
+    return Number(total);
+  }
 };
 
 /**
@@ -104,8 +118,10 @@ const getStatisticTotalForToday = async <
   key: DataKey;
   unit: UnitKey;
 }): Promise<number> => {
-  const total = await RNHealthTracker.getStatisticTotalForToday(key, unit);
-  return Number(total);
+  if (isIOS) {
+    const total = await RNHealthTracker.getStatisticTotalForToday(key, unit);
+    return Number(total);
+  }
 };
 
 export const HealthTrackerAPI = {
