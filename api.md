@@ -224,10 +224,11 @@ on `iOS simulator` returns mock data
 * [RNHealthTracker](#module_RNHealthTracker)
     * [~isTrackingSupportedIOS()](#module_RNHealthTracker..isTrackingSupportedIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
     * [~setupTracking(shareTypes, readTypes)](#module_RNHealthTracker..setupTracking) ⇒ <code>Promise.&lt;boolean&gt;</code>
-    * [~writeData()](#module_RNHealthTracker..writeData) ⇒ <code>Promise.&lt;boolean&gt;</code>
-    * [~writeDataArray()](#module_RNHealthTracker..writeDataArray) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~writeData(object)](#module_RNHealthTracker..writeData) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~writeDataArray(dataArray)](#module_RNHealthTracker..writeDataArray) ⇒ <code>Promise.&lt;boolean&gt;</code>
     * [~getAbsoluteTotalForToday(key, unit)](#module_RNHealthTracker..getAbsoluteTotalForToday) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getStatisticTotalForToday(key, unit)](#module_RNHealthTracker..getStatisticTotalForToday) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~recordWorkout(object)](#module_RNHealthTracker..recordWorkout) ⇒ <code>Promise.&lt;boolean&gt;</code>
 
 
 * * *
@@ -258,19 +259,38 @@ Sets up health tracking and returns status
 
 <a name="module_RNHealthTracker..writeData"></a>
 
-### RNHealthTracker~writeData() ⇒ <code>Promise.&lt;boolean&gt;</code>
+### RNHealthTracker~writeData(object) ⇒ <code>Promise.&lt;boolean&gt;</code>
 Writes given health data to Health API
 
 **Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+| Param | Type |
+| --- | --- |
+| object | <code>object</code> | 
+| object.key | <code>HealthDataTypes</code> | 
+| object.unit | <code>UnitKey</code> | 
+| object.quantity | <code>Number</code> | 
+| object.metadata | <code>object</code> | 
+
 
 * * *
 
 <a name="module_RNHealthTracker..writeDataArray"></a>
 
-### RNHealthTracker~writeDataArray() ⇒ <code>Promise.&lt;boolean&gt;</code>
+### RNHealthTracker~writeDataArray(dataArray) ⇒ <code>Promise.&lt;boolean&gt;</code>
 Writes given health data array to Health API
 
 **Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+| Param | Type |
+| --- | --- |
+| dataArray | <code>array</code> | 
+| dataArray.object | <code>object</code> | 
+| dataArray.object.key | <code>HealthDataTypes</code> | 
+| dataArray.object.unit | <code>UnitKey</code> | 
+| dataArray.object.quantity | <code>Number</code> | 
+| dataArray.object.metadata | <code>object</code> | 
+
 
 * * *
 
@@ -300,6 +320,24 @@ Gets statistic total for given health data type and unit for current day, same n
 | --- | --- | --- |
 | key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
 | unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
+
+
+* * *
+
+<a name="module_RNHealthTracker..recordWorkout"></a>
+
+### RNHealthTracker~recordWorkout(object) ⇒ <code>Promise.&lt;boolean&gt;</code>
+Records given workout data to Health API
+
+**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| object | <code>object</code> |  |
+| object.startDate | <code>Date</code> \| <code>number</code> |  |
+| object.endDate | <code>Date</code> \| <code>number</code> |  |
+| object.energyBurned | <code>Number</code> | number of calories in kcal |
+| object.metadata | <code>object</code> |  |
 
 
 * * *

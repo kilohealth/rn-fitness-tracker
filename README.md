@@ -153,6 +153,7 @@ import {
   HealthTrackerAPI,
   HealthDataTypes,
   UnitTypes,
+  WorkoutTypes,
 } from '@kilohealth/rn-fitness-tracker';
 
 // Setup Health tracking
@@ -203,6 +204,19 @@ const writeStatus = await HealthTrackerAPI.writeDataArray([
     },
   },
 ]);
+
+// Record a workout to HealthKit
+const currentDate = +new Date();
+
+const writeStatus = await HealthTrackerAPI.recordWorkout({
+  key: WorkoutTypes.Bowling,
+  startDate: currentDate,
+  endDate: currentDate + 3600,
+  energyBurned: 221, // kcal
+  metadata: {
+    'Workout name': 'Las Vegas II',
+  },
+});
 ```
 
 To access native API:

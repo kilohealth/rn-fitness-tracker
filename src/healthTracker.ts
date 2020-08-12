@@ -1,6 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
 
-import { HealthDataTypes, UnitTypes } from './utils/dataTypes';
+import { HealthDataTypes, UnitTypes, WorkoutTypes } from './utils/dataTypes';
 
 const { RNHealthTracker } = NativeModules;
 
@@ -39,6 +39,11 @@ const setupTracking = async <DataKey extends keyof typeof HealthDataTypes>(
 
 /**
  * Writes given health data to Health API
+ * @param object {object}
+ * @param object.key {HealthDataTypes}
+ * @param object.unit {UnitKey}
+ * @param object.quantity {Number}
+ * @param object.metadata {object}
  * @return {Promise<boolean>}
  */
 const writeData = async <
@@ -62,6 +67,12 @@ const writeData = async <
 
 /**
  * Writes given health data array to Health API
+ * @param dataArray {array}
+ * @param dataArray.object {object}
+ * @param dataArray.object.key {HealthDataTypes}
+ * @param dataArray.object.unit {UnitKey}
+ * @param dataArray.object.quantity {Number}
+ * @param dataArray.object.metadata {object}
  * @return {Promise<boolean>}
  */
 const writeDataArray = async <
@@ -124,10 +135,44 @@ const getStatisticTotalForToday = async <
   }
 };
 
+/**
+ * Records given workout data to Health API
+ * @param object {object}
+ * @param object.startDate {Date | number}
+ * @param object.endDate {Date | number}
+ * @param object.energyBurned {Number} number of calories in kcal
+ * @param object.metadata {object}
+ * @return {Promise<boolean>}
+ */
+const recordWorkout = async <DataKey extends keyof typeof WorkoutTypes>({
+  key,
+  startDate,
+  endDate,
+  energyBurned,
+  metadata = {},
+}: {
+  key: DataKey;
+  startDate: Date | number;
+  endDate: Date | number;
+  energyBurned: number;
+  metadata: {};
+}): Promise<boolean> => {
+  if (isIOS) {
+    return await RNHealthTracker.recordWorkout(
+      key,
+      +startDate,
+      +endDate,
+      energyBurned,
+      metadata,
+    );
+  }
+};
+
 export const HealthTrackerAPI = {
   getAbsoluteTotalForToday,
   getStatisticTotalForToday,
   isTrackingSupportedIOS,
+  recordWorkout,
   setupTracking,
   writeData,
   writeDataArray,

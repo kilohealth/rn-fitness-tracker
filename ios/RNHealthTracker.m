@@ -3,6 +3,7 @@
 #import <HealthKit/HealthKit.h>
 
 #import "React/RCTBridge.h"
+#import "React/RCTConvert.h"
 
 @interface NSArray (Extensions)
 
@@ -41,6 +42,14 @@
     return NO;
 }
 
+- (HKObjectType *) transformDataKeyToHKObject :(NSString*) dataKey {
+    if([dataKey isEqualToString:@"Workout"]) {
+        return [HKObjectType workoutType];
+    } else {
+        return [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataKey]];
+    }
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(authorize
@@ -50,19 +59,20 @@ RCT_EXPORT_METHOD(authorize
                   :(RCTPromiseRejectBlock) reject) {
     if ([HKHealthStore isHealthDataAvailable] == NO) {
         // If our device doesn't support HealthKit -> return.
-        NSError *error = [NSError errorWithDomain:@"world" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Health data is not supported on this device"}];
+        NSError *error = [NSError errorWithDomain:@"Health tracker" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Health data is not supported on this device"}];
         [self rejectError:error :reject];
     }
     
     NSArray *readTypesTransformed = readTypes.count > 0
-    ? [readTypes mapObjectsUsingBlock:^id(id obj, NSUInteger idx) {
-        return [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", obj]];
+    ? [readTypes mapObjectsUsingBlock:^id(id dataKey, NSUInteger idx) {
+        return [self transformDataKeyToHKObject:dataKey];
     }]
     : @[];
     
-    NSArray *shareTypesTransformed = readTypes.count > 0
-    ?  [shareTypes mapObjectsUsingBlock:^id(id obj, NSUInteger idx) {
-        return [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", obj]];
+    NSArray *shareTypesTransformed =
+    readTypes.count > 0
+    ?  [shareTypes mapObjectsUsingBlock:^id(id dataKey, NSUInteger idx) {
+        return [self transformDataKeyToHKObject:dataKey];
     }]
     : @[];
     
@@ -141,7 +151,7 @@ RCT_EXPORT_METHOD(writeDataArray
                 
                 [dataArrayTransformed addObject:dataObject];
             } else {
-                NSError *error = [NSError errorWithDomain:@"world" code:0 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat: @"Wrong data passed to RNHealthTracker:writeDataArray, dataArray id %lu", (unsigned long)idx]}];
+                NSError *error = [NSError errorWithDomain:@"Health tracker" code:0 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat: @"Wrong data passed to RNHealthTracker:writeDataArray, dataArray id %lu", (unsigned long)idx]}];
                 [self rejectError:error :reject];
                 *stop = YES;
             }
@@ -159,7 +169,7 @@ RCT_EXPORT_METHOD(writeDataArray
             }
         }];
     } else {
-        NSError *error = [NSError errorWithDomain:@"world" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Empty array passed to RNHealthTracker:writeDataArray"}];
+        NSError *error = [NSError errorWithDomain:@"Health tracker" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Empty array passed to RNHealthTracker:writeDataArray"}];
         [self rejectError:error :reject];
     }
 }
@@ -248,6 +258,34 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
     
     // Execute the query
     [_healthStore executeQuery:query];
+}
+
+
+RCT_EXPORT_METHOD(recordWorkout
+                  :(int) workoutWithActivityType
+                  :(nonnull NSNumber *) start
+                  :(nonnull NSNumber *) end
+                  :(nonnull NSNumber *) energyBurned
+                  :(NSDictionary*) metadata
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *startDate = [RCTConvert NSDate:start];
+    NSDate *endDate = [RCTConvert NSDate:end];
+    HKQuantity *totalEnergyBurned = [HKQuantity quantityWithUnit:HKUnit.kilocalorieUnit doubleValue:[energyBurned doubleValue]];
+    
+    HKWorkout *workout = [HKWorkout workoutWithActivityType:workoutWithActivityType startDate:startDate endDate:endDate duration:0 totalEnergyBurned:totalEnergyBurned totalDistance:nil metadata:metadata];
+    
+    [_healthStore
+     saveObject:workout
+     withCompletion:^(BOOL success, NSError *error) {
+        
+        if (success && !error) {
+            resolve(@true);
+        } else {
+            [self rejectError:error :reject];
+        }
+    }];
 }
 
 
