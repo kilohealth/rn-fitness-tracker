@@ -10,7 +10,7 @@ const { RNHealthTracker } = NativeModules;
 
 /**
  * `iOS only!` returns if step, distance and floor tracking is supported on device
- * @return {Promise<IFitnessTrackerAvailability>}
+ * @return {Promise<boolean>}
  */
 const isTrackingSupportedIOS = async (): Promise<boolean> => {
   const response = await RNHealthTracker.isTrackingSupported();
@@ -21,7 +21,7 @@ const isTrackingSupportedIOS = async (): Promise<boolean> => {
  * Sets up health tracking and returns status
  * @param shareTypes {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param readTypes {HealthDataType} e.g. `HealthDataTypes.Fiber`
- * @return {Promise<IFitnessTrackerStatus>}
+ * @return {Promise<boolean>}
  */
 const setupTracking = async <DataKey extends keyof typeof HealthDataTypes>(
   shareTypes: DataKey,
@@ -34,7 +34,7 @@ const setupTracking = async <DataKey extends keyof typeof HealthDataTypes>(
 
 /**
  * Writes given health data to Health API
- * @return {Promise<number>}
+ * @return {Promise<boolean>}
  */
 const writeData = async <
   DataKey extends keyof typeof HealthDataTypes,
@@ -49,7 +49,24 @@ const writeData = async <
   unit: UnitKey;
   quantity: number;
   metadata: {};
-}): Promise<number> => RNHealthTracker.writeData(key, quantity, unit, metadata);
+}): Promise<boolean> =>
+  RNHealthTracker.writeData(key, quantity, unit, metadata);
+
+/**
+ * Writes given health data array to Health API
+ * @return {Promise<boolean>}
+ */
+const writeDataArray = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>(
+  dataArray: Array<{
+    key: DataKey;
+    unit: UnitKey;
+    quantity: number;
+    metadata: {};
+  }>,
+): Promise<boolean> => RNHealthTracker.writeDataArray(dataArray);
 
 /**
  * Gets absolute total for given health data type and unit for current day
@@ -97,4 +114,5 @@ export const HealthTrackerAPI = {
   isTrackingSupportedIOS,
   setupTracking,
   writeData,
+  writeDataArray,
 };

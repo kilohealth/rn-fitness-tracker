@@ -50,7 +50,8 @@ RCT_EXPORT_METHOD(authorize
                   :(RCTPromiseRejectBlock) reject) {
     if ([HKHealthStore isHealthDataAvailable] == NO) {
         // If our device doesn't support HealthKit -> return.
-        reject(@"0", @"Health data is not supported", [NSError new]);
+        NSError *error = [NSError errorWithDomain:@"world" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Health data is not supported on this device"}];
+        [self rejectError:error :reject];
     }
     
     NSArray *readTypesTransformed = readTypes.count > 0
@@ -108,10 +109,59 @@ RCT_EXPORT_METHOD(writeData
     [HKQuantitySample quantitySampleWithType:quantityType quantity:quantity startDate:NSDate.date endDate:NSDate.date metadata:metadata];
     
     [_healthStore saveObject:dataObject withCompletion:^(BOOL success, NSError * _Nullable error) {
-        if(success) {
+        if(!error && success) {
             resolve(@true);
+        } else {
+            [self rejectError:error :reject];
         }
     }];
+}
+
+RCT_EXPORT_METHOD(writeDataArray
+                  :(NSArray*) dataArray
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    if(dataArray.count > 0) {
+        
+        NSMutableArray *dataArrayTransformed = [NSMutableArray array];
+        [dataArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            NSString *key = obj[@"key"];
+            NSString *unitKey = obj[@"unit"];
+            double quantityDouble = [obj[@"quantity"] doubleValue];
+            
+            if(key && unitKey && quantityDouble) {
+                HKQuantityType *quantityType =
+                [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", key]];
+                
+                HKQuantity *quantity = [HKQuantity quantityWithUnit:[HKUnit unitFromString:unitKey]
+                                                        doubleValue:quantityDouble];
+                HKQuantitySample *dataObject =
+                [HKQuantitySample quantitySampleWithType:quantityType quantity:quantity startDate:NSDate.date endDate:NSDate.date metadata:obj[@"metadata"]];
+                
+                [dataArrayTransformed addObject:dataObject];
+            } else {
+                NSError *error = [NSError errorWithDomain:@"world" code:0 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat: @"Wrong data passed to RNHealthTracker:writeDataArray, dataArray id %lu", (unsigned long)idx]}];
+                [self rejectError:error :reject];
+                *stop = YES;
+            }
+        }];
+        
+        if(dataArrayTransformed.count != dataArray.count){
+            return;
+        }
+        
+        [_healthStore saveObjects:dataArrayTransformed withCompletion:^(BOOL success, NSError * _Nullable error) {
+            if(!error && success) {
+                resolve(@true);
+            } else {
+                [self rejectError:error :reject];
+            }
+        }];
+    } else {
+        NSError *error = [NSError errorWithDomain:@"world" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Empty array passed to RNHealthTracker:writeDataArray"}];
+        [self rejectError:error :reject];
+    }
 }
 
 RCT_EXPORT_METHOD(getAbsoluteTotalForToday
@@ -154,7 +204,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
                   :(RCTPromiseRejectBlock) reject) {
     
     NSDate *start = [RNFitnessUtils beginningOfDay: NSDate.date];
-    NSDate *end = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:86399 toDate:start options:0]; // Today 23:59
+    NSDate *end = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:86399 toDate:start options:0]; // Today 23:59, 86399s = 23h 59m 59s
     
     NSDateComponents *interval = [[NSDateComponents alloc] init];
     interval.day = 1;
@@ -171,15 +221,12 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
      options:HKStatisticsOptionCumulativeSum
      anchorDate:start
      intervalComponents:interval];
-        
+    
     // Set the results handler
     query.initialResultsHandler =
     ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
         
         if (error) {
-            // Perform proper error handling here
-            NSLog(@"*** An error occurred while calculating the statistics: %@ ***",
-                  error.localizedDescription);
             [self rejectError :error :reject];
             abort();
         }
