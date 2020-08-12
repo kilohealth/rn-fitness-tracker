@@ -9,6 +9,8 @@
 <dd></dd>
 <dt><a href="#module_FloorTracking">FloorTracking</a></dt>
 <dd></dd>
+<dt><a href="#module_RNHealthTracker">RNHealthTracker</a></dt>
+<dd></dd>
 </dl>
 
 <a name="module_TrackingSetup"></a>
@@ -69,6 +71,7 @@ not supported iOS devices also return `trackingNotSupported: true` param inside 
 
 ### StepTracking~getStepsToday() ⇒ <code>Promise.&lt;number&gt;</code>
 Returns number of steps today
+on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
 
@@ -78,6 +81,7 @@ Returns number of steps today
 
 ### StepTracking~getStepsWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
 Returns number of steps this week
+on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
 
@@ -87,6 +91,7 @@ Returns number of steps this week
 
 ### StepTracking~getStepsDaily() ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
 Returns weekly steps object
+on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
 
@@ -119,6 +124,7 @@ on `iOS simulator` returns mock data
 
 ### DistanceTracking~getDistanceToday() ⇒ <code>Promise.&lt;number&gt;</code>
 Returns walking and running distance today in meters
+on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
 **Returns**: <code>Promise.&lt;number&gt;</code> - number of meters  
@@ -129,6 +135,7 @@ Returns walking and running distance today in meters
 
 ### DistanceTracking~getDistanceWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
 Returns walking and running distance this week in meters
+on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
 **Returns**: <code>Promise.&lt;Number&gt;</code> - number of meters  
@@ -139,6 +146,7 @@ Returns walking and running distance this week in meters
 
 ### DistanceTracking~getDistanceDaily() ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
 Returns daily distance object
+on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
 
@@ -171,6 +179,7 @@ on `iOS simulator` returns mock data
 
 ### FloorTracking~getFloorsTodayIOS() ⇒ <code>Promise.&lt;number&gt;</code>
 Returns walking and running distance today in meters
+on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
 **Returns**: <code>Promise.&lt;number&gt;</code> - number of meters  
@@ -181,6 +190,7 @@ Returns walking and running distance today in meters
 
 ### FloorTracking~getFloorsWeekTotalIOS() ⇒ <code>Promise.&lt;Number&gt;</code>
 Returns walking and running distance this week in meters
+on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
 **Returns**: <code>Promise.&lt;Number&gt;</code> - number of meters  
@@ -191,6 +201,7 @@ Returns walking and running distance this week in meters
 
 ### FloorTracking~getFloorsDailyIOS() ⇒ <code>Promise.&lt;IFloorsDaily&gt;</code>
 Returns daily distance object
+on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
 
@@ -203,6 +214,93 @@ Returns distance today and this week's distance object
 on `iOS simulator` returns mock data
 
 **Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
+
+* * *
+
+<a name="module_RNHealthTracker"></a>
+
+## RNHealthTracker
+
+* [RNHealthTracker](#module_RNHealthTracker)
+    * [~isTrackingSupportedIOS()](#module_RNHealthTracker..isTrackingSupportedIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~setupTracking(shareTypes, readTypes)](#module_RNHealthTracker..setupTracking) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~writeData()](#module_RNHealthTracker..writeData) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~writeDataArray()](#module_RNHealthTracker..writeDataArray) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~getAbsoluteTotalForToday(key, unit)](#module_RNHealthTracker..getAbsoluteTotalForToday) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getStatisticTotalForToday(key, unit)](#module_RNHealthTracker..getStatisticTotalForToday) ⇒ <code>Promise.&lt;number&gt;</code>
+
+
+* * *
+
+<a name="module_RNHealthTracker..isTrackingSupportedIOS"></a>
+
+### RNHealthTracker~isTrackingSupportedIOS() ⇒ <code>Promise.&lt;boolean&gt;</code>
+`iOS only!` returns if step, distance and floor tracking is supported on device
+
+**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+* * *
+
+<a name="module_RNHealthTracker..setupTracking"></a>
+
+### RNHealthTracker~setupTracking(shareTypes, readTypes) ⇒ <code>Promise.&lt;boolean&gt;</code>
+Sets up health tracking and returns status
+
+**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shareTypes | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| readTypes | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+
+
+* * *
+
+<a name="module_RNHealthTracker..writeData"></a>
+
+### RNHealthTracker~writeData() ⇒ <code>Promise.&lt;boolean&gt;</code>
+Writes given health data to Health API
+
+**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+* * *
+
+<a name="module_RNHealthTracker..writeDataArray"></a>
+
+### RNHealthTracker~writeDataArray() ⇒ <code>Promise.&lt;boolean&gt;</code>
+Writes given health data array to Health API
+
+**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+* * *
+
+<a name="module_RNHealthTracker..getAbsoluteTotalForToday"></a>
+
+### RNHealthTracker~getAbsoluteTotalForToday(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
+Gets absolute total for given health data type and unit for current day
+
+**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
+
+
+* * *
+
+<a name="module_RNHealthTracker..getStatisticTotalForToday"></a>
+
+### RNHealthTracker~getStatisticTotalForToday(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
+Gets statistic total for given health data type and unit for current day, same number as in health app
+
+**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
+
 
 * * *
 

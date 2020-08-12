@@ -4,6 +4,14 @@
 
 React Native library for step tracking based on Google Fit (Android) and CoreMotion (iOS) native API's.
 
+## Recommended React Native versions
+
+| React Native version(s) | Fitness Tracker version          |
+| ----------------------- | -------------------------------- |
+| <= v0.59                | v0.1.1                           |
+| <= v0.62                | v0.1.2 (Migrated to Autolinking) |
+| >= v0.63                | v0.1.4+ (Dropped iOS 8 support)  |
+
 ## Installation
 
 `$ yarn add @kilohealth/rn-fitness-tracker`
@@ -15,23 +23,31 @@ React Native library for step tracking based on Google Fit (Android) and CoreMot
 1. Add following lines to info.plist file `<dict>` tag:
 
 ```xml
+<!-- Fitness tracker -->
 <key>NSMotionUsageDescription</key>
+<string>Reason string goes here</string>
+
+<!-- Health tracker -->
+<key>NSHealthUpdateUsageDescription</key>
+<string>Reason string goes here</string>
+<key>NSHealthShareUsageDescription</key>
 <string>Reason string goes here</string>
 ```
 
 **or**
 
 Navigate to info.plist file in XCode ➜ Add new property list key - `NSMotionUsageDescription`.
-This will add new line in the containing `Privacy - Motion Usage Description`.
+This will add new line in the containing `Privacy - Motion Usage Description`. Same to be done with HealthKit.
 
 <details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
 <p>
 
-1. Add following line to Podfile:
+2. Add following line to Podfile:
    `pod 'RNFitnessTracker', :podspec => '../node_modules/@kilohealth/rn-fitness-tracker/ios/RNFitnessTracker.podspec'`.
-2. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-3. Go to `node_modules` ➜ `@kilohealth/rn-fitness-tracker` and add `RNFitnessTracker.xcodeproj`
-4. In XCode, in the project navigator, select your project. Add `libRNFitnessTracker.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
+3. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
+4. Go to `node_modules` ➜ `@kilohealth/rn-fitness-tracker` and add `RNFitnessTracker.xcodeproj`
+5. In XCode, in the project navigator, select your project. Add `libRNFitnessTracker.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
+6. If you want to use Health Tracking, make sure to add HealthKit under XCode ➜ `Signing & Capabilities` ➜ `+ Capability` ➜ `HealthKit`
 
 </p>
 </details>
@@ -99,20 +115,102 @@ implementation 'com.google.android.gms:play-services-auth:16.0.1'
 </p>
 </details>
 
-## Usage
+## Fitness tracker usage
 
 ```js
-import RNFitnessTracker from 'rn-fitness-tracker';
+import { FitnessTrackerAPI } from '@kilohealth/rn-fitness-tracker';
 
 // This step is required in order to use any of the methods bellow
 // Returns an object:
 // authorized: boolean;
 // shouldOpenAppSettings: boolean;
 // trackingNotSupported?: boolean;
-RNFitnessTracker.setupTracking(status => {});
+const authorizationStatus = await FitnessTrackerAPI.setupTracking();
 
-// Get steps today
-RNFitnessTracker.getStepsToday(steps => {});
+// Get steps total today
+const steps = await FitnessTrackerAPI.getStepsToday();
+
+// Get steps total this week
+const steps = await FitnessTrackerAPI.getStepsWeekTotal();
+
+// Get running & walking distance today
+const distance = await FitnessTrackerAPI.getDistanceToday();
+
+// Get floors climbed today
+const floorsClimbed = await FitnessTrackerAPI.getFloorsToday();
 ```
 
-[API Methods documentation](api.md)
+To access native API:
+
+```
+import { RNFitnessTracker } from '@kilohealth/rn-fitness-tracker';
+```
+
+## Health tracker usage
+
+```js
+import {
+  HealthTrackerAPI,
+  HealthDataTypes,
+  UnitTypes,
+} from '@kilohealth/rn-fitness-tracker';
+
+// Setup Health tracking
+const authorizationStatus = await HealthTrackerAPI.setupTracking(
+  [HealthDataTypes.Carbohydrates, HealthDataTypes.Calcium], // write types
+  [HealthDataTypes.Carbohydrates, HealthDataTypes.Fiber], // read types
+);
+
+// Get health data type total from HealthKit
+const healthTotalFiber = await HealthTrackerAPI.getStatisticTotalForToday({
+  key: HealthDataTypes.Fiber,
+  unit: UnitTypes.grams,
+});
+
+// Get absolute data type total from HealthKit
+const absoluteTotalFiber = await HealthTrackerAPI.getAbsoluteTotalForToday({
+  key: HealthDataTypes.Fiber,
+  unit: UnitTypes.grams,
+});
+
+// Write single category health data to HealthKit
+const writeStatus = await HealthTrackerAPI.writeData({
+  key: HealthDataTypes.Carbohydrates,
+  quantity: 28,
+  unit: UnitTypes.grams,
+  metadata: {
+    Meal: 'Lightly smoked salmon',
+  },
+});
+
+// Write health data array to HealthKit
+const writeStatus = await HealthTrackerAPI.writeDataArray([
+  {
+    key: HealthDataTypes.Carbohydrates,
+    quantity: 55,
+    unit: UnitTypes.grams,
+    metadata: {
+      Meal: 'Lightly smoked salmon',
+    },
+  },
+  {
+    key: HealthDataTypes.Calcium,
+    quantity: 35,
+    unit: UnitTypes.grams,
+    metadata: {
+      Meal: 'Milk pint',
+      'Random parameter': 'Very delicious milk',
+    },
+  },
+]);
+```
+
+To access native API:
+
+```
+import { RNHealthTracker } from '@kilohealth/rn-fitness-tracker';
+```
+
+## API Methods documentation
+
+[Full API Methods documentation](api.md)

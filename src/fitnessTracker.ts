@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 import { mockData } from './utils/mockData';
@@ -15,8 +15,8 @@ import {
 
 const { RNFitnessTracker } = NativeModules;
 
-const isSimulator =
-  global.__DEV__ && global.isIOS && DeviceInfo.isEmulatorSync();
+const isIOS = Platform.OS === 'ios';
+const isSimulator = global.__DEV__ && isIOS && DeviceInfo.isEmulatorSync();
 
 const iosAuthorizationStatusCheck = (status: string): IFitnessTrackerStatus => {
   if (status === 'authorized') {
@@ -50,7 +50,7 @@ const isTrackingSupportedIOS = async (): Promise<IFitnessTrackerAvailability> =>
  * @return {Promise<IFitnessTrackerStatus>}
  */
 const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
-  if (global.isIOS) {
+  if (isIOS) {
     const status: string = await RNFitnessTracker.isAuthorizedToUseCoreMotion();
     return iosAuthorizationStatusCheck(status);
   } else {
@@ -67,7 +67,7 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
 const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
   const authorized: boolean = await RNFitnessTracker.authorize();
 
-  if (!global.isIOS) {
+  if (!isIOS) {
     return { authorized, shouldOpenAppSettings: false };
   } else {
     if (authorized) {
