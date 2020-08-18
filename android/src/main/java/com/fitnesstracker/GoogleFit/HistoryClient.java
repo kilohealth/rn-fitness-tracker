@@ -286,7 +286,8 @@ class HistoryClient {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DATE);
         calendar.set(year, month, day, 0, 0, 0);
-        Date d = calendar.getTime();
+        calendar.set(Calendar.MILLISECOND, 0);
+
         return calendar.getTime();
     }
 
@@ -298,7 +299,8 @@ class HistoryClient {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DATE);
         calendar.set(year, month, day, 0, 0, 0);
-        Date d = calendar.getTime();
+        calendar.set(Calendar.MILLISECOND, 0);
+
         return calendar.getTime();
     }
 
