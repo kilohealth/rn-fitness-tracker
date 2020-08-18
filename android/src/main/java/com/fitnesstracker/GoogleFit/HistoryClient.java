@@ -99,7 +99,6 @@ class HistoryClient {
     void getStepsDaily(final Date date, final WritableMap stepsData, final int count, final Promise promise) {
         try {
             final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             Date end = getEndOfDay(date);
             Date start = getStartOfDay(date);
@@ -124,7 +123,6 @@ class HistoryClient {
     void getDistanceDaily(final Date date, final WritableMap distanceData, final int count, final Promise promise) {
         try {
             final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             Date end = getEndOfDay(date);
             Date start = getStartOfDay(date);
@@ -286,7 +284,8 @@ class HistoryClient {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DATE);
         calendar.set(year, month, day, 0, 0, 0);
-        Date d = calendar.getTime();
+        calendar.set(Calendar.MILLISECOND, 0);
+
         return calendar.getTime();
     }
 
@@ -298,7 +297,8 @@ class HistoryClient {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DATE);
         calendar.set(year, month, day, 0, 0, 0);
-        Date d = calendar.getTime();
+        calendar.set(Calendar.MILLISECOND, 0);
+
         return calendar.getTime();
     }
 
