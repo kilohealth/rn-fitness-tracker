@@ -1,5 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 
 import { mockData } from './utils/mockData';
 import {
@@ -65,11 +66,26 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
  * @return {Promise<IFitnessTrackerStatus>}
  */
 const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
-  const authorized: boolean = await RNFitnessTracker.authorize();
-
   if (!isIOS) {
-    return { authorized, shouldOpenAppSettings: false };
+    const apiLevel = await DeviceInfo.getApiLevel();
+    const isMotionAuthNeeded = apiLevel >= 29;
+    let motionAuthorized: 'unavailable' | 'denied' | 'blocked' | 'granted' =
+      RESULTS.UNAVAILABLE;
+
+    if (isMotionAuthNeeded) {
+      motionAuthorized = await request(
+        PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION,
+      );
+    }
+
+    if (!isMotionAuthNeeded || motionAuthorized === RESULTS.GRANTED) {
+      const authorized: boolean = await RNFitnessTracker.authorize();
+      return { authorized, shouldOpenAppSettings: false };
+    } else {
+      return { authorized: false, shouldOpenAppSettings: true };
+    }
   } else {
+    const authorized: boolean = await RNFitnessTracker.authorize();
     if (authorized) {
       const status: string = await RNFitnessTracker.isAuthorizedToUseCoreMotion();
       return iosAuthorizationStatusCheck(status);

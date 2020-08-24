@@ -1,6 +1,6 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Fitness tracker module",
   "homepage": "https://github.com/doville/rn-fitness-tracker",
   "repository": "https://github.com/doville/rn-fitness-tracker",
@@ -42,6 +42,7 @@
     "prettier": "^1.19.1",
     "react-native": "^0.60.5",
     "react-native-device-info": "^5.5.2",
+    "react-native-permissions": "^2.1.5",
     "tsc": "^1.20150623.0",
     "typescript": "^3.7.5"
   }

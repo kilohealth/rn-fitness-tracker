@@ -87,6 +87,12 @@ This will add new line in the containing `Privacy - Motion Usage Description`. S
 
 2. React Native autolinking should handle the rest.
 
+3. Add `ACTIVITY_RECOGNITION` permission to `AndroidManifest.xml`
+
+```xml
+<uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+```
+
 #### React-Native < 0.60
 
 <details><summary><b>Manual linking for projects with older react-native version</b></summary>
