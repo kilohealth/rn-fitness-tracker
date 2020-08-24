@@ -11,7 +11,6 @@ import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
-import com.google.android.gms.fitness.data.Value;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,12 +21,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 class HistoryClient {
 
-    String LOG_TAG = "StepHistory";
+    String LOG_TAG = "StepHistoryClient";
 
     private Activity activity;
 
@@ -35,44 +33,11 @@ class HistoryClient {
         this.activity = activity;
     }
 
-    void getStepsToday(final Promise promise) {
-        try {
-            Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity)).readDailyTotal(DataType.AGGREGATE_STEP_COUNT_DELTA)
-                    .addOnCompleteListener(new OnCompleteListener<DataSet>() {
-                        @Override
-                        public void onComplete(Task<DataSet> task) {
-
-                            List<DataPoint> dataSets = task.getResult().getDataPoints();
-                            int steps = 0;
-
-                            for (DataPoint dataPoint : dataSets) {
-
-                                Value value = dataPoint.getValue(Field.FIELD_STEPS);
-
-                                steps += value.asInt();
-                            }
-                            promise.resolve(steps);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(Exception e) {
-                            promise.reject(e);
-                        }
-                    });
-
-        } catch (Exception e) {
-            promise.reject(e);
-            e.printStackTrace();
-        }
-    }
-
     void getWeekData(final Promise promise, int dataType) {
         try {
-            long startTime = getSevenDaysAgo(new Date()).getTime();
-            final Calendar cal = Calendar.getInstance();
-            cal.setTime(new Date());
-            long now = cal.getTimeInMillis();
+            Date today = new Date();
+            long startTime = setMidnight(addDays(today, -7)).getTimeInMillis();
+            long now = today.getTime();
 
             if (dataType == 0) {
                 getStepHistory(startTime, now, 7, new OnStepsFetchComplete() {
@@ -107,7 +72,7 @@ class HistoryClient {
                 public void success(int steps) {
                     if (count < 7) {
                         stepsData.putInt(formatter.format(date), steps);
-                        Date previousDate = getOneDayAgo(date);
+                        Date previousDate = addDays(date, -1);
                         getStepsDaily(previousDate, stepsData, count + 1, promise);
                     } else {
                         promise.resolve(stepsData);
@@ -131,7 +96,7 @@ class HistoryClient {
                 public void success(float distance) {
                     if (count < 7) {
                         distanceData.putDouble(formatter.format(date), distance);
-                        Date previousDate = getOneDayAgo(date);
+                        Date previousDate = addDays(date, -1);
                         getDistanceDaily(previousDate, distanceData, count + 1, promise);
                     } else {
                         promise.resolve(distanceData);
@@ -144,34 +109,34 @@ class HistoryClient {
         }
     }
 
+    void getStepsToday(final Promise promise) {
+        try {
+            Date today = new Date();
+            Date end = getEndOfDay(today);
+            Date start = getStartOfDay(today);
+            getStepHistory(start.getTime(), end.getTime(), 1, new OnStepsFetchComplete() {
+                @Override
+                public void success(int steps) {
+                    promise.resolve(steps);
+                }
+            });
+        } catch (Exception e) {
+            promise.reject(e);
+            e.printStackTrace();
+        }
+    }
 
     void getDistanceToday(final Promise promise) {
         try {
-
-            Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity)).readDailyTotal(DataType.AGGREGATE_DISTANCE_DELTA)
-                    .addOnCompleteListener(new OnCompleteListener<DataSet>() {
-                        @Override
-                        public void onComplete(Task<DataSet> task) {
-
-                            List<DataPoint> dataSets = task.getResult().getDataPoints();
-                            float distance = 0;
-
-                            for (DataPoint dataPoint : dataSets) {
-
-                                Value value = dataPoint.getValue(Field.FIELD_DISTANCE);
-
-                                distance += value.asFloat();
-                            }
-                            promise.resolve(distance);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(Exception e) {
-
-                        }
-                    });
-
+            Date today = new Date();
+            Date end = getEndOfDay(today);
+            Date start = getStartOfDay(today);
+            getDistanceHistory(start.getTime(), end.getTime(), 1, new OnDistanceFetchComplete() {
+                @Override
+                public void success(float distance) {
+                    promise.resolve(distance);
+                }
+            });
         } catch (Exception e) {
             promise.reject(e);
             e.printStackTrace();
@@ -199,7 +164,7 @@ class HistoryClient {
                     @Override
                     public void onComplete(Task<DataReadResponse> task) {
                         DataReadResponse response = task.getResult();
-                        int steps = parseAggregateData(response);
+                        int steps = parseStepsDelta(response);
                         fetchCompleteCallback.success(steps);
                     }
                 });
@@ -231,9 +196,8 @@ class HistoryClient {
                 });
     }
 
-    private int parseAggregateData(DataReadResponse response) {
+    private int parseStepsDelta(DataReadResponse response) {
         List<Bucket> buckets = response.getBuckets();
-//        DateFormat dateFormat = DateFormat.getDateInstance();
         int stepCount = 0;
         for (Bucket bucket : buckets) {
             List<DataSet> dataSets = bucket.getDataSets();
@@ -241,12 +205,7 @@ class HistoryClient {
                 List<DataPoint> dataPoints = dataSet.getDataPoints();
                 for (DataPoint dataPoint : dataPoints) {
                     if (dataPoint.getDataType().equals(DataType.TYPE_STEP_COUNT_DELTA)) {
-//                        Log.i("!!!!!!!!!!!!!!!!!", "Data point:");
-//                        Log.i("!!!!!!!!!!!!!!!!!", "\tType: " + dataPoint.getDataType().getName());
-//                        Log.i("!!!!!!!!!!!!!!!!!", "\tStart: " + dateFormat.format(dataPoint.getStartTime(TimeUnit.MILLISECONDS)));
-//                        Log.i("!!!!!!!!!!!!!!!!!", "\tEnd: " + dateFormat.format(dataPoint.getEndTime(TimeUnit.MILLISECONDS)));
                         for (Field field : dataPoint.getDataType().getFields()) {
-//                            Log.i("!!!!!!!!!!!!!!!!!", "\tField: " + field.getName() + " Value: " + dataPoint.getValue(field));
                             if (field.getName().equals("steps")) {
                                 stepCount += dataPoint.getValue(field).asInt();
                             }
@@ -277,7 +236,7 @@ class HistoryClient {
         return distanceTotal;
     }
 
-    private Date getStartOfDay(Date date) {
+    private Calendar setMidnight(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         int year = calendar.get(Calendar.YEAR);
@@ -285,37 +244,31 @@ class HistoryClient {
         int day = calendar.get(Calendar.DATE);
         calendar.set(year, month, day, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar;
+    }
+
+    private Date getStartOfDay(Date date) {
+        Calendar calendar = setMidnight(date);
 
         return calendar.getTime();
     }
 
     private Date getEndOfDay(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        Calendar calendar = setMidnight(date);
         calendar.add(Calendar.DATE, 1);
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DATE);
-        calendar.set(year, month, day, 0, 0, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
 
         return calendar.getTime();
     }
 
-    private Date getSevenDaysAgo(Date date) {
+    private Date addDays(Date date, int daysDifference) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        cal.add(Calendar.DATE, -7);
-        Date dateSevenDaysAgo = cal.getTime();
-        return getStartOfDay(dateSevenDaysAgo);
+        cal.add(Calendar.DATE, daysDifference);
+        Date finalDate = cal.getTime();
+        return getStartOfDay(finalDate);
     }
 
-    private Date getOneDayAgo(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, -1);
-        return cal.getTime();
-    }
 }
 
 interface OnStepsFetchComplete {
