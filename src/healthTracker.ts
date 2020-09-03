@@ -168,7 +168,25 @@ const recordWorkout = async <DataKey extends keyof typeof WorkoutTypes>({
   }
 };
 
+/**
+ * Returns auth status for data type in Health API
+ * @param object {object}
+ * @param object.startDate {Date | number}
+ * @param object.endDate {Date | number}
+ * @param object.energyBurned {Number} number of calories in kcal
+ * @param object.metadata {object}
+ * @return {Promise<boolean>}
+ */
+const getAuthStatusForType = async <DataKey extends keyof typeof WorkoutTypes>(
+  key: DataKey,
+): Promise<boolean> => {
+  if (isIOS) {
+    return await RNHealthTracker.getAuthorizationStatusForType(key);
+  }
+};
+
 export const HealthTrackerAPI = {
+  getAuthStatusForType,
   getAbsoluteTotalForToday,
   getStatisticTotalForToday,
   isTrackingSupportedIOS,
