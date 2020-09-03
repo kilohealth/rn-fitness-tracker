@@ -175,7 +175,7 @@ const recordWorkout = async <DataKey extends keyof typeof WorkoutTypes>({
  * @param object.endDate {Date | number}
  * @param object.energyBurned {Number} number of calories in kcal
  * @param object.metadata {object}
- * @return {Promise<boolean>}
+ * @return {Promise<number>} 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized
  */
 const getAuthStatusForType = async <DataKey extends keyof typeof WorkoutTypes>(
   key: DataKey,
