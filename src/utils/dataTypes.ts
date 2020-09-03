@@ -61,6 +61,7 @@ export const HealthDataTypes = {
 // T    (tera-)   = 10^12              p    (pico-)   = 10^-12
 export const UnitTypes = {
   grams: 'g',
+  micrograms: 'mcg',
   miligrams: 'mg',
   kilograms: 'kg',
   meters: 'm',
