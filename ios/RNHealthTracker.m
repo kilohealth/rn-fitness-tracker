@@ -221,7 +221,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
     
     
     HKQuantityType *quantityType =
-    [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietarySugar];
+    [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
     
     // Create the query
     HKStatisticsCollectionQuery *query =
@@ -247,11 +247,8 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
          withBlock:^(HKStatistics *result, BOOL *stop) {
             
             HKQuantity *quantity = result.sumQuantity;
-            if (quantity) {
-                double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
-                resolve([NSString stringWithFormat :@"%f", value]);
-                
-            }
+            double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+            resolve([NSString stringWithFormat :@"%f", value]);
             
         }];
     };
