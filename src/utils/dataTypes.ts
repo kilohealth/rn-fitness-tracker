@@ -48,6 +48,44 @@ export const HealthDataTypes = {
   BodyFatPercentage: 'BodyFatPercentage',
   WaistCircumference: 'WaistCircumference',
 
+  // Activity
+  StepCount: 'StepCount',
+  DistanceWalkingRunning: 'DistanceWalkingRunning',
+  DistanceCycling: 'DistanceCycling',
+  PushCount: 'PushCount',
+  DistanceWheelchair: 'DistanceWheelchair',
+  SwimmingStrokeCount: 'SwimmingStrokeCount',
+  DistanceDownhillSnowSports: 'DistanceDownhillSnowSports',
+  BasalEnergyBurned: 'BasalEnergyBurned',
+  FlightsClimbed: 'FlightsClimbed',
+  NikeFuelPoints: 'NikeFuel',
+  ExerciseTime: 'AppleExerciseTime',
+  StandTime: 'AppleStandTime',
+
+  // Lab and Test Results
+  BloodAlcoholContent: 'BloodAlcoholContent',
+  BloodGlucose: 'BloodGlucose',
+  ElectrodermalActivity: 'ElectrodermalActivity',
+  ForcedExpiratoryVolume1: 'ForcedExpiratoryVolume1',
+  ForcedVitalCapacity: 'ForcedVitalCapacity',
+  InhalerUsage: 'InhalerUsage',
+  InsulinDelivery: 'InsulinDelivery',
+  NumberOfTimesFallen: 'NumberOfTimesFallen',
+  PeakExpiratoryFlowRate: 'PeakExpiratoryFlowRate',
+  PeripheralPerfusionIndex: 'PeripheralPerfusionIndex',
+
+  // Vital signs
+  HeartRate: 'HeartRate',
+  RestingHeartRate: 'RestingHeartRate',
+  HeartRateVariabilitySDNN: 'HeartRateVariabilitySDNN',
+  WalkingHeartRateAverage: 'WalkingHeartRateAverage',
+  OxygenSaturation: 'OxygenSaturation',
+  BodyTemperature: 'BodyTemperature',
+  BloodPressureSystolic: 'BloodPressureSystolic',
+  BloodPressureDiastolic: 'BloodPressureDiastolic',
+  RespiratoryRate: 'RespiratoryRate',
+  VO2Max: 'VO2Max',
+
   // Workout
   Workout: 'Workout',
 };

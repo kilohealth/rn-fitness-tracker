@@ -229,6 +229,7 @@ on `iOS simulator` returns mock data
     * [~getAbsoluteTotalForToday(key, unit)](#module_RNHealthTracker..getAbsoluteTotalForToday) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getStatisticTotalForToday(key, unit)](#module_RNHealthTracker..getStatisticTotalForToday) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~recordWorkout(object)](#module_RNHealthTracker..recordWorkout) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~getAuthStatusForType(object)](#module_RNHealthTracker..getAuthStatusForType) ⇒ <code>Promise.&lt;number&gt;</code>
 
 
 * * *
@@ -330,6 +331,25 @@ Gets statistic total for given health data type and unit for current day, same n
 Records given workout data to Health API
 
 **Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| object | <code>object</code> |  |
+| object.startDate | <code>Date</code> \| <code>number</code> |  |
+| object.endDate | <code>Date</code> \| <code>number</code> |  |
+| object.energyBurned | <code>Number</code> | number of calories in kcal |
+| object.metadata | <code>object</code> |  |
+
+
+* * *
+
+<a name="module_RNHealthTracker..getAuthStatusForType"></a>
+
+### RNHealthTracker~getAuthStatusForType(object) ⇒ <code>Promise.&lt;number&gt;</code>
+Returns auth status for data type in Health API
+
+**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+**Returns**: <code>Promise.&lt;number&gt;</code> - 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized  
 
 | Param | Type | Description |
 | --- | --- | --- |
