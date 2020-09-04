@@ -136,6 +136,50 @@ const getStatisticTotalForToday = async <
 };
 
 /**
+ * Gets statistic total for given health data type and unit for current week, same number as in health app
+ * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @return {Promise<number>}
+ */
+const getStatisticTotalForWeek = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>({
+  key,
+  unit,
+}: {
+  key: DataKey;
+  unit: UnitKey;
+}): Promise<number> => {
+  if (isIOS) {
+    const total = await RNHealthTracker.getStatisticTotalForWeek(key, unit);
+    return Number(total);
+  }
+};
+
+/**
+ * Gets statistic daily total for given health data type and unit for current week, same number as in health app
+ * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @return {Promise<number>}
+ */
+const getStatisticWeekDaily = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>({
+  key,
+  unit,
+}: {
+  key: DataKey;
+  unit: UnitKey;
+}): Promise<{}> => {
+  if (isIOS) {
+    const total = await RNHealthTracker.getStatisticWeekDaily(key, unit);
+    return total;
+  }
+};
+
+/**
  * Records given workout data to Health API
  * @param object {object}
  * @param object.startDate {Date | number}
@@ -189,6 +233,8 @@ export const HealthTrackerAPI = {
   getAuthStatusForType,
   getAbsoluteTotalForToday,
   getStatisticTotalForToday,
+  getStatisticTotalForWeek,
+  getStatisticWeekDaily,
   isTrackingSupportedIOS,
   recordWorkout,
   setupTracking,
