@@ -50,6 +50,32 @@
     }
 }
 
+
+-(HKStatisticsCollectionQuery*) getStatisticDataReadQuery
+:(NSString*) dataTypeIdentifier
+:(NSString*) unit
+:(NSDate *) start
+:(RCTPromiseRejectBlock) reject {
+    NSDateComponents *interval = [[NSDateComponents alloc] init];
+    interval.day = 1;
+    
+    
+    HKQuantityType *quantityType =
+    [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    
+    // Create the query
+    HKStatisticsCollectionQuery *query =
+    [[HKStatisticsCollectionQuery alloc]
+     initWithQuantityType:quantityType
+     quantitySamplePredicate:nil
+     options:HKStatisticsOptionCumulativeSum
+     anchorDate:start
+     intervalComponents:interval];
+    
+    return query;
+}
+
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(authorize
@@ -111,7 +137,7 @@ RCT_EXPORT_METHOD(writeData
     
     HKQuantityType *quantityType =
     [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
-    
+
     HKQuantity *quantity = [HKQuantity quantityWithUnit:[HKUnit unitFromString:unit]
                                             doubleValue:amount];
     
@@ -215,22 +241,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
     
     NSDate *start = [RNFitnessUtils beginningOfDay: NSDate.date];
     NSDate *end = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:86399 toDate:start options:0]; // Today 23:59, 86399s = 23h 59m 59s
-    
-    NSDateComponents *interval = [[NSDateComponents alloc] init];
-    interval.day = 1;
-    
-    
-    HKQuantityType *quantityType =
-    [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
-    
-    // Create the query
-    HKStatisticsCollectionQuery *query =
-    [[HKStatisticsCollectionQuery alloc]
-     initWithQuantityType:quantityType
-     quantitySamplePredicate:nil
-     options:HKStatisticsOptionCumulativeSum
-     anchorDate:start
-     intervalComponents:interval];
+    HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
     
     // Set the results handler
     query.initialResultsHandler =
@@ -296,6 +307,90 @@ RCT_EXPORT_METHOD(getAuthorizationStatusForType
     NSInteger status = [_healthStore authorizationStatusForType:type];
     resolve(@(status));
     
+}
+
+
+RCT_EXPORT_METHOD(getStatisticTotalForWeek
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
+    NSDate *start = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:-604799 toDate:end options:0];  // 604799s = 23h 59m 59s
+    HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
+    
+    // Set the results handler
+    query.initialResultsHandler =
+    ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
+        
+        if (error) {
+            [self rejectError :error :reject];
+            abort();
+        }
+        
+        __block double total = 0;
+        
+        [results
+         enumerateStatisticsFromDate:start
+         toDate:end
+         withBlock:^(HKStatistics *result, BOOL *stop) {
+            
+            HKQuantity *quantity = result.sumQuantity;
+            double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+            total += value;
+        }];
+        resolve([NSString stringWithFormat :@"%f", total]);
+
+    };
+    
+    // Execute the query
+    [_healthStore executeQuery:query];
+}
+
+
+RCT_EXPORT_METHOD(getStatisticWeekDaily
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
+    NSDate *start = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:-604799 toDate:end options:0];  // 604799s = 23h 59m 59s
+    HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
+    
+    NSLog(@"%@ %@", start, end);
+    
+    // Set the results handler
+    query.initialResultsHandler =
+    ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
+        
+        if (error) {
+            [self rejectError :error :reject];
+            abort();
+        }
+        
+        NSMutableDictionary *data = [NSMutableDictionary new];
+        
+        [results
+         enumerateStatisticsFromDate:start
+         toDate:end
+         withBlock:^(HKStatistics *result, BOOL *stop) {
+            
+            HKQuantity *quantity = result.sumQuantity;
+            double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+            NSString *dateString = [dateFormatter stringFromDate:result.startDate];
+            [data setValue:@(value) forKey:dateString];
+        }];
+        
+        resolve(data);
+    };
+    
+    // Execute the query
+    [_healthStore executeQuery:query];
 }
 
 
