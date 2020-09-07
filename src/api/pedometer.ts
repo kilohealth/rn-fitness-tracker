@@ -33,7 +33,7 @@ const iosAuthorizationStatusCheck = (status: string): IFitnessTrackerStatus => {
 };
 
 /**
- * @module TrackingSetup
+ * @module PedometerAPI
  */
 
 /**
@@ -102,10 +102,6 @@ const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
 };
 
 /**
- * @module StepTracking
- */
-
-/**
  * Returns number of steps today
  * on `iOS simulator` returns mock data
  * @return {Promise<number>}
@@ -161,10 +157,6 @@ const getStepsData = async (): Promise<IStepsData> => {
 };
 
 /**
- * @module DistanceTracking
- */
-
-/**
  * Returns walking and running distance today in meters
  * on `iOS simulator` returns mock data
  * @return {Promise<number>} number of meters
@@ -217,10 +209,6 @@ const getDistanceData = async (): Promise<IDistanceData> => {
   const distanceDaily: IDistanceDaily = await RNFitnessTracker.getDistanceDaily();
   return { distanceToday, distanceDaily: distanceDaily || {} };
 };
-
-/**
- * @module FloorTracking
- */
 
 /**
  * Returns walking and running distance today in meters

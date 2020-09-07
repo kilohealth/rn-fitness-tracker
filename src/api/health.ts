@@ -7,7 +7,7 @@ const { RNHealthTracker } = NativeModules;
 
 
 /**
- * @module RNHealthTracker
+ * @module HealthTrackerAPI
  */
 
 /**
