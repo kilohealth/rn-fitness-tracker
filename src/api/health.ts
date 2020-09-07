@@ -1,17 +1,17 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules } from 'react-native';
 
-import { HealthDataTypes, UnitTypes, WorkoutTypes } from './utils/dataTypes';
+import { HealthDataTypes, UnitTypes, WorkoutTypes } from '../types/dataTypes';
+import { isIOS } from '../utils/helpers';
 
 const { RNHealthTracker } = NativeModules;
 
-const isIOS = Platform.OS === 'ios';
 
 /**
  * @module RNHealthTracker
  */
 
 /**
- * `iOS only!` returns if step, distance and floor tracking is supported on device
+ * `iOS only!` returns health tracking is supported
  * @return {Promise<boolean>}
  */
 const isTrackingSupportedIOS = async (): Promise<boolean> => {
@@ -22,12 +22,12 @@ const isTrackingSupportedIOS = async (): Promise<boolean> => {
 };
 
 /**
- * Sets up health tracking and returns status
+ * `iOS only!` Sets up health tracking and returns status
  * @param shareTypes {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param readTypes {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @return {Promise<boolean>}
  */
-const setupTracking = async <DataKey extends keyof typeof HealthDataTypes>(
+const setupTrackingIOS = async <DataKey extends keyof typeof HealthDataTypes>(
   shareTypes: DataKey,
   readTypes: DataKey,
 ): Promise<boolean> => {
@@ -38,7 +38,7 @@ const setupTracking = async <DataKey extends keyof typeof HealthDataTypes>(
 };
 
 /**
- * Writes given health data to Health API
+ * `iOS only!` Writes given health data to Health API
  * @param object {object}
  * @param object.key {HealthDataTypes}
  * @param object.unit {UnitKey}
@@ -46,7 +46,7 @@ const setupTracking = async <DataKey extends keyof typeof HealthDataTypes>(
  * @param object.metadata {object}
  * @return {Promise<boolean>}
  */
-const writeData = async <
+const writeDataIOS = async <
   DataKey extends keyof typeof HealthDataTypes,
   UnitKey extends keyof typeof UnitTypes
 >({
@@ -66,7 +66,7 @@ const writeData = async <
 };
 
 /**
- * Writes given health data array to Health API
+ * `iOS only!` Writes given health data array to Health API
  * @param dataArray {array}
  * @param dataArray.object {object}
  * @param dataArray.object.key {HealthDataTypes}
@@ -75,7 +75,7 @@ const writeData = async <
  * @param dataArray.object.metadata {object}
  * @return {Promise<boolean>}
  */
-const writeDataArray = async <
+const writeDataArrayIOS = async <
   DataKey extends keyof typeof HealthDataTypes,
   UnitKey extends keyof typeof UnitTypes
 >(
@@ -92,12 +92,12 @@ const writeDataArray = async <
 };
 
 /**
- * Gets absolute total for given health data type and unit for current day
+ * `iOS only!` Gets absolute total for given health data type and unit for current day
  * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param unit {UnitType} e.g. `UnitTypes.grams`
  * @return {Promise<number>}
  */
-const getAbsoluteTotalForToday = async <
+const getAbsoluteTotalForTodayIOS = async <
   DataKey extends keyof typeof HealthDataTypes,
   UnitKey extends keyof typeof UnitTypes
 >({
@@ -114,12 +114,12 @@ const getAbsoluteTotalForToday = async <
 };
 
 /**
- * Gets statistic total for given health data type and unit for current day, same number as in health app
+ * `iOS only!` Gets statistic total for given health data type and unit for current day, same number as in health app
  * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param unit {UnitType} e.g. `UnitTypes.grams`
  * @return {Promise<number>}
  */
-const getStatisticTotalForToday = async <
+const getStatisticTotalForTodayIOS = async <
   DataKey extends keyof typeof HealthDataTypes,
   UnitKey extends keyof typeof UnitTypes
 >({
@@ -136,12 +136,12 @@ const getStatisticTotalForToday = async <
 };
 
 /**
- * Gets statistic total for given health data type and unit for current week, same number as in health app
+ * `iOS only!` Gets statistic total for given health data type and unit for current week, same number as in health app
  * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param unit {UnitType} e.g. `UnitTypes.grams`
  * @return {Promise<number>}
  */
-const getStatisticTotalForWeek = async <
+const getStatisticTotalForWeekIOS = async <
   DataKey extends keyof typeof HealthDataTypes,
   UnitKey extends keyof typeof UnitTypes
 >({
@@ -158,12 +158,12 @@ const getStatisticTotalForWeek = async <
 };
 
 /**
- * Gets statistic daily total for given health data type and unit for current week, same number as in health app
+ * `iOS only!` Gets statistic daily total for given health data type and unit for current week, same number as in health app
  * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param unit {UnitType} e.g. `UnitTypes.grams`
  * @return {Promise<number>}
  */
-const getStatisticWeekDaily = async <
+const getStatisticWeekDailyIOS = async <
   DataKey extends keyof typeof HealthDataTypes,
   UnitKey extends keyof typeof UnitTypes
 >({
@@ -174,13 +174,12 @@ const getStatisticWeekDaily = async <
   unit: UnitKey;
 }): Promise<{}> => {
   if (isIOS) {
-    const total = await RNHealthTracker.getStatisticWeekDaily(key, unit);
-    return total;
+    return RNHealthTracker.getStatisticWeekDaily(key, unit);
   }
 };
 
 /**
- * Records given workout data to Health API
+ * `iOS only!` Records given workout data to Health API
  * @param object {object}
  * @param object.startDate {Date | number}
  * @param object.endDate {Date | number}
@@ -188,7 +187,7 @@ const getStatisticWeekDaily = async <
  * @param object.metadata {object}
  * @return {Promise<boolean>}
  */
-const recordWorkout = async <DataKey extends keyof typeof WorkoutTypes>({
+const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
   key,
   startDate,
   endDate,
@@ -213,15 +212,11 @@ const recordWorkout = async <DataKey extends keyof typeof WorkoutTypes>({
 };
 
 /**
- * Returns auth status for data type in Health API
- * @param object {object}
- * @param object.startDate {Date | number}
- * @param object.endDate {Date | number}
- * @param object.energyBurned {Number} number of calories in kcal
- * @param object.metadata {object}
+ * `iOS only!` Returns auth status for data type in Health API
+ * @param dataType {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @return {Promise<number>} 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized
  */
-const getAuthStatusForType = async <DataKey extends keyof typeof WorkoutTypes>(
+const getAuthStatusForTypeIOS = async <DataKey extends keyof typeof WorkoutTypes>(
   key: DataKey,
 ): Promise<boolean> => {
   if (isIOS) {
@@ -230,14 +225,14 @@ const getAuthStatusForType = async <DataKey extends keyof typeof WorkoutTypes>(
 };
 
 export const HealthTrackerAPI = {
-  getAuthStatusForType,
-  getAbsoluteTotalForToday,
-  getStatisticTotalForToday,
-  getStatisticTotalForWeek,
-  getStatisticWeekDaily,
+  getAuthStatusForTypeIOS,
+  getAbsoluteTotalForTodayIOS,
+  getStatisticTotalForTodayIOS,
+  getStatisticTotalForWeekIOS,
+  getStatisticWeekDailyIOS,
   isTrackingSupportedIOS,
-  recordWorkout,
-  setupTracking,
-  writeData,
-  writeDataArray,
+  recordWorkoutIOS,
+  setupTrackingIOS,
+  writeDataIOS,
+  writeDataArrayIOS,
 };

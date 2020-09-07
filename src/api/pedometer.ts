@@ -1,8 +1,8 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 
-import { mockData } from './utils/mockData';
+import { mockData } from '../utils/mockData';
 import {
   IDistanceDaily,
   IDistanceData,
@@ -12,12 +12,12 @@ import {
   IFloorsData,
   IStepsDaily,
   IStepsData,
-} from './types';
+} from '../types/fitnessTypes';
+import { isIOS } from '../utils/helpers';
 
 const { RNFitnessTracker } = NativeModules;
 
-const isIOS = Platform.OS === 'ios';
-const isSimulator = global.__DEV__ && isIOS && DeviceInfo.isEmulatorSync();
+const isSimulator = __DEV__ && isIOS && DeviceInfo.isEmulatorSync();
 
 const iosAuthorizationStatusCheck = (status: string): IFitnessTrackerStatus => {
   if (status === 'authorized') {
@@ -275,7 +275,7 @@ const getFloorsDataIOS = async (): Promise<IFloorsData> => {
   return { floorsToday, floorsDaily: floorsDaily || {} };
 };
 
-export const FitnessTrackerAPI = {
+export const PedometerAPI = {
   getStepsToday,
   getStepsWeekTotal,
   getStepsDaily,
