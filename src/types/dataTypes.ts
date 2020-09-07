@@ -134,6 +134,8 @@ export const UnitTypes = {
   pintUS: 'pt_us',
   cupImperial: 'cup_us',
   cupUS: 'cup_imp',
+  count: 'count',
+  percent: 'percent',
 };
 
 export const WorkoutTypes = {
