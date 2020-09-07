@@ -1,254 +1,159 @@
 ## Modules
 
 <dl>
-<dt><a href="#module_TrackingSetup">TrackingSetup</a></dt>
+<dt><a href="#module_FitnessTrackerAPI">FitnessTrackerAPI</a></dt>
 <dd></dd>
-<dt><a href="#module_StepTracking">StepTracking</a></dt>
+<dt><a href="#module_HealthTrackerAPI">HealthTrackerAPI</a></dt>
 <dd></dd>
-<dt><a href="#module_DistanceTracking">DistanceTracking</a></dt>
-<dd></dd>
-<dt><a href="#module_FloorTracking">FloorTracking</a></dt>
-<dd></dd>
-<dt><a href="#module_RNHealthTracker">RNHealthTracker</a></dt>
+<dt><a href="#module_PedometerAPI">PedometerAPI</a></dt>
 <dd></dd>
 </dl>
 
-<a name="module_TrackingSetup"></a>
+<a name="module_FitnessTrackerAPI"></a>
 
-## TrackingSetup
+## FitnessTrackerAPI
 
-* [TrackingSetup](#module_TrackingSetup)
-    * [~isTrackingSupportedIOS()](#module_TrackingSetup..isTrackingSupportedIOS) ⇒ <code>Promise.&lt;IFitnessTrackerAvailability&gt;</code>
-    * [~isTrackingAvailable()](#module_TrackingSetup..isTrackingAvailable) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
-    * [~setupTracking()](#module_TrackingSetup..setupTracking) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+* [FitnessTrackerAPI](#module_FitnessTrackerAPI)
+    * [~isTrackingAvailable()](#module_FitnessTrackerAPI..isTrackingAvailable) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+    * [~setupTracking()](#module_FitnessTrackerAPI..setupTracking) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+    * [~getStepsToday()](#module_FitnessTrackerAPI..getStepsToday) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getStepsWeekTotal()](#module_FitnessTrackerAPI..getStepsWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
+    * [~getStepsDaily()](#module_FitnessTrackerAPI..getStepsDaily) ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
+    * [~getStepsData()](#module_FitnessTrackerAPI..getStepsData) ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
+    * [~getDistanceToday()](#module_FitnessTrackerAPI..getDistanceToday) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getDistanceWeekTotal()](#module_FitnessTrackerAPI..getDistanceWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
+    * [~getDistanceDaily()](#module_FitnessTrackerAPI..getDistanceDaily) ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
+    * [~getDistanceData()](#module_FitnessTrackerAPI..getDistanceData) ⇒ <code>Promise.&lt;IDistanceData&gt;</code>
 
-
-* * *
-
-<a name="module_TrackingSetup..isTrackingSupportedIOS"></a>
-
-### TrackingSetup~isTrackingSupportedIOS() ⇒ <code>Promise.&lt;IFitnessTrackerAvailability&gt;</code>
-`iOS only!` returns if step, distance and floor tracking is supported on device
-equals to 1 if supported or 0 if not.
-
-**Kind**: inner method of [<code>TrackingSetup</code>](#module_TrackingSetup)  
 
 * * *
 
-<a name="module_TrackingSetup..isTrackingAvailable"></a>
+<a name="module_FitnessTrackerAPI..isTrackingAvailable"></a>
 
-### TrackingSetup~isTrackingAvailable() ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+### FitnessTrackerAPI~isTrackingAvailable() ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
 Returns if step tracking is authorized and available on both platforms
 
-**Kind**: inner method of [<code>TrackingSetup</code>](#module_TrackingSetup)  
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
 * * *
 
-<a name="module_TrackingSetup..setupTracking"></a>
+<a name="module_FitnessTrackerAPI..setupTracking"></a>
 
-### TrackingSetup~setupTracking() ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
-Sets up step tracking and returns status
-not supported iOS devices also return `trackingNotSupported: true` param inside the status object
+### FitnessTrackerAPI~setupTracking() ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+Sets up step tracking for walking & running steps and distance
 
-**Kind**: inner method of [<code>TrackingSetup</code>](#module_TrackingSetup)  
-
-* * *
-
-<a name="module_StepTracking"></a>
-
-## StepTracking
-
-* [StepTracking](#module_StepTracking)
-    * [~getStepsToday()](#module_StepTracking..getStepsToday) ⇒ <code>Promise.&lt;number&gt;</code>
-    * [~getStepsWeekTotal()](#module_StepTracking..getStepsWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
-    * [~getStepsDaily()](#module_StepTracking..getStepsDaily) ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
-    * [~getStepsData()](#module_StepTracking..getStepsData) ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
-
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
 * * *
 
-<a name="module_StepTracking..getStepsToday"></a>
+<a name="module_FitnessTrackerAPI..getStepsToday"></a>
 
-### StepTracking~getStepsToday() ⇒ <code>Promise.&lt;number&gt;</code>
+### FitnessTrackerAPI~getStepsToday() ⇒ <code>Promise.&lt;number&gt;</code>
 Returns number of steps today
-on `iOS simulator` returns mock data
 
-**Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
 * * *
 
-<a name="module_StepTracking..getStepsWeekTotal"></a>
+<a name="module_FitnessTrackerAPI..getStepsWeekTotal"></a>
 
-### StepTracking~getStepsWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
+### FitnessTrackerAPI~getStepsWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
 Returns number of steps this week
-on `iOS simulator` returns mock data
 
-**Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
 * * *
 
-<a name="module_StepTracking..getStepsDaily"></a>
+<a name="module_FitnessTrackerAPI..getStepsDaily"></a>
 
-### StepTracking~getStepsDaily() ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
+### FitnessTrackerAPI~getStepsDaily() ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
 Returns weekly steps object
-on `iOS simulator` returns mock data
 
-**Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
 * * *
 
-<a name="module_StepTracking..getStepsData"></a>
+<a name="module_FitnessTrackerAPI..getStepsData"></a>
 
-### StepTracking~getStepsData() ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
+### FitnessTrackerAPI~getStepsData() ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
 Returns steps today and this week's steps object
-on `iOS simulator` returns mock data
 
-**Kind**: inner method of [<code>StepTracking</code>](#module_StepTracking)  
-
-* * *
-
-<a name="module_DistanceTracking"></a>
-
-## DistanceTracking
-
-* [DistanceTracking](#module_DistanceTracking)
-    * [~getDistanceToday()](#module_DistanceTracking..getDistanceToday) ⇒ <code>Promise.&lt;number&gt;</code>
-    * [~getDistanceWeekTotal()](#module_DistanceTracking..getDistanceWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
-    * [~getDistanceDaily()](#module_DistanceTracking..getDistanceDaily) ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
-    * [~getDistanceData()](#module_DistanceTracking..getDistanceData) ⇒ <code>Promise.&lt;IDistanceData&gt;</code>
-
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
 * * *
 
-<a name="module_DistanceTracking..getDistanceToday"></a>
+<a name="module_FitnessTrackerAPI..getDistanceToday"></a>
 
-### DistanceTracking~getDistanceToday() ⇒ <code>Promise.&lt;number&gt;</code>
+### FitnessTrackerAPI~getDistanceToday() ⇒ <code>Promise.&lt;number&gt;</code>
 Returns walking and running distance today in meters
-on `iOS simulator` returns mock data
 
-**Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 **Returns**: <code>Promise.&lt;number&gt;</code> - number of meters  
 
 * * *
 
-<a name="module_DistanceTracking..getDistanceWeekTotal"></a>
+<a name="module_FitnessTrackerAPI..getDistanceWeekTotal"></a>
 
-### DistanceTracking~getDistanceWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
+### FitnessTrackerAPI~getDistanceWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
 Returns walking and running distance this week in meters
-on `iOS simulator` returns mock data
 
-**Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 **Returns**: <code>Promise.&lt;Number&gt;</code> - number of meters  
 
 * * *
 
-<a name="module_DistanceTracking..getDistanceDaily"></a>
+<a name="module_FitnessTrackerAPI..getDistanceDaily"></a>
 
-### DistanceTracking~getDistanceDaily() ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
+### FitnessTrackerAPI~getDistanceDaily() ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
 Returns daily distance object
-on `iOS simulator` returns mock data
 
-**Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
-
-* * *
-
-<a name="module_DistanceTracking..getDistanceData"></a>
-
-### DistanceTracking~getDistanceData() ⇒ <code>Promise.&lt;IDistanceData&gt;</code>
-Returns distance today and this week's distance object
-on `iOS simulator` returns mock data
-
-**Kind**: inner method of [<code>DistanceTracking</code>](#module_DistanceTracking)  
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
 * * *
 
-<a name="module_FloorTracking"></a>
+<a name="module_FitnessTrackerAPI..getDistanceData"></a>
 
-## FloorTracking
+### FitnessTrackerAPI~getDistanceData() ⇒ <code>Promise.&lt;IDistanceData&gt;</code>
+Returns distance today and this week's distance daily data object
 
-* [FloorTracking](#module_FloorTracking)
-    * [~getFloorsTodayIOS()](#module_FloorTracking..getFloorsTodayIOS) ⇒ <code>Promise.&lt;number&gt;</code>
-    * [~getFloorsWeekTotalIOS()](#module_FloorTracking..getFloorsWeekTotalIOS) ⇒ <code>Promise.&lt;Number&gt;</code>
-    * [~getFloorsDailyIOS()](#module_FloorTracking..getFloorsDailyIOS) ⇒ <code>Promise.&lt;IFloorsDaily&gt;</code>
-    * [~getFloorsDataIOS()](#module_FloorTracking..getFloorsDataIOS) ⇒ <code>Promise.&lt;IFloorsData&gt;</code>
-
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
 * * *
 
-<a name="module_FloorTracking..getFloorsTodayIOS"></a>
+<a name="module_HealthTrackerAPI"></a>
 
-### FloorTracking~getFloorsTodayIOS() ⇒ <code>Promise.&lt;number&gt;</code>
-Returns walking and running distance today in meters
-on `iOS simulator` returns mock data
+## HealthTrackerAPI
 
-**Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
-**Returns**: <code>Promise.&lt;number&gt;</code> - number of meters  
-
-* * *
-
-<a name="module_FloorTracking..getFloorsWeekTotalIOS"></a>
-
-### FloorTracking~getFloorsWeekTotalIOS() ⇒ <code>Promise.&lt;Number&gt;</code>
-Returns walking and running distance this week in meters
-on `iOS simulator` returns mock data
-
-**Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
-**Returns**: <code>Promise.&lt;Number&gt;</code> - number of meters  
-
-* * *
-
-<a name="module_FloorTracking..getFloorsDailyIOS"></a>
-
-### FloorTracking~getFloorsDailyIOS() ⇒ <code>Promise.&lt;IFloorsDaily&gt;</code>
-Returns daily distance object
-on `iOS simulator` returns mock data
-
-**Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
-
-* * *
-
-<a name="module_FloorTracking..getFloorsDataIOS"></a>
-
-### FloorTracking~getFloorsDataIOS() ⇒ <code>Promise.&lt;IFloorsData&gt;</code>
-Returns distance today and this week's distance object
-on `iOS simulator` returns mock data
-
-**Kind**: inner method of [<code>FloorTracking</code>](#module_FloorTracking)  
-
-* * *
-
-<a name="module_RNHealthTracker"></a>
-
-## RNHealthTracker
-
-* [RNHealthTracker](#module_RNHealthTracker)
-    * [~isTrackingSupportedIOS()](#module_RNHealthTracker..isTrackingSupportedIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
-    * [~setupTracking(shareTypes, readTypes)](#module_RNHealthTracker..setupTracking) ⇒ <code>Promise.&lt;boolean&gt;</code>
-    * [~writeData(object)](#module_RNHealthTracker..writeData) ⇒ <code>Promise.&lt;boolean&gt;</code>
-    * [~writeDataArray(dataArray)](#module_RNHealthTracker..writeDataArray) ⇒ <code>Promise.&lt;boolean&gt;</code>
-    * [~getAbsoluteTotalForToday(key, unit)](#module_RNHealthTracker..getAbsoluteTotalForToday) ⇒ <code>Promise.&lt;number&gt;</code>
-    * [~getStatisticTotalForToday(key, unit)](#module_RNHealthTracker..getStatisticTotalForToday) ⇒ <code>Promise.&lt;number&gt;</code>
-    * [~recordWorkout(object)](#module_RNHealthTracker..recordWorkout) ⇒ <code>Promise.&lt;boolean&gt;</code>
-    * [~getAuthStatusForType(object)](#module_RNHealthTracker..getAuthStatusForType) ⇒ <code>Promise.&lt;number&gt;</code>
+* [HealthTrackerAPI](#module_HealthTrackerAPI)
+    * [~isTrackingSupportedIOS()](#module_HealthTrackerAPI..isTrackingSupportedIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~setupTrackingIOS(shareTypes, readTypes)](#module_HealthTrackerAPI..setupTrackingIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~writeDataIOS(object)](#module_HealthTrackerAPI..writeDataIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~writeDataArrayIOS(dataArray)](#module_HealthTrackerAPI..writeDataArrayIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~getAbsoluteTotalForTodayIOS(key, unit)](#module_HealthTrackerAPI..getAbsoluteTotalForTodayIOS) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getStatisticTotalForTodayIOS(key, unit)](#module_HealthTrackerAPI..getStatisticTotalForTodayIOS) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getStatisticTotalForWeekIOS(key, unit)](#module_HealthTrackerAPI..getStatisticTotalForWeekIOS) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getStatisticWeekDailyIOS(key, unit)](#module_HealthTrackerAPI..getStatisticWeekDailyIOS) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~recordWorkoutIOS(object)](#module_HealthTrackerAPI..recordWorkoutIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~getAuthStatusForTypeIOS(dataType)](#module_HealthTrackerAPI..getAuthStatusForTypeIOS) ⇒ <code>Promise.&lt;number&gt;</code>
 
 
 * * *
 
-<a name="module_RNHealthTracker..isTrackingSupportedIOS"></a>
+<a name="module_HealthTrackerAPI..isTrackingSupportedIOS"></a>
 
-### RNHealthTracker~isTrackingSupportedIOS() ⇒ <code>Promise.&lt;boolean&gt;</code>
-`iOS only!` returns if step, distance and floor tracking is supported on device
+### HealthTrackerAPI~isTrackingSupportedIOS() ⇒ <code>Promise.&lt;boolean&gt;</code>
+`iOS only!` returns health tracking is supported
 
-**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 
 * * *
 
-<a name="module_RNHealthTracker..setupTracking"></a>
+<a name="module_HealthTrackerAPI..setupTrackingIOS"></a>
 
-### RNHealthTracker~setupTracking(shareTypes, readTypes) ⇒ <code>Promise.&lt;boolean&gt;</code>
-Sets up health tracking and returns status
+### HealthTrackerAPI~setupTrackingIOS(shareTypes, readTypes) ⇒ <code>Promise.&lt;boolean&gt;</code>
+`iOS only!` Sets up health tracking and returns status
 
-**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -258,12 +163,12 @@ Sets up health tracking and returns status
 
 * * *
 
-<a name="module_RNHealthTracker..writeData"></a>
+<a name="module_HealthTrackerAPI..writeDataIOS"></a>
 
-### RNHealthTracker~writeData(object) ⇒ <code>Promise.&lt;boolean&gt;</code>
-Writes given health data to Health API
+### HealthTrackerAPI~writeDataIOS(object) ⇒ <code>Promise.&lt;boolean&gt;</code>
+`iOS only!` Writes given health data to Health API
 
-**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 
 | Param | Type |
 | --- | --- |
@@ -276,12 +181,12 @@ Writes given health data to Health API
 
 * * *
 
-<a name="module_RNHealthTracker..writeDataArray"></a>
+<a name="module_HealthTrackerAPI..writeDataArrayIOS"></a>
 
-### RNHealthTracker~writeDataArray(dataArray) ⇒ <code>Promise.&lt;boolean&gt;</code>
-Writes given health data array to Health API
+### HealthTrackerAPI~writeDataArrayIOS(dataArray) ⇒ <code>Promise.&lt;boolean&gt;</code>
+`iOS only!` Writes given health data array to Health API
 
-**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 
 | Param | Type |
 | --- | --- |
@@ -295,27 +200,12 @@ Writes given health data array to Health API
 
 * * *
 
-<a name="module_RNHealthTracker..getAbsoluteTotalForToday"></a>
+<a name="module_HealthTrackerAPI..getAbsoluteTotalForTodayIOS"></a>
 
-### RNHealthTracker~getAbsoluteTotalForToday(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
-Gets absolute total for given health data type and unit for current day
+### HealthTrackerAPI~getAbsoluteTotalForTodayIOS(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
+`iOS only!` Gets absolute total for given health data type and unit for current day
 
-**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
-| unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
-
-
-* * *
-
-<a name="module_RNHealthTracker..getStatisticTotalForToday"></a>
-
-### RNHealthTracker~getStatisticTotalForToday(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
-Gets statistic total for given health data type and unit for current day, same number as in health app
-
-**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -325,12 +215,57 @@ Gets statistic total for given health data type and unit for current day, same n
 
 * * *
 
-<a name="module_RNHealthTracker..recordWorkout"></a>
+<a name="module_HealthTrackerAPI..getStatisticTotalForTodayIOS"></a>
 
-### RNHealthTracker~recordWorkout(object) ⇒ <code>Promise.&lt;boolean&gt;</code>
-Records given workout data to Health API
+### HealthTrackerAPI~getStatisticTotalForTodayIOS(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
+`iOS only!` Gets statistic total for given health data type and unit for current day, same number as in health app
 
-**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
+
+
+* * *
+
+<a name="module_HealthTrackerAPI..getStatisticTotalForWeekIOS"></a>
+
+### HealthTrackerAPI~getStatisticTotalForWeekIOS(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
+`iOS only!` Gets statistic total for given health data type and unit for current week, same number as in health app
+
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
+
+
+* * *
+
+<a name="module_HealthTrackerAPI..getStatisticWeekDailyIOS"></a>
+
+### HealthTrackerAPI~getStatisticWeekDailyIOS(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
+`iOS only!` Gets statistic daily total for given health data type and unit for current week, same number as in health app
+
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
+
+
+* * *
+
+<a name="module_HealthTrackerAPI..recordWorkoutIOS"></a>
+
+### HealthTrackerAPI~recordWorkoutIOS(object) ⇒ <code>Promise.&lt;boolean&gt;</code>
+`iOS only!` Records given workout data to Health API
+
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -343,22 +278,195 @@ Records given workout data to Health API
 
 * * *
 
-<a name="module_RNHealthTracker..getAuthStatusForType"></a>
+<a name="module_HealthTrackerAPI..getAuthStatusForTypeIOS"></a>
 
-### RNHealthTracker~getAuthStatusForType(object) ⇒ <code>Promise.&lt;number&gt;</code>
-Returns auth status for data type in Health API
+### HealthTrackerAPI~getAuthStatusForTypeIOS(dataType) ⇒ <code>Promise.&lt;number&gt;</code>
+`iOS only!` Returns auth status for data type in Health API
 
-**Kind**: inner method of [<code>RNHealthTracker</code>](#module_RNHealthTracker)  
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 **Returns**: <code>Promise.&lt;number&gt;</code> - 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| object | <code>object</code> |  |
-| object.startDate | <code>Date</code> \| <code>number</code> |  |
-| object.endDate | <code>Date</code> \| <code>number</code> |  |
-| object.energyBurned | <code>Number</code> | number of calories in kcal |
-| object.metadata | <code>object</code> |  |
+| dataType | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
 
+
+* * *
+
+<a name="module_PedometerAPI"></a>
+
+## PedometerAPI
+
+* [PedometerAPI](#module_PedometerAPI)
+    * [~isTrackingSupportedIOS()](#module_PedometerAPI..isTrackingSupportedIOS) ⇒ <code>Promise.&lt;IFitnessTrackerAvailability&gt;</code>
+    * [~isTrackingAvailable()](#module_PedometerAPI..isTrackingAvailable) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+    * [~setupTracking()](#module_PedometerAPI..setupTracking) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+    * [~getStepsToday()](#module_PedometerAPI..getStepsToday) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getStepsWeekTotal()](#module_PedometerAPI..getStepsWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
+    * [~getStepsDaily()](#module_PedometerAPI..getStepsDaily) ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
+    * [~getStepsData()](#module_PedometerAPI..getStepsData) ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
+    * [~getDistanceToday()](#module_PedometerAPI..getDistanceToday) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getDistanceWeekTotal()](#module_PedometerAPI..getDistanceWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
+    * [~getDistanceDaily()](#module_PedometerAPI..getDistanceDaily) ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
+    * [~getDistanceData()](#module_PedometerAPI..getDistanceData) ⇒ <code>Promise.&lt;IDistanceData&gt;</code>
+    * [~getFloorsTodayIOS()](#module_PedometerAPI..getFloorsTodayIOS) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getFloorsWeekTotalIOS()](#module_PedometerAPI..getFloorsWeekTotalIOS) ⇒ <code>Promise.&lt;Number&gt;</code>
+    * [~getFloorsDailyIOS()](#module_PedometerAPI..getFloorsDailyIOS) ⇒ <code>Promise.&lt;IFloorsDaily&gt;</code>
+    * [~getFloorsDataIOS()](#module_PedometerAPI..getFloorsDataIOS) ⇒ <code>Promise.&lt;IFloorsData&gt;</code>
+
+
+* * *
+
+<a name="module_PedometerAPI..isTrackingSupportedIOS"></a>
+
+### PedometerAPI~isTrackingSupportedIOS() ⇒ <code>Promise.&lt;IFitnessTrackerAvailability&gt;</code>
+`iOS only!` returns if step, distance and floor tracking is supported on device
+equals to 1 if supported or 0 if not.
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..isTrackingAvailable"></a>
+
+### PedometerAPI~isTrackingAvailable() ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+Returns if step tracking is authorized and available on both platforms
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..setupTracking"></a>
+
+### PedometerAPI~setupTracking() ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+Sets up step tracking and returns status
+not supported iOS devices also return `trackingNotSupported: true` param inside the status object
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..getStepsToday"></a>
+
+### PedometerAPI~getStepsToday() ⇒ <code>Promise.&lt;number&gt;</code>
+Returns number of steps today
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..getStepsWeekTotal"></a>
+
+### PedometerAPI~getStepsWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
+Returns number of steps this week
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..getStepsDaily"></a>
+
+### PedometerAPI~getStepsDaily() ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
+Returns weekly steps object
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..getStepsData"></a>
+
+### PedometerAPI~getStepsData() ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
+Returns steps today and this week's steps object
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..getDistanceToday"></a>
+
+### PedometerAPI~getDistanceToday() ⇒ <code>Promise.&lt;number&gt;</code>
+Returns walking and running distance today in meters
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+**Returns**: <code>Promise.&lt;number&gt;</code> - number of meters  
+
+* * *
+
+<a name="module_PedometerAPI..getDistanceWeekTotal"></a>
+
+### PedometerAPI~getDistanceWeekTotal() ⇒ <code>Promise.&lt;Number&gt;</code>
+Returns walking and running distance this week in meters
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+**Returns**: <code>Promise.&lt;Number&gt;</code> - number of meters  
+
+* * *
+
+<a name="module_PedometerAPI..getDistanceDaily"></a>
+
+### PedometerAPI~getDistanceDaily() ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
+Returns daily distance object
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..getDistanceData"></a>
+
+### PedometerAPI~getDistanceData() ⇒ <code>Promise.&lt;IDistanceData&gt;</code>
+Returns distance today and this week's distance object
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..getFloorsTodayIOS"></a>
+
+### PedometerAPI~getFloorsTodayIOS() ⇒ <code>Promise.&lt;number&gt;</code>
+Returns walking and running distance today in meters
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+**Returns**: <code>Promise.&lt;number&gt;</code> - number of meters  
+
+* * *
+
+<a name="module_PedometerAPI..getFloorsWeekTotalIOS"></a>
+
+### PedometerAPI~getFloorsWeekTotalIOS() ⇒ <code>Promise.&lt;Number&gt;</code>
+Returns walking and running distance this week in meters
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+**Returns**: <code>Promise.&lt;Number&gt;</code> - number of meters  
+
+* * *
+
+<a name="module_PedometerAPI..getFloorsDailyIOS"></a>
+
+### PedometerAPI~getFloorsDailyIOS() ⇒ <code>Promise.&lt;IFloorsDaily&gt;</code>
+Returns daily distance object
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
+
+* * *
+
+<a name="module_PedometerAPI..getFloorsDataIOS"></a>
+
+### PedometerAPI~getFloorsDataIOS() ⇒ <code>Promise.&lt;IFloorsData&gt;</code>
+Returns distance today and this week's distance object
+on `iOS simulator` returns mock data
+
+**Kind**: inner method of [<code>PedometerAPI</code>](#module_PedometerAPI)  
 
 * * *
 

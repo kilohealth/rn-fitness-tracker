@@ -16,7 +16,7 @@ import { isIOS, isObject } from '../utils/helpers';
 
 
 /**
- * @module TrackingSetup
+ * @module FitnessTrackerAPI
  */
 
 
@@ -71,10 +71,6 @@ const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
     }
   }
 };
-
-/**
- * @module StepTracking
- */
 
 /**
  * Returns number of steps today
@@ -136,10 +132,6 @@ const getStepsData = async (): Promise<IStepsData> => {
 
   return { stepsToday, stepsDaily: stepsDaily || {} };
 };
-
-/**
- * @module DistanceTracking
- */
 
 /**
  * Returns walking and running distance today in meters
