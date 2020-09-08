@@ -5,7 +5,6 @@ import { isIOS } from '../utils/helpers';
 
 const { RNHealthTracker } = NativeModules;
 
-
 /**
  * @module HealthTrackerAPI
  */
@@ -212,11 +211,13 @@ const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
 };
 
 /**
- * `iOS only!` Returns auth status for data type in Health API
+ * `iOS only!` Returns write (share) status for data type in Health API
  * @param dataType {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @return {Promise<number>} 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized
  */
-const getAuthStatusForTypeIOS = async <DataKey extends keyof typeof WorkoutTypes>(
+const getAuthStatusForTypeIOS = async <
+  DataKey extends keyof typeof WorkoutTypes
+>(
   key: DataKey,
 ): Promise<boolean> => {
   if (isIOS) {
@@ -224,8 +225,30 @@ const getAuthStatusForTypeIOS = async <DataKey extends keyof typeof WorkoutTypes
   }
 };
 
+/**
+ * `iOS only!` Returns read status for data type in Health API
+ * @param dataType {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param unit {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @return {Promise<number>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
+ */
+const getReadStatusForTypeIOS = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>({
+  key,
+  unit,
+}: {
+  key: DataKey;
+  unit: UnitKey;
+}): Promise<number> => {
+  if (isIOS) {
+    return await RNHealthTracker.getReadStatus(key, unit);
+  }
+};
+
 export const HealthTrackerAPI = {
   getAuthStatusForTypeIOS,
+  getReadStatusForTypeIOS,
   getAbsoluteTotalForTodayIOS,
   getStatisticTotalForTodayIOS,
   getStatisticTotalForWeekIOS,
