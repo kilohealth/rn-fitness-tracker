@@ -9,16 +9,14 @@ import {
   IStepsDaily,
   IStepsData,
 } from '../types/fitnessTypes';
-
-const { RNFitnessTracker, RNHealthTracker } = NativeModules;
 import { HealthDataTypes, UnitTypes } from '../types/dataTypes';
 import { isIOS, isObject } from '../utils/helpers';
 
+const { RNFitnessTracker, RNHealthTracker } = NativeModules;
 
 /**
  * @module FitnessTrackerAPI
  */
-
 
 /**
  * Returns if step tracking is authorized and available on both platforms
@@ -29,8 +27,10 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
     const status: number = await RNHealthTracker.getAuthorizationStatusForType(
       HealthDataTypes.StepCount,
     );
-    if(status === 2) {
+    if (status === 2) {
       return { authorized: true, shouldOpenAppSettings: false };
+    } else if (status === 0) {
+      return { authorized: false, shouldOpenAppSettings: false };
     } else {
       return { authorized: false, shouldOpenAppSettings: true };
     }
@@ -46,10 +46,13 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
  */
 const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
   if (isIOS) {
-    const authorized = await RNHealthTracker.authorize([], [HealthDataTypes.StepCount, HealthDataTypes.DistanceWalkingRunning]);
-    return { 
-      authorized: !!authorized, 
-      shouldOpenAppSettings: !authorized 
+    const authorized = await RNHealthTracker.authorize(
+      [],
+      [HealthDataTypes.StepCount, HealthDataTypes.DistanceWalkingRunning],
+    );
+    return {
+      authorized: !!authorized,
+      shouldOpenAppSettings: !authorized,
     };
   } else {
     const apiLevel = await DeviceInfo.getApiLevel();
@@ -78,7 +81,10 @@ const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
  */
 const getStepsToday = async (): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.getStatisticTotalForToday(HealthDataTypes.StepCount, UnitTypes.count);
+    const total = await RNHealthTracker.getStatisticTotalForToday(
+      HealthDataTypes.StepCount,
+      UnitTypes.count,
+    );
     return Number(total);
   } else {
     return RNFitnessTracker.getStepsToday();
@@ -91,7 +97,10 @@ const getStepsToday = async (): Promise<number> => {
  */
 const getStepsWeekTotal = async (): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.getStatisticTotalForWeek(HealthDataTypes.StepCount, UnitTypes.count);
+    const total = await RNHealthTracker.getStatisticTotalForWeek(
+      HealthDataTypes.StepCount,
+      UnitTypes.count,
+    );
     return Number(total);
   } else {
     return RNFitnessTracker.getStepsWeekTotal();
@@ -104,7 +113,10 @@ const getStepsWeekTotal = async (): Promise<number> => {
  */
 const getStepsDaily = async (): Promise<IStepsDaily> => {
   if (isIOS) {
-    return RNHealthTracker.getStatisticWeekDaily(HealthDataTypes.StepCount, UnitTypes.count);
+    return RNHealthTracker.getStatisticWeekDaily(
+      HealthDataTypes.StepCount,
+      UnitTypes.count,
+    );
   } else {
     return RNFitnessTracker.getStepsDaily();
   }
@@ -115,17 +127,19 @@ const getStepsDaily = async (): Promise<IStepsDaily> => {
  * @return {Promise<IStepTrackerData>}
  */
 const getStepsData = async (): Promise<IStepsData> => {
-
   let stepsDaily: IStepsDaily;
   if (isIOS) {
-    stepsDaily = await RNHealthTracker.getStatisticWeekDaily(HealthDataTypes.StepCount, UnitTypes.count);
+    stepsDaily = await RNHealthTracker.getStatisticWeekDaily(
+      HealthDataTypes.StepCount,
+      UnitTypes.count,
+    );
   } else {
     stepsDaily = await RNFitnessTracker.getStepsDaily();
   }
 
   let stepsToday = 0;
 
-  if(isObject(stepsDaily)) {
+  if (isObject(stepsDaily)) {
     const today = Object.keys(stepsDaily).sort()[6];
     stepsToday = stepsDaily?.[today];
   }
@@ -139,7 +153,10 @@ const getStepsData = async (): Promise<IStepsData> => {
  */
 const getDistanceToday = async (): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.getStatisticTotalForToday(HealthDataTypes.DistanceWalkingRunning, UnitTypes.meters);
+    const total = await RNHealthTracker.getStatisticTotalForToday(
+      HealthDataTypes.DistanceWalkingRunning,
+      UnitTypes.meters,
+    );
     return Number(total);
   } else {
     return RNFitnessTracker.getDistanceToday();
@@ -152,7 +169,10 @@ const getDistanceToday = async (): Promise<number> => {
  */
 const getDistanceWeekTotal = async (): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.getStatisticTotalForWeek(HealthDataTypes.DistanceWalkingRunning, UnitTypes.meters);
+    const total = await RNHealthTracker.getStatisticTotalForWeek(
+      HealthDataTypes.DistanceWalkingRunning,
+      UnitTypes.meters,
+    );
     return Number(total);
   } else {
     return RNFitnessTracker.getDistanceWeekTotal();
@@ -165,7 +185,10 @@ const getDistanceWeekTotal = async (): Promise<number> => {
  */
 const getDistanceDaily = async (): Promise<IDistanceDaily> => {
   if (isIOS) {
-    return RNHealthTracker.getStatisticWeekDaily(HealthDataTypes.DistanceWalkingRunning, UnitTypes.meters);
+    return RNHealthTracker.getStatisticWeekDaily(
+      HealthDataTypes.DistanceWalkingRunning,
+      UnitTypes.meters,
+    );
   } else {
     return RNFitnessTracker.getDistanceDaily();
   }
@@ -178,14 +201,17 @@ const getDistanceDaily = async (): Promise<IDistanceDaily> => {
 const getDistanceData = async (): Promise<IDistanceData> => {
   let distanceDaily: IDistanceDaily;
   if (isIOS) {
-    distanceDaily = await RNHealthTracker.getStatisticWeekDaily(HealthDataTypes.DistanceWalkingRunning, UnitTypes.meters);
+    distanceDaily = await RNHealthTracker.getStatisticWeekDaily(
+      HealthDataTypes.DistanceWalkingRunning,
+      UnitTypes.meters,
+    );
   } else {
     distanceDaily = await RNFitnessTracker.getDistanceDaily();
   }
 
   let distanceToday = 0;
 
-  if(isObject(distanceDaily)) {
+  if (isObject(distanceDaily)) {
     const today = Object.keys(distanceDaily).sort()[6];
     distanceToday = distanceDaily?.[today];
   }
