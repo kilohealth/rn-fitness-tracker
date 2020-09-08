@@ -24,9 +24,11 @@ const { RNFitnessTracker, RNHealthTracker } = NativeModules;
  */
 const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
   if (isIOS) {
-    const status: number = await RNHealthTracker.getAuthorizationStatusForType(
+    const status: number = await RNHealthTracker.getReadStatus(
       HealthDataTypes.StepCount,
+      UnitTypes.count,
     );
+
     if (status === 2) {
       return { authorized: true, shouldOpenAppSettings: false };
     } else if (status === 0) {
@@ -46,14 +48,22 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
  */
 const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
   if (isIOS) {
-    const authorized = await RNHealthTracker.authorize(
-      [],
-      [HealthDataTypes.StepCount, HealthDataTypes.DistanceWalkingRunning],
-    );
-    return {
-      authorized: !!authorized,
-      shouldOpenAppSettings: !authorized,
-    };
+    const { authorized, shouldOpenAppSettings } = await isTrackingAvailable();
+    if (!authorized && shouldOpenAppSettings) {
+      return {
+        authorized: authorized,
+        shouldOpenAppSettings: shouldOpenAppSettings,
+      };
+    } else {
+      const authorizationStatus = await RNHealthTracker.authorize(
+        [],
+        [HealthDataTypes.StepCount, HealthDataTypes.DistanceWalkingRunning],
+      );
+      return {
+        authorized: !!authorizationStatus,
+        shouldOpenAppSettings: !authorizationStatus,
+      };
+    }
   } else {
     const apiLevel = await DeviceInfo.getApiLevel();
     const isMotionAuthNeeded = apiLevel >= 29;

@@ -232,6 +232,42 @@ RCT_EXPORT_METHOD(getAbsoluteTotalForToday
     [_healthStore executeQuery:sampleQuery];
 }
 
+RCT_EXPORT_METHOD(getReadStatus
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    NSDate *start = [RNFitnessUtils daysAgo:NSDate.date :720];
+    NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
+    
+    HKSampleType *sampleType = [HKSampleType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate :start endDate:end options:0];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:HKSampleSortIdentifierStartDate ascending:YES];
+    
+    HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:sampleType predicate:predicate limit:1 sortDescriptors:@[sortDescriptor] resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error) {
+        if (!error && results) {
+            double quantitySum = 0;
+            
+            for (HKQuantitySample *sample in results) {
+                double value = [sample.quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+                quantitySum += value;
+            }
+
+            if(quantitySum > 0) {
+                resolve(@2);
+            } else {
+                resolve(@1);
+            }
+        } else {
+            resolve(@0);
+        }
+    }];
+    
+    // Execute the query
+    [_healthStore executeQuery:sampleQuery];
+}
+
+
 
 RCT_EXPORT_METHOD(getStatisticTotalForToday
                   :(NSString*) dataTypeIdentifier
@@ -358,9 +394,7 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
     NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
     NSDate *start = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:-604799 toDate:end options:0];  // 604799s = 23h 59m 59s
     HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
-    
-    NSLog(@"%@ %@", start, end);
-    
+        
     // Set the results handler
     query.initialResultsHandler =
     ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
