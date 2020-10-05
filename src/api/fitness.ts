@@ -64,14 +64,13 @@ const setupTracking = async (
         readTypes.push(HealthDataTypes.DistanceWalkingRunning);
       }
 
-      const authorizationStatus = await RNHealthTracker.authorize(
-        [],
-        readTypes,
-      );
+      await RNHealthTracker.authorize([], readTypes);
+
+      const { authorized, shouldOpenAppSettings } = await isTrackingAvailable();
 
       return {
-        authorized: !!authorizationStatus,
-        shouldOpenAppSettings: !authorizationStatus,
+        authorized: authorized,
+        shouldOpenAppSettings: shouldOpenAppSettings,
       };
     }
   } else {
