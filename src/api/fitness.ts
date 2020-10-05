@@ -44,9 +44,12 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
 
 /**
  * Sets up step tracking for walking & running steps and distance
+ * @param shouldTrackDistance {boolean} - if true, adds permission to track distance in Health consent screen
  * @return {Promise<IFitnessTrackerStatus>}
  */
-const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
+const setupTracking = async (
+  shouldTrackDistance = false,
+): Promise<IFitnessTrackerStatus> => {
   if (isIOS) {
     const { authorized, shouldOpenAppSettings } = await isTrackingAvailable();
     if (!authorized && shouldOpenAppSettings) {
@@ -55,13 +58,19 @@ const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
         shouldOpenAppSettings: shouldOpenAppSettings,
       };
     } else {
-      const authorizationStatus = await RNHealthTracker.authorize(
-        [],
-        [HealthDataTypes.StepCount, HealthDataTypes.DistanceWalkingRunning],
-      );
+      const readTypes = [HealthDataTypes.StepCount];
+
+      if (shouldTrackDistance) {
+        readTypes.push(HealthDataTypes.DistanceWalkingRunning);
+      }
+
+      await RNHealthTracker.authorize([], readTypes);
+
+      const { authorized, shouldOpenAppSettings } = await isTrackingAvailable();
+
       return {
-        authorized: !!authorizationStatus,
-        shouldOpenAppSettings: !authorizationStatus,
+        authorized: authorized,
+        shouldOpenAppSettings: shouldOpenAppSettings,
       };
     }
   } else {

@@ -15,7 +15,7 @@
 
 * [FitnessTrackerAPI](#module_FitnessTrackerAPI)
     * [~isTrackingAvailable()](#module_FitnessTrackerAPI..isTrackingAvailable) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
-    * [~setupTracking()](#module_FitnessTrackerAPI..setupTracking) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+    * [~setupTracking(shouldTrackDistance)](#module_FitnessTrackerAPI..setupTracking) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
     * [~getStepsToday()](#module_FitnessTrackerAPI..getStepsToday) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getStepsWeekTotal()](#module_FitnessTrackerAPI..getStepsWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
     * [~getStepsDaily()](#module_FitnessTrackerAPI..getStepsDaily) ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
@@ -39,10 +39,15 @@ Returns if step tracking is authorized and available on both platforms
 
 <a name="module_FitnessTrackerAPI..setupTracking"></a>
 
-### FitnessTrackerAPI~setupTracking() ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
+### FitnessTrackerAPI~setupTracking(shouldTrackDistance) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
 Sets up step tracking for walking & running steps and distance
 
 **Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shouldTrackDistance | <code>boolean</code> | if true, adds permission to track distance in Health consent screen |
+
 
 * * *
 
@@ -135,6 +140,7 @@ Returns distance today and this week's distance daily data object
     * [~getStatisticWeekDailyIOS(key, unit)](#module_HealthTrackerAPI..getStatisticWeekDailyIOS) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~recordWorkoutIOS(object)](#module_HealthTrackerAPI..recordWorkoutIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
     * [~getAuthStatusForTypeIOS(dataType)](#module_HealthTrackerAPI..getAuthStatusForTypeIOS) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getReadStatusForTypeIOS(dataType, unit)](#module_HealthTrackerAPI..getReadStatusForTypeIOS) ⇒ <code>Promise.&lt;number&gt;</code>
 
 
 * * *
@@ -281,7 +287,7 @@ Returns distance today and this week's distance daily data object
 <a name="module_HealthTrackerAPI..getAuthStatusForTypeIOS"></a>
 
 ### HealthTrackerAPI~getAuthStatusForTypeIOS(dataType) ⇒ <code>Promise.&lt;number&gt;</code>
-`iOS only!` Returns auth status for data type in Health API
+`iOS only!` Returns write (share) status for data type in Health API
 
 **Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 **Returns**: <code>Promise.&lt;number&gt;</code> - 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized  
@@ -289,6 +295,22 @@ Returns distance today and this week's distance daily data object
 | Param | Type | Description |
 | --- | --- | --- |
 | dataType | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+
+
+* * *
+
+<a name="module_HealthTrackerAPI..getReadStatusForTypeIOS"></a>
+
+### HealthTrackerAPI~getReadStatusForTypeIOS(dataType, unit) ⇒ <code>Promise.&lt;number&gt;</code>
+`iOS only!` Returns read status for data type in Health API
+
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
+**Returns**: <code>Promise.&lt;number&gt;</code> - 0 - notDetermined, 1 - readDenied, 2 - readAuthorized  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| dataType | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| unit | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
 
 
 * * *

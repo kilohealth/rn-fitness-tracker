@@ -221,6 +221,12 @@ RCT_EXPORT_METHOD(getAbsoluteTotalForToday
                 double value = [sample.quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
                 quantitySum += value;
             }
+            
+            
+            if(unit == HKUnit.countUnit.unitString) {
+                quantitySum = (int)quantitySum;
+            }
+            
             resolve([NSString stringWithFormat :@"%f",quantitySum]);
             
         } else {
@@ -376,6 +382,11 @@ RCT_EXPORT_METHOD(getStatisticTotalForWeek
             double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
             total += value;
         }];
+        
+        if(unit == HKUnit.countUnit.unitString) {
+            total = (int)total;
+        }
+        
         resolve([NSString stringWithFormat :@"%f", total]);
 
     };
@@ -413,6 +424,10 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
             
             HKQuantity *quantity = result.sumQuantity;
             double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+            
+            if(unit == HKUnit.countUnit.unitString) {
+                value = (int)value;
+            }
 
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"yyyy-MM-dd"];
