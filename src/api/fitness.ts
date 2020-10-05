@@ -58,13 +58,17 @@ const setupTracking = async (
         shouldOpenAppSettings: shouldOpenAppSettings,
       };
     } else {
+      const readTypes = [HealthDataTypes.StepCount];
+
+      if (shouldTrackDistance) {
+        readTypes.push(HealthDataTypes.DistanceWalkingRunning);
+      }
+
       const authorizationStatus = await RNHealthTracker.authorize(
         [],
-        [
-          HealthDataTypes.StepCount,
-          shouldTrackDistance && HealthDataTypes.DistanceWalkingRunning,
-        ],
+        readTypes,
       );
+
       return {
         authorized: !!authorizationStatus,
         shouldOpenAppSettings: !authorizationStatus,
