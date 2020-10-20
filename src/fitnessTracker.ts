@@ -1,5 +1,6 @@
 import { NativeModules } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 
 import { mockData } from './utils/mockData';
 import {
@@ -12,11 +13,11 @@ import {
   IStepsDaily,
   IStepsData,
 } from './types';
+import { isIOS } from './utils/helpers';
 
 const { RNFitnessTracker } = NativeModules;
 
-const isSimulator =
-  global.__DEV__ && global.isIOS && DeviceInfo.isEmulatorSync();
+const isSimulator = __DEV__ && isIOS && DeviceInfo.isEmulatorSync();
 
 const iosAuthorizationStatusCheck = (status: string): IFitnessTrackerStatus => {
   if (status === 'authorized') {
@@ -40,7 +41,9 @@ const iosAuthorizationStatusCheck = (status: string): IFitnessTrackerStatus => {
  * equals to 1 if supported or 0 if not.
  * @return {Promise<IFitnessTrackerAvailability>}
  */
-const isTrackingSupportedIOS = async (): Promise<IFitnessTrackerAvailability> => {
+const isTrackingSupportedIOS = async (): Promise<
+  IFitnessTrackerAvailability
+> => {
   const response = await RNFitnessTracker.isTrackingSupported();
   return { steps: response[0], distance: response[1], floors: response[2] };
 };
@@ -50,7 +53,7 @@ const isTrackingSupportedIOS = async (): Promise<IFitnessTrackerAvailability> =>
  * @return {Promise<IFitnessTrackerStatus>}
  */
 const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
-  if (global.isIOS) {
+  if (isIOS) {
     const status: string = await RNFitnessTracker.isAuthorizedToUseCoreMotion();
     return iosAuthorizationStatusCheck(status);
   } else {
@@ -65,11 +68,26 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
  * @return {Promise<IFitnessTrackerStatus>}
  */
 const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
-  const authorized: boolean = await RNFitnessTracker.authorize();
+  if (!isIOS) {
+    const apiLevel = await DeviceInfo.getApiLevel();
+    const isMotionAuthNeeded = apiLevel >= 29;
+    let motionAuthorized: 'unavailable' | 'denied' | 'blocked' | 'granted' =
+      RESULTS.UNAVAILABLE;
 
-  if (!global.isIOS) {
-    return { authorized, shouldOpenAppSettings: false };
+    if (isMotionAuthNeeded) {
+      motionAuthorized = await request(
+        PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION,
+      );
+    }
+
+    if (!isMotionAuthNeeded || motionAuthorized === RESULTS.GRANTED) {
+      const authorized: boolean = await RNFitnessTracker.authorize();
+      return { authorized, shouldOpenAppSettings: false };
+    } else {
+      return { authorized: false, shouldOpenAppSettings: true };
+    }
   } else {
+    const authorized: boolean = await RNFitnessTracker.authorize();
     if (authorized) {
       const status: string = await RNFitnessTracker.isAuthorizedToUseCoreMotion();
       return iosAuthorizationStatusCheck(status);
