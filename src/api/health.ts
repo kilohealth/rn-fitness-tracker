@@ -227,6 +227,7 @@ const getAuthStatusForTypeIOS = async <
 
 /**
  * `iOS only!` Returns read status for data type in Health API
+ * `WARNING`! This method is unofficial. Queries for data in time span of 2 years with limit of one, returns `readDenied` if no data is available.
  * @param dataType {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param unit {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @return {Promise<number>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
