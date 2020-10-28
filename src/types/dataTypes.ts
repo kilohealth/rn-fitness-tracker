@@ -100,10 +100,10 @@ export const HealthDataTypes = {
 export const UnitTypes = {
   grams: 'g',
   micrograms: 'mcg',
-  miligrams: 'mg',
+  milligrams: 'mg',
   kilograms: 'kg',
   meters: 'm',
-  milimeters: 'mm',
+  millimeters: 'mm',
   centimeters: 'cm',
   kilometers: 'km',
   liters: 'l',
