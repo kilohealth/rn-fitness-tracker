@@ -136,6 +136,8 @@ export const UnitTypes = {
   cupUS: 'cup_imp',
   count: 'count',
   percent: 'percent',
+  milligramsPerDeciliter: 'mg/dL',
+  millimolesPerLiter: 'mmol<180.1558800000541>/L',
 };
 
 export const WorkoutTypes = {
