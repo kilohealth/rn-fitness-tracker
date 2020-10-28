@@ -178,6 +178,42 @@ const getStatisticWeekDailyIOS = async <
 };
 
 /**
+ * `iOS only!` Returns every record for specified data type and unit for specified number of days
+ * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @return {Promise<number>}
+ */
+const queryDataRecordsIOS = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>({
+  key,
+  unit,
+  numberOfDays,
+}: {
+  key: DataKey;
+  unit: UnitKey;
+  numberOfDays: number;
+}): Promise<
+  [
+    {
+      date: string;
+      quantity: number;
+      metadata: { [name: string]: any };
+      source: {
+        name: string;
+        device: string;
+        id: string;
+      };
+    },
+  ]
+> => {
+  if (isIOS) {
+    return RNHealthTracker.queryDataRecords(key, unit, numberOfDays);
+  }
+};
+
+/**
  * `iOS only!` Records given workout data to Health API
  * @param object {object}
  * @param object.startDate {Date | number}
