@@ -209,7 +209,11 @@ const queryDataRecordsIOS = async <
   ]
 > => {
   if (isIOS) {
-    return RNHealthTracker.queryDataRecords(key, unit, numberOfDays);
+    return RNHealthTracker.queryDataRecordsForNumberOfDays(
+      key,
+      unit,
+      numberOfDays,
+    );
   }
 };
 
