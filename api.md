@@ -137,7 +137,8 @@ Returns distance today and this week's distance daily data object
     * [~getAbsoluteTotalForTodayIOS(key, unit)](#module_HealthTrackerAPI..getAbsoluteTotalForTodayIOS) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getStatisticTotalForTodayIOS(key, unit)](#module_HealthTrackerAPI..getStatisticTotalForTodayIOS) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getStatisticTotalForWeekIOS(key, unit)](#module_HealthTrackerAPI..getStatisticTotalForWeekIOS) ⇒ <code>Promise.&lt;number&gt;</code>
-    * [~getStatisticWeekDailyIOS(key, unit)](#module_HealthTrackerAPI..getStatisticWeekDailyIOS) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~getStatisticWeekDailyIOS(key, unit)](#module_HealthTrackerAPI..getStatisticWeekDailyIOS) ⇒ <code>Promise.&lt;object&gt;</code>
+    * [~queryDataRecordsIOS(key, unit)](#module_HealthTrackerAPI..queryDataRecordsIOS) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~recordWorkoutIOS(object)](#module_HealthTrackerAPI..recordWorkoutIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
     * [~getAuthStatusForTypeIOS(dataType)](#module_HealthTrackerAPI..getAuthStatusForTypeIOS) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getReadStatusForTypeIOS(dataType, unit)](#module_HealthTrackerAPI..getReadStatusForTypeIOS) ⇒ <code>Promise.&lt;number&gt;</code>
@@ -253,8 +254,23 @@ Returns distance today and this week's distance daily data object
 
 <a name="module_HealthTrackerAPI..getStatisticWeekDailyIOS"></a>
 
-### HealthTrackerAPI~getStatisticWeekDailyIOS(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
+### HealthTrackerAPI~getStatisticWeekDailyIOS(key, unit) ⇒ <code>Promise.&lt;object&gt;</code>
 `iOS only!` Gets statistic daily total for given health data type and unit for current week, same number as in health app
+
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
+
+
+* * *
+
+<a name="module_HealthTrackerAPI..queryDataRecordsIOS"></a>
+
+### HealthTrackerAPI~queryDataRecordsIOS(key, unit) ⇒ <code>Promise.&lt;number&gt;</code>
+`iOS only!` Returns every record for specified data type and unit for specified number of days
 
 **Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 

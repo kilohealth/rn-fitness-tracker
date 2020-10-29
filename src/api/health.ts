@@ -57,7 +57,7 @@ const writeDataIOS = async <
   key: DataKey;
   unit: UnitKey;
   quantity: number;
-  metadata: {};
+  metadata: { [name: string]: any };
 }): Promise<boolean> => {
   if (isIOS) {
     return await RNHealthTracker.writeData(key, quantity, unit, metadata);
@@ -82,7 +82,7 @@ const writeDataArrayIOS = async <
     key: DataKey;
     unit: UnitKey;
     quantity: number;
-    metadata: {};
+    metadata: { [name: string]: any };
   }>,
 ): Promise<boolean> => {
   if (isIOS) {
@@ -160,7 +160,7 @@ const getStatisticTotalForWeekIOS = async <
  * `iOS only!` Gets statistic daily total for given health data type and unit for current week, same number as in health app
  * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param unit {UnitType} e.g. `UnitTypes.grams`
- * @return {Promise<number>}
+ * @return {Promise<object>}
  */
 const getStatisticWeekDailyIOS = async <
   DataKey extends keyof typeof HealthDataTypes,
@@ -171,9 +171,49 @@ const getStatisticWeekDailyIOS = async <
 }: {
   key: DataKey;
   unit: UnitKey;
-}): Promise<{}> => {
+}): Promise<{ [name: string]: number }> => {
   if (isIOS) {
     return RNHealthTracker.getStatisticWeekDaily(key, unit);
+  }
+};
+
+/**
+ * `iOS only!` Returns every record for specified data type and unit for specified number of days
+ * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @return {Promise<number>}
+ */
+const queryDataRecordsIOS = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>({
+  key,
+  unit,
+  numberOfDays,
+}: {
+  key: DataKey;
+  unit: UnitKey;
+  numberOfDays: number;
+}): Promise<
+  [
+    {
+      date: string;
+      quantity: number;
+      metadata: { [name: string]: any };
+      source: {
+        name: string;
+        device: string;
+        id: string;
+      };
+    },
+  ]
+> => {
+  if (isIOS) {
+    return RNHealthTracker.queryDataRecordsForNumberOfDays(
+      key,
+      unit,
+      numberOfDays,
+    );
   }
 };
 
@@ -197,7 +237,7 @@ const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
   startDate: Date | number;
   endDate: Date | number;
   energyBurned: number;
-  metadata: {};
+  metadata: { [name: string]: any };
 }): Promise<boolean> => {
   if (isIOS) {
     return await RNHealthTracker.recordWorkout(
@@ -256,6 +296,7 @@ export const HealthTrackerAPI = {
   getStatisticWeekDailyIOS,
   isTrackingSupportedIOS,
   recordWorkoutIOS,
+  queryDataRecordsIOS,
   setupTrackingIOS,
   writeDataIOS,
   writeDataArrayIOS,

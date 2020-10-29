@@ -100,10 +100,10 @@ export const HealthDataTypes = {
 export const UnitTypes = {
   grams: 'g',
   micrograms: 'mcg',
-  miligrams: 'mg',
+  milligrams: 'mg',
   kilograms: 'kg',
   meters: 'm',
-  milimeters: 'mm',
+  millimeters: 'mm',
   centimeters: 'cm',
   kilometers: 'km',
   liters: 'l',
@@ -136,6 +136,8 @@ export const UnitTypes = {
   cupUS: 'cup_imp',
   count: 'count',
   percent: 'percent',
+  milligramsPerDeciliter: 'mg/dL',
+  millimolesPerLiter: 'mmol<180.1558800000541>/L',
 };
 
 export const WorkoutTypes = {

@@ -137,7 +137,7 @@ RCT_EXPORT_METHOD(writeData
     
     HKQuantityType *quantityType =
     [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
-
+    
     HKQuantity *quantity = [HKQuantity quantityWithUnit:[HKUnit unitFromString:unit]
                                             doubleValue:amount];
     
@@ -238,6 +238,63 @@ RCT_EXPORT_METHOD(getAbsoluteTotalForToday
     [_healthStore executeQuery:sampleQuery];
 }
 
+RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(int) numberOfDays
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *start = [RNFitnessUtils daysAgo:NSDate.date :numberOfDays];
+    NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
+    
+    HKSampleType *sampleType = [HKSampleType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate :start endDate:end options:0];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:HKSampleSortIdentifierStartDate ascending:YES];
+    
+    HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:sampleType predicate:predicate limit:HKObjectQueryNoLimit sortDescriptors:@[sortDescriptor] resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error) {
+        if (!error && results) {
+            
+            NSMutableArray *dataRecords = [NSMutableArray array];
+            
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            dateFormatter.timeZone = [[NSTimeZone alloc] initWithName:@"UTC"];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+            [dateFormatter setCalendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
+            
+            for (HKQuantitySample *sample in results) {
+                
+                NSString *isoDate = [dateFormatter stringFromDate:sample.endDate];
+                
+                NSString *sourceDevice = @"unknown";
+                if (@available(iOS 11.0, *)) {
+                    sourceDevice = RCTNullIfNil(sample.sourceRevision.productType);
+                }
+                
+                double quantity = [sample.quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+                
+                [dataRecords addObject:(@{
+                    @"date": isoDate,
+                    @"quantity": [NSNumber numberWithDouble: quantity],
+                    @"metadata": RCTNullIfNil(sample.metadata),
+                    @"source": @{
+                            @"name": RCTNullIfNil(sample.sourceRevision.source.name),
+                            @"device": RCTNullIfNil(sourceDevice),
+                            @"id": RCTNullIfNil(sample.sourceRevision.source.bundleIdentifier),
+                    }})];
+            }
+            
+            resolve(dataRecords);
+            
+        } else {
+            [self rejectError:error :reject];
+        }
+    }];
+    
+    // Execute the query
+    [_healthStore executeQuery:sampleQuery];
+}
+
 RCT_EXPORT_METHOD(getReadStatus
                   :(NSString*) dataTypeIdentifier
                   :(NSString*) unit
@@ -258,7 +315,7 @@ RCT_EXPORT_METHOD(getReadStatus
                 double value = [sample.quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
                 quantitySum += value;
             }
-
+            
             if(quantitySum > 0) {
                 resolve(@2);
             } else {
@@ -388,7 +445,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForWeek
         }
         
         resolve([NSString stringWithFormat :@"%f", total]);
-
+        
     };
     
     // Execute the query
@@ -405,7 +462,7 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
     NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
     NSDate *start = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:-604799 toDate:end options:0];  // 604799s = 23h 59m 59s
     HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
-        
+    
     // Set the results handler
     query.initialResultsHandler =
     ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
@@ -428,7 +485,7 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
             if(unit == HKUnit.countUnit.unitString) {
                 value = (int)value;
             }
-
+            
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"yyyy-MM-dd"];
             NSString *dateString = [dateFormatter stringFromDate:result.startDate];
