@@ -268,7 +268,7 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
                 
                 NSString *sourceDevice = @"unknown";
                 if (@available(iOS 11.0, *)) {
-                    sourceDevice = sample.sourceRevision.productType;
+                    sourceDevice = RCTNullIfNil(sample.sourceRevision.productType);
                 }
                 
                 double quantity = [sample.quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
@@ -276,11 +276,11 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
                 [dataRecords addObject:(@{
                     @"date": isoDate,
                     @"quantity": [NSNumber numberWithDouble: quantity],
-                    @"metadata": sample.metadata,
+                    @"metadata": RCTNullIfNil(sample.metadata),
                     @"source": @{
-                            @"name": sample.sourceRevision.source.name,
-                            @"device": sourceDevice,
-                            @"id": sample.sourceRevision.source.bundleIdentifier,
+                            @"name": RCTNullIfNil(sample.sourceRevision.source.name),
+                            @"device": RCTNullIfNil(sourceDevice),
+                            @"id": RCTNullIfNil(sample.sourceRevision.source.bundleIdentifier),
                     }})];
             }
             
