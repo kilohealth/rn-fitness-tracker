@@ -79,8 +79,8 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(authorize
-                  :(NSArray*) shareTypes
-                  :(NSArray*) readTypes
+                  :(nullable NSArray*) shareTypes
+                  :(nullable NSArray*) readTypes
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
     if ([HKHealthStore isHealthDataAvailable] == NO) {
@@ -96,7 +96,7 @@ RCT_EXPORT_METHOD(authorize
     : @[];
     
     NSArray *shareTypesTransformed =
-    readTypes.count > 0
+    shareTypes.count > 0
     ?  [shareTypes mapObjectsUsingBlock:^id(id dataKey, NSUInteger idx) {
         return [self transformDataKeyToHKObject:dataKey];
     }]

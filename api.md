@@ -303,6 +303,7 @@ Returns distance today and this week's distance daily data object
 
 ### HealthTrackerAPI~getReadStatusForTypeIOS(dataType, unit) ⇒ <code>Promise.&lt;number&gt;</code>
 `iOS only!` Returns read status for data type in Health API
+`WARNING`! This method is unofficial. Queries for data in time span of 2 years with limit of one, returns `readDenied` if no data is available.
 
 **Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 **Returns**: <code>Promise.&lt;number&gt;</code> - 0 - notDetermined, 1 - readDenied, 2 - readAuthorized  
