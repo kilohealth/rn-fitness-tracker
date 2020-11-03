@@ -1,6 +1,6 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
-  "version": "1.3.0-alpha.2",
+  "version": "1.3.0",
   "description": "Fitness & Health tracking package for React Native for Android & iOS",
   "homepage": "https://github.com/doville/rn-fitness-tracker",
   "repository": "https://github.com/doville/rn-fitness-tracker",
