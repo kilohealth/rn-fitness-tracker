@@ -13,7 +13,7 @@ import {
   IStepsDaily,
   IStepsData,
 } from './types';
-import { isIOS } from './utils/helpers';
+import { isIOS, isObject } from './utils/helpers';
 
 const { RNFitnessTracker } = NativeModules;
 
@@ -156,8 +156,14 @@ const getStepsData = async (): Promise<IStepsData> => {
     return mockData.steps;
   }
 
-  const stepsToday: number = await RNFitnessTracker.getStepsToday();
   const stepsDaily: IStepsDaily = await RNFitnessTracker.getStepsDaily();
+
+  let stepsToday = 0;
+
+  if (isObject(stepsDaily)) {
+    const today = Object.keys(stepsDaily).sort()[6];
+    stepsToday = stepsDaily?.[today];
+  }
 
   return { stepsToday, stepsDaily: stepsDaily || {} };
 };
