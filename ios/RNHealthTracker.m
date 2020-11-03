@@ -132,17 +132,20 @@ RCT_EXPORT_METHOD(writeData
                   :(double) amount
                   :(NSString*) unit
                   :(NSDictionary*) metadata
+                  :(double) timestamp
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
-    
+        
     HKQuantityType *quantityType =
     [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
     
     HKQuantity *quantity = [HKQuantity quantityWithUnit:[HKUnit unitFromString:unit]
                                             doubleValue:amount];
     
+    NSDate *date = timestamp ? [NSDate dateWithTimeIntervalSince1970:timestamp/1000.0] : NSDate.date;
+        
     HKQuantitySample *dataObject =
-    [HKQuantitySample quantitySampleWithType:quantityType quantity:quantity startDate:NSDate.date endDate:NSDate.date metadata:metadata];
+    [HKQuantitySample quantitySampleWithType:quantityType quantity:quantity startDate:date endDate:date metadata:metadata];
     
     [_healthStore saveObject:dataObject withCompletion:^(BOOL success, NSError * _Nullable error) {
         if(!error && success) {

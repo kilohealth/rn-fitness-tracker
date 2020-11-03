@@ -43,6 +43,7 @@ const setupTrackingIOS = async <DataKey extends keyof typeof HealthDataTypes>(
  * @param object.unit {UnitKey}
  * @param object.quantity {Number}
  * @param object.metadata {object}
+ * @param object.customUnixTimestamp {number} optional unix timestamp for record date
  * @return {Promise<boolean>}
  */
 const writeDataIOS = async <
@@ -53,14 +54,22 @@ const writeDataIOS = async <
   unit,
   quantity,
   metadata = {},
+  customUnixTimestamp = 0,
 }: {
   key: DataKey;
   unit: UnitKey;
   quantity: number;
   metadata: { [name: string]: any };
+  customUnixTimestamp: number;
 }): Promise<boolean> => {
   if (isIOS) {
-    return await RNHealthTracker.writeData(key, quantity, unit, metadata);
+    return await RNHealthTracker.writeData(
+      key,
+      quantity,
+      unit,
+      metadata,
+      customUnixTimestamp,
+    );
   }
 };
 
