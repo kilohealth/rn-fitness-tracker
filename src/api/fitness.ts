@@ -88,6 +88,8 @@ const setupTracking = async (
     if (!isMotionAuthNeeded || motionAuthorized === RESULTS.GRANTED) {
       const authorized: boolean = await RNFitnessTracker.authorize();
       return { authorized, shouldOpenAppSettings: false };
+    } else if (motionAuthorized === RESULTS.DENIED) {
+      return { authorized: false, shouldOpenAppSettings: false };
     } else {
       return { authorized: false, shouldOpenAppSettings: true };
     }
