@@ -177,13 +177,14 @@ Returns distance today and this week's distance daily data object
 
 **Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 
-| Param | Type |
-| --- | --- |
-| object | <code>object</code> | 
-| object.key | <code>HealthDataTypes</code> | 
-| object.unit | <code>UnitKey</code> | 
-| object.quantity | <code>Number</code> | 
-| object.metadata | <code>object</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| object | <code>object</code> |  |
+| object.key | <code>HealthDataTypes</code> |  |
+| object.unit | <code>UnitKey</code> |  |
+| object.quantity | <code>Number</code> |  |
+| object.metadata | <code>object</code> |  |
+| object.customUnixTimestamp | <code>number</code> | optional unix timestamp for record date |
 
 
 * * *

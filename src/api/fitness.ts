@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 
 import {
   IDistanceDaily,
@@ -17,6 +17,28 @@ const { RNFitnessTracker, RNHealthTracker } = NativeModules;
 /**
  * @module FitnessTrackerAPI
  */
+
+const handleAndroidMotionTrackingPermissions = async (
+  shouldRequestPermission: boolean,
+): Promise<IFitnessTrackerStatus> => {
+  const apiLevel = await DeviceInfo.getApiLevel();
+  const isMotionAuthNeeded = apiLevel >= 29;
+
+  const action = shouldRequestPermission ? request : check;
+  const motionAuthorized:
+    | 'unavailable'
+    | 'denied'
+    | 'blocked'
+    | 'granted' = await action(PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION);
+
+  if (!isMotionAuthNeeded || motionAuthorized === RESULTS.GRANTED) {
+    return { authorized: true, shouldOpenAppSettings: false };
+  } else if (motionAuthorized === RESULTS.DENIED) {
+    return { authorized: false, shouldOpenAppSettings: false };
+  } else {
+    return { authorized: false, shouldOpenAppSettings: true };
+  }
+};
 
 /**
  * Returns if step tracking is authorized and available on both platforms
@@ -37,8 +59,15 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
       return { authorized: false, shouldOpenAppSettings: true };
     }
   } else {
-    const authorized: boolean = await RNFitnessTracker.isTrackingAvailable();
-    return { authorized, shouldOpenAppSettings: false };
+    const motionAuthResult = await handleAndroidMotionTrackingPermissions(
+      false,
+    );
+    if (motionAuthResult.authorized) {
+      const authorized: boolean = await RNFitnessTracker.isTrackingAvailable();
+      motionAuthResult.authorized = authorized;
+    }
+
+    return motionAuthResult;
   }
 };
 
@@ -74,24 +103,14 @@ const setupTracking = async (
       };
     }
   } else {
-    const apiLevel = await DeviceInfo.getApiLevel();
-    const isMotionAuthNeeded = apiLevel >= 29;
-    let motionAuthorized: 'unavailable' | 'denied' | 'blocked' | 'granted' =
-      RESULTS.UNAVAILABLE;
-
-    if (isMotionAuthNeeded) {
-      motionAuthorized = await request(
-        PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION,
-      );
-    }
-
-    if (!isMotionAuthNeeded || motionAuthorized === RESULTS.GRANTED) {
+    const motionAuthResult = await handleAndroidMotionTrackingPermissions(true);
+    if (motionAuthResult.authorized) {
       const authorized: boolean = await RNFitnessTracker.authorize();
-      return { authorized, shouldOpenAppSettings: false };
-    } else if (motionAuthorized === RESULTS.DENIED) {
-      return { authorized: false, shouldOpenAppSettings: false };
+      motionAuthResult.authorized = authorized;
+
+      return motionAuthResult;
     } else {
-      return { authorized: false, shouldOpenAppSettings: true };
+      return motionAuthResult;
     }
   }
 };
