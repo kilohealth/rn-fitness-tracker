@@ -135,7 +135,7 @@ RCT_EXPORT_METHOD(writeData
                   :(double) timestamp
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
-        
+    
     HKQuantityType *quantityType =
     [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
     
@@ -143,7 +143,7 @@ RCT_EXPORT_METHOD(writeData
                                             doubleValue:amount];
     
     NSDate *date = timestamp ? [NSDate dateWithTimeIntervalSince1970:timestamp/1000.0] : NSDate.date;
-        
+    
     HKQuantitySample *dataObject =
     [HKQuantitySample quantitySampleWithType:quantityType quantity:quantity startDate:date endDate:date metadata:metadata];
     
@@ -296,6 +296,55 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
     
     // Execute the query
     [_healthStore executeQuery:sampleQuery];
+}
+
+RCT_EXPORT_METHOD(queryDailyTotals
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(nonnull NSNumber *) start
+                  :(nonnull NSNumber *) end
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *startDate = [RCTConvert NSDate:start];
+    NSDate *endDate = [RCTConvert NSDate:end];
+    
+    HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :startDate :reject];
+    
+    // Set the results handler
+    query.initialResultsHandler =
+    ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
+        
+        if (error) {
+            [self rejectError :error :reject];
+            abort();
+        }
+        
+        NSMutableDictionary *data = [NSMutableDictionary new];
+        
+        [results
+         enumerateStatisticsFromDate:startDate
+         toDate:endDate
+         withBlock:^(HKStatistics *result, BOOL *stop) {
+            
+            HKQuantity *quantity = result.sumQuantity;
+            double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+            
+            if(unit == HKUnit.countUnit.unitString) {
+                value = (int)value;
+            }
+            
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+            NSString *dateString = [dateFormatter stringFromDate:result.startDate];
+            [data setValue:@(value) forKey:dateString];
+        }];
+        
+        resolve(data);
+    };
+    
+    // Execute the query
+    [_healthStore executeQuery:query];
 }
 
 RCT_EXPORT_METHOD(getReadStatus

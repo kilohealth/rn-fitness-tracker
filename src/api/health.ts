@@ -190,6 +190,7 @@ const getStatisticWeekDailyIOS = async <
  * `iOS only!` Returns every record for specified data type and unit for specified number of days
  * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @param numberOfDays {number}
  * @return {Promise<number>}
  */
 const queryDataRecordsIOS = async <
@@ -223,6 +224,33 @@ const queryDataRecordsIOS = async <
       unit,
       numberOfDays,
     );
+  }
+};
+
+/**
+ * `iOS only!` Returns daily totals for specified data type and unit for specified number of days
+ * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @param object.startDate {Date | number}
+ * @param object.endDate {Date | number}
+ * @return {Promise<object>}
+ */
+const queryDailyTotalsIOS = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>({
+  key,
+  unit,
+  startDate,
+  endDate,
+}: {
+  key: DataKey;
+  unit: UnitKey;
+  startDate: Date | number;
+  endDate: Date | number;
+}): Promise<{ [date: string]: number }> => {
+  if (isIOS) {
+    return RNHealthTracker.queryDailyTotals(key, unit, +startDate, +endDate);
   }
 };
 
@@ -306,6 +334,7 @@ export const HealthTrackerAPI = {
   isTrackingSupportedIOS,
   recordWorkoutIOS,
   queryDataRecordsIOS,
+  queryDailyTotalsIOS,
   setupTrackingIOS,
   writeDataIOS,
   writeDataArrayIOS,
