@@ -347,6 +347,50 @@ RCT_EXPORT_METHOD(queryDailyTotals
     [_healthStore executeQuery:query];
 }
 
+RCT_EXPORT_METHOD(queryTotal
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(nonnull NSNumber *) start
+                  :(nonnull NSNumber *) end
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *startDate = [RCTConvert NSDate:start];
+    NSDate *endDate = [RCTConvert NSDate:end];
+    
+    HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :startDate :reject];
+    
+    // Set the results handler
+    query.initialResultsHandler =
+    ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
+        
+        if (error) {
+            [self rejectError :error :reject];
+            abort();
+        }
+        
+        __block double total = 0;
+        
+        [results
+         enumerateStatisticsFromDate:startDate
+         toDate:endDate
+         withBlock:^(HKStatistics *result, BOOL *stop) {
+            
+            HKQuantity *quantity = result.sumQuantity;
+            double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+            total += value;
+        }];
+        
+        if(unit == HKUnit.countUnit.unitString) {
+            total = (int)total;
+        }
+        
+        resolve([NSString stringWithFormat :@"%f", total]);
+    
+    // Execute the query
+    [_healthStore executeQuery:query];
+}
+
 RCT_EXPORT_METHOD(getReadStatus
                   :(NSString*) dataTypeIdentifier
                   :(NSString*) unit
