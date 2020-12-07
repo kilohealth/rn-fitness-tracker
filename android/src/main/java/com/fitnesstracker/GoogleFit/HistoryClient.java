@@ -33,6 +33,31 @@ class HistoryClient {
     this.activity = activity;
   }
 
+  void getTotalForTimeRange(final Promise promise, long startTime, long endTime, int dataType) {
+    try {
+
+      if (dataType == 0) {
+        getStepHistory(startTime, endTime, 7, new OnStepsFetchComplete() {
+          @Override
+          public void success(int steps) {
+            promise.resolve(steps);
+          }
+        });
+      } else if (dataType == 1) {
+        getDistanceHistory(startTime, endTime, 7, new OnDistanceFetchComplete() {
+          @Override
+          public void success(float distance) {
+            promise.resolve(distance);
+          }
+        });
+      }
+
+    } catch (Exception e) {
+      promise.reject(e);
+      e.printStackTrace();
+    }
+  }
+
   void getWeekData(final Promise promise, int dataType) {
     try {
       Date today = new Date();

@@ -62,6 +62,23 @@ public class RNFitnessTrackerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void queryStepsTotal(double startDate, double endDate, Promise promise) {
+    long startTime = (long) (startDate/1000); // x = 1234
+    long endTime= (long) (endDate/1000); // x = 1234
+
+
+    this.googleFitManager.queryStepsTotal(promise, startTime, endTime);
+  }
+
+  @ReactMethod
+  public void queryDistanceTotal(long startDate, long endDate, Promise promise) {
+    long startTime = (long) (startDate/1000); // x = 1234
+    long endTime= (long) (endDate/1000); // x = 1234
+
+    this.googleFitManager.queryDistanceTotal(promise, startTime, endTime);
+  }
+
+  @ReactMethod
   public void getDistanceDaily(Promise promise) {
     this.googleFitManager.getDistanceDaily(promise);
   }

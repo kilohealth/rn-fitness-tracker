@@ -140,6 +140,14 @@ public class GoogleFitManager implements ActivityEventListener {
         this.historyClient.getWeekData(promise, 1);
     }
 
+    public void queryStepsTotal(final Promise promise, long startTime, long endTime) {
+      this.historyClient.getTotalForTimeRange(promise, startTime, endTime, 0);
+    }
+
+    public void queryDistanceTotal(final Promise promise, long startTime, long endTime) {
+      this.historyClient.getTotalForTimeRange(promise, startTime, endTime, 1);
+    }
+
     public void getDistanceDaily(final Promise promise) {
         this.historyClient.getDistanceDaily(new Date(), Arguments.createMap(), 0, promise);
 
