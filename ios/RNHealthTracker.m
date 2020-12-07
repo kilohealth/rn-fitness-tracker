@@ -386,10 +386,12 @@ RCT_EXPORT_METHOD(queryTotal
         }
         
         resolve([NSString stringWithFormat :@"%f", total]);
+    };
     
     // Execute the query
     [_healthStore executeQuery:query];
 }
+
 
 RCT_EXPORT_METHOD(getReadStatus
                   :(NSString*) dataTypeIdentifier
