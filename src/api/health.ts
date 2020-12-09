@@ -335,7 +335,6 @@ const recordBloodPressureIOS = async ({
   diastolicPressure: number;
   startDate: Date | number;
   endDate: Date | number;
-  energyBurned: number;
   metadata: { [name: string]: any };
 }): Promise<boolean> => {
   if (isIOS) {
