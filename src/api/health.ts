@@ -319,30 +319,27 @@ const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
  * @param object {object}
  * @param object.systolicPressure {Number}
  * @param object.diastolicPressure {Number}
- * @param object.startDate {Date | number}
- * @param object.endDate {Date | number}
+ * @param object.date {Date | number}
  * @param object.metadata {object}
  * @return {Promise<boolean>}
  */
 const recordBloodPressureIOS = async ({
   systolicPressure,
   diastolicPressure,
-  startDate,
-  endDate,
+  date,
   metadata = {},
 }: {
   systolicPressure: number;
   diastolicPressure: number;
-  startDate: Date | number;
-  endDate: Date | number;
+  date: Date | number;
   metadata: { [name: string]: any };
 }): Promise<boolean> => {
   if (isIOS) {
     return await RNHealthTracker.recordBloodPressure(
       systolicPressure,
       diastolicPressure,
-      +startDate,
-      +endDate,
+      +date,
+      +date,
       metadata,
     );
   }
