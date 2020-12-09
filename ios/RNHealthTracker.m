@@ -493,6 +493,48 @@ RCT_EXPORT_METHOD(recordWorkout
     }];
 }
 
+RCT_EXPORT_METHOD(recordBloodPressure
+                  :(nonnull NSNumber *) systolicPressure
+                  :(nonnull NSNumber *) diastolicPressure
+                  :(nonnull NSNumber *) start
+                  :(nonnull NSNumber *) end
+                  :(NSDictionary*) metadata
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    
+    
+    NSDate *startDate = [RCTConvert NSDate:start];
+    NSDate *endDate = [RCTConvert NSDate:end];
+    HKQuantity *systolicQuantity = [HKQuantity quantityWithUnit:HKUnit.millimeterOfMercuryUnit doubleValue:[systolicPressure doubleValue]];
+    HKQuantity *diastolicQuantity = [HKQuantity quantityWithUnit:HKUnit.millimeterOfMercuryUnit doubleValue:[diastolicPressure doubleValue]];
+    
+    HKQuantityType *systolicType =
+    [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+    HKQuantityType *diastolicType =
+    [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+    
+    HKQuantitySample* systolicSample = [HKQuantitySample quantitySampleWithType:systolicType quantity:systolicQuantity startDate:startDate endDate:endDate];
+    HKQuantitySample* diastolicSample = [HKQuantitySample quantitySampleWithType:diastolicType quantity:diastolicQuantity startDate:startDate endDate:endDate];
+    
+    NSSet<HKSample *>* bloodPressureSet = [NSSet setWithArray:@[systolicSample, diastolicSample]];
+    
+    HKCorrelationType* bloodPressureType = [HKCorrelationType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
+    HKCorrelation* bloodPressureSample = [HKCorrelation correlationWithType:bloodPressureType startDate:startDate endDate:endDate objects:bloodPressureSet metadata:metadata];
+    
+    
+    [_healthStore
+     saveObject:bloodPressureSample
+     withCompletion:^(BOOL success, NSError *error) {
+        
+        if (success && !error) {
+            resolve(@true);
+        } else {
+            [self rejectError:error :reject];
+        }
+    }];
+}
+
 
 RCT_EXPORT_METHOD(getAuthorizationStatusForType
                   :(NSString*) dataTypeIdentifier

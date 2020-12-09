@@ -315,6 +315,41 @@ const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
 };
 
 /**
+ * `iOS only!` Records given blood pressure data to Health API
+ * @param object {object}
+ * @param object.systolicPressure {Number}
+ * @param object.diastolicPressure {Number}
+ * @param object.startDate {Date | number}
+ * @param object.endDate {Date | number}
+ * @param object.metadata {object}
+ * @return {Promise<boolean>}
+ */
+const recordBloodPressureIOS = async ({
+  systolicPressure,
+  diastolicPressure,
+  startDate,
+  endDate,
+  metadata = {},
+}: {
+  systolicPressure: number;
+  diastolicPressure: number;
+  startDate: Date | number;
+  endDate: Date | number;
+  energyBurned: number;
+  metadata: { [name: string]: any };
+}): Promise<boolean> => {
+  if (isIOS) {
+    return await RNHealthTracker.recordBloodPressure(
+      systolicPressure,
+      diastolicPressure,
+      +startDate,
+      +endDate,
+      metadata,
+    );
+  }
+};
+
+/**
  * `iOS only!` Returns write (share) status for data type in Health API
  * @param dataType {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @return {Promise<number>} 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized
@@ -359,6 +394,7 @@ export const HealthTrackerAPI = {
   getStatisticTotalForWeekIOS,
   getStatisticWeekDailyIOS,
   isTrackingSupportedIOS,
+  recordBloodPressureIOS,
   recordWorkoutIOS,
   queryDataRecordsIOS,
   queryDailyTotalsIOS,
