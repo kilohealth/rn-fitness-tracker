@@ -143,6 +143,8 @@ export const UnitTypes = {
   percent: 'percent',
   milligramsPerDeciliter: 'mg/dL',
   millimolesPerLiter: 'mmol<180.1558800000541>/L',
+  millimetersOfMercury: 'mmHg',
+  beatsPerMinute: 'count/min',
 };
 
 export const WorkoutTypes = {
