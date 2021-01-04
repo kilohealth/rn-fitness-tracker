@@ -471,6 +471,7 @@ RCT_EXPORT_METHOD(recordWorkout
                   :(nonnull NSNumber *) start
                   :(nonnull NSNumber *) end
                   :(nonnull NSNumber *) energyBurned
+                  :(nullable HKQuantity *) totalDistance
                   :(NSDictionary*) metadata
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
@@ -479,7 +480,7 @@ RCT_EXPORT_METHOD(recordWorkout
     NSDate *endDate = [RCTConvert NSDate:end];
     HKQuantity *totalEnergyBurned = [HKQuantity quantityWithUnit:HKUnit.kilocalorieUnit doubleValue:[energyBurned doubleValue]];
     
-    HKWorkout *workout = [HKWorkout workoutWithActivityType:workoutWithActivityType startDate:startDate endDate:endDate duration:0 totalEnergyBurned:totalEnergyBurned totalDistance:nil metadata:metadata];
+    HKWorkout *workout = [HKWorkout workoutWithActivityType:workoutWithActivityType startDate:startDate endDate:endDate duration:0 totalEnergyBurned:totalEnergyBurned totalDistance:totalDistance metadata:metadata];
     
     [_healthStore
      saveObject:workout

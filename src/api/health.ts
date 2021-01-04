@@ -286,21 +286,24 @@ const queryTotalIOS = async <
  * @param object {object}
  * @param object.startDate {Date | number}
  * @param object.endDate {Date | number}
- * @param object.energyBurned {Number} number of calories in kcal
- * @param object.metadata {object}
+ * @param object.energyBurned {Number} number of calories in kcal (Optional)
+ * @param object.totalDistance {number} total distance travelled (Optional)
+ * @param object.metadata {object} (Optional)
  * @return {Promise<boolean>}
  */
 const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
   key,
   startDate,
   endDate,
-  energyBurned,
+  energyBurned = 0,
+  totalDistance = 0,
   metadata = {},
 }: {
   key: DataKey;
   startDate: Date | number;
   endDate: Date | number;
   energyBurned: number;
+  totalDistance: number;
   metadata: { [name: string]: any };
 }): Promise<boolean> => {
   if (isIOS) {
@@ -309,6 +312,7 @@ const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
       +startDate,
       +endDate,
       energyBurned,
+      totalDistance,
       metadata,
     );
   }
