@@ -241,6 +241,79 @@ RCT_EXPORT_METHOD(getAbsoluteTotalForToday
     [_healthStore executeQuery:sampleQuery];
 }
 
+
+RCT_EXPORT_METHOD(queryWorkouts
+                  :(int) workoutActivityType
+                  :(nonnull NSNumber *) start
+                  :(nonnull NSNumber *) end
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject
+                  ) {
+    NSDate *startDate = [RCTConvert NSDate:start];
+    NSDate *endDate = [RCTConvert NSDate:end];
+    
+    NSPredicate *datePredicate = [HKQuery predicateForSamplesWithStartDate :startDate endDate:endDate options:0];
+    NSPredicate *predicate = datePredicate;
+    
+    if(workoutActivityType > 0) {
+        NSPredicate *workoutTypePredicate = [HKQuery predicateForWorkoutsWithWorkoutActivityType:workoutActivityType];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[workoutTypePredicate, datePredicate]];
+    }
+    
+    // Order the workouts by date
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]initWithKey:HKSampleSortIdentifierStartDate ascending:false];
+    
+    
+    NSMutableArray *dataRecords = [NSMutableArray array];
+    NSDateFormatter *dateFormatter = [RNFitnessUtils dateFormatter];
+            
+    HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKWorkoutType workoutType]
+                                                                 predicate:predicate
+                                                                     limit:HKObjectQueryNoLimit
+                                                           sortDescriptors:@[sortDescriptor]
+                                                            resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error)
+                                  {
+        
+        if(!error && results){
+            for(HKQuantitySample *samples in results)
+            {
+                HKWorkout *workout = (HKWorkout *)samples;
+                
+                NSString *sourceDevice = @"unknown";
+                if (@available(iOS 11.0, *)) {
+                    sourceDevice = RCTNullIfNil(workout.sourceRevision.productType);
+                }
+                
+                double distance = [workout.totalDistance doubleValueForUnit:HKUnit.meterUnit];
+                double energyBurned = [workout.totalEnergyBurned doubleValueForUnit:HKUnit.kilocalorieUnit];
+                NSString *isoStartDate = [dateFormatter stringFromDate:workout.startDate];
+                NSString *isoEndDate = [dateFormatter stringFromDate:workout.endDate];
+
+                [dataRecords addObject:(@{
+                    @"duration": @(workout.duration),
+                    @"startDate": isoStartDate,
+                    @"endDate": isoEndDate,
+                    @"energyBurned": [NSNumber numberWithDouble: energyBurned],
+                    @"distance": [NSNumber numberWithDouble: distance],
+                    @"type": @(workout.workoutActivityType),
+                    @"metadata": RCTNullIfNil(workout.metadata),
+                    @"source": @{
+                            @"name": RCTNullIfNil(workout.sourceRevision.source.name),
+                            @"device": RCTNullIfNil(sourceDevice),
+                            @"id": RCTNullIfNil(workout.sourceRevision.source.bundleIdentifier),
+                    }})];
+            }
+            resolve(dataRecords);
+            
+        }else{
+            [self rejectError:error :reject];
+        }
+    }];
+    
+    // Execute the query
+    [_healthStore executeQuery:sampleQuery];
+}
+
 RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
                   :(NSString*) dataTypeIdentifier
                   :(NSString*) unit
@@ -260,10 +333,7 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
             
             NSMutableArray *dataRecords = [NSMutableArray array];
             
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            dateFormatter.timeZone = [[NSTimeZone alloc] initWithName:@"UTC"];
-            [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
-            [dateFormatter setCalendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
+            NSDateFormatter *dateFormatter = [RNFitnessUtils dateFormatter];
             
             for (HKQuantitySample *sample in results) {
                 
@@ -471,7 +541,7 @@ RCT_EXPORT_METHOD(recordWorkout
                   :(nonnull NSNumber *) start
                   :(nonnull NSNumber *) end
                   :(nonnull NSNumber *) energyBurned
-                  :(nullable HKQuantity *) totalDistance
+                  :(nonnull NSNumber *) distance
                   :(NSDictionary*) metadata
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
@@ -479,6 +549,8 @@ RCT_EXPORT_METHOD(recordWorkout
     NSDate *startDate = [RCTConvert NSDate:start];
     NSDate *endDate = [RCTConvert NSDate:end];
     HKQuantity *totalEnergyBurned = [HKQuantity quantityWithUnit:HKUnit.kilocalorieUnit doubleValue:[energyBurned doubleValue]];
+    
+    HKQuantity *totalDistance = [HKQuantity quantityWithUnit:HKUnit.meterUnit doubleValue:[distance doubleValue]];
     
     HKWorkout *workout = [HKWorkout workoutWithActivityType:workoutWithActivityType startDate:startDate endDate:endDate duration:0 totalEnergyBurned:totalEnergyBurned totalDistance:totalDistance metadata:metadata];
     

@@ -1,6 +1,10 @@
 import { NativeModules } from 'react-native';
 
 import { HealthDataTypes, UnitTypes, WorkoutTypes } from '../types/dataTypes';
+import {
+  IHealthDataRecordQuery,
+  IWorkoutQueryData,
+} from '../types/fitnessTypes';
 import { isIOS } from '../utils/helpers';
 
 const { RNHealthTracker } = NativeModules;
@@ -204,20 +208,7 @@ const queryDataRecordsIOS = async <
   key: DataKey;
   unit: UnitKey;
   numberOfDays: number;
-}): Promise<
-  [
-    {
-      date: string;
-      quantity: number;
-      metadata: { [name: string]: any };
-      source: {
-        name: string;
-        device: string;
-        id: string;
-      };
-    },
-  ]
-> => {
+}): Promise<IHealthDataRecordQuery> => {
   if (isIOS) {
     return RNHealthTracker.queryDataRecordsForNumberOfDays(
       key,
@@ -228,9 +219,30 @@ const queryDataRecordsIOS = async <
 };
 
 /**
+ * `iOS only!` Returns workouts array for specified timeframe, filters by workout type if specified
+ * @param object.startDate {Date | number}
+ * @param object.endDate {Date | number}
+ * @param object.key {WorkoutTypes} e.g. `WorkoutTypes.Running` (Optional)
+ * @return {Promise<IWorkoutQueryData>}
+ */
+const queryWorkoutsIOS = async <WorkoutKey extends keyof typeof WorkoutTypes>({
+  startDate,
+  endDate,
+  key = 0,
+}: {
+  startDate: Date | number;
+  endDate: Date | number;
+  key: WorkoutKey | 0;
+}): Promise<IWorkoutQueryData<WorkoutKey>> => {
+  if (isIOS) {
+    return RNHealthTracker.queryWorkouts(key, +startDate, +endDate);
+  }
+};
+
+/**
  * `iOS only!` Returns daily totals for specified data type and unit for specified time frame
- * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
- * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @param object.key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param object.unit {UnitType} e.g. `UnitTypes.grams`
  * @param object.startDate {Date | number}
  * @param object.endDate {Date | number}
  * @return {Promise<object>}
@@ -256,8 +268,8 @@ const queryDailyTotalsIOS = async <
 
 /**
  * `iOS only!` Returns total for specified data type and unit for specified time frame
- * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
- * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @param object.key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param object.unit {UnitType} e.g. `UnitTypes.grams`
  * @param object.startDate {Date | number}
  * @param object.endDate {Date | number}
  * @return {Promise<object>}
@@ -399,6 +411,7 @@ export const HealthTrackerAPI = {
   queryDataRecordsIOS,
   queryDailyTotalsIOS,
   queryTotalIOS,
+  queryWorkoutsIOS,
   setupTrackingIOS,
   writeDataIOS,
   writeDataArrayIOS,

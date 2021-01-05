@@ -31,4 +31,13 @@
     return day;
 }
 
++(NSDateFormatter *)dateFormatter {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.timeZone = [[NSTimeZone alloc] initWithName:@"UTC"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+    [dateFormatter setCalendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
+    
+    return dateFormatter;
+}
+
 @end

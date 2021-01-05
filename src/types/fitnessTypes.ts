@@ -36,3 +36,33 @@ export interface IFloorsData {
   floorsToday: number;
   floorsDaily: IDistanceDaily;
 }
+
+export type IWorkoutQueryData<WorkoutKey> = [
+  {
+    duration: number;
+    distance: number;
+    energyBurned: number;
+    startDate: string;
+    endDate: string;
+    type: WorkoutKey;
+    metadata: { [name: string]: any };
+    source: {
+      name: string;
+      device: string;
+      id: string;
+    };
+  },
+];
+
+export type IHealthDataRecordQuery = [
+  {
+    date: string;
+    quantity: number;
+    metadata: { [name: string]: any };
+    source: {
+      name: string;
+      device: string;
+      id: string;
+    };
+  },
+];
