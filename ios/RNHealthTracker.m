@@ -135,7 +135,7 @@ RCT_EXPORT_METHOD(writeData
                   :(double) timestamp
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
-        
+    
     HKQuantityType *quantityType =
     [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
     
@@ -143,7 +143,7 @@ RCT_EXPORT_METHOD(writeData
                                             doubleValue:amount];
     
     NSDate *date = timestamp ? [NSDate dateWithTimeIntervalSince1970:timestamp/1000.0] : NSDate.date;
-        
+    
     HKQuantitySample *dataObject =
     [HKQuantitySample quantitySampleWithType:quantityType quantity:quantity startDate:date endDate:date metadata:metadata];
     
@@ -241,6 +241,79 @@ RCT_EXPORT_METHOD(getAbsoluteTotalForToday
     [_healthStore executeQuery:sampleQuery];
 }
 
+
+RCT_EXPORT_METHOD(queryWorkouts
+                  :(int) workoutActivityType
+                  :(nonnull NSNumber *) start
+                  :(nonnull NSNumber *) end
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject
+                  ) {
+    NSDate *startDate = [RCTConvert NSDate:start];
+    NSDate *endDate = [RCTConvert NSDate:end];
+    
+    NSPredicate *datePredicate = [HKQuery predicateForSamplesWithStartDate :startDate endDate:endDate options:0];
+    NSPredicate *predicate = datePredicate;
+    
+    if(workoutActivityType > 0) {
+        NSPredicate *workoutTypePredicate = [HKQuery predicateForWorkoutsWithWorkoutActivityType:workoutActivityType];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[workoutTypePredicate, datePredicate]];
+    }
+    
+    // Order the workouts by date
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]initWithKey:HKSampleSortIdentifierStartDate ascending:false];
+    
+    
+    NSMutableArray *dataRecords = [NSMutableArray array];
+    NSDateFormatter *dateFormatter = [RNFitnessUtils dateFormatter];
+            
+    HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKWorkoutType workoutType]
+                                                                 predicate:predicate
+                                                                     limit:HKObjectQueryNoLimit
+                                                           sortDescriptors:@[sortDescriptor]
+                                                            resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error)
+                                  {
+        
+        if(!error && results){
+            for(HKQuantitySample *samples in results)
+            {
+                HKWorkout *workout = (HKWorkout *)samples;
+                
+                NSString *sourceDevice = @"unknown";
+                if (@available(iOS 11.0, *)) {
+                    sourceDevice = RCTNullIfNil(workout.sourceRevision.productType);
+                }
+                
+                double distance = [workout.totalDistance doubleValueForUnit:HKUnit.meterUnit];
+                double energyBurned = [workout.totalEnergyBurned doubleValueForUnit:HKUnit.kilocalorieUnit];
+                NSString *isoStartDate = [dateFormatter stringFromDate:workout.startDate];
+                NSString *isoEndDate = [dateFormatter stringFromDate:workout.endDate];
+
+                [dataRecords addObject:(@{
+                    @"duration": @(workout.duration),
+                    @"startDate": isoStartDate,
+                    @"endDate": isoEndDate,
+                    @"energyBurned": [NSNumber numberWithDouble: energyBurned],
+                    @"distance": [NSNumber numberWithDouble: distance],
+                    @"type": @(workout.workoutActivityType),
+                    @"metadata": RCTNullIfNil(workout.metadata),
+                    @"source": @{
+                            @"name": RCTNullIfNil(workout.sourceRevision.source.name),
+                            @"device": RCTNullIfNil(sourceDevice),
+                            @"id": RCTNullIfNil(workout.sourceRevision.source.bundleIdentifier),
+                    }})];
+            }
+            resolve(dataRecords);
+            
+        }else{
+            [self rejectError:error :reject];
+        }
+    }];
+    
+    // Execute the query
+    [_healthStore executeQuery:sampleQuery];
+}
+
 RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
                   :(NSString*) dataTypeIdentifier
                   :(NSString*) unit
@@ -260,10 +333,7 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
             
             NSMutableArray *dataRecords = [NSMutableArray array];
             
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            dateFormatter.timeZone = [[NSTimeZone alloc] initWithName:@"UTC"];
-            [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
-            [dateFormatter setCalendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
+            NSDateFormatter *dateFormatter = [RNFitnessUtils dateFormatter];
             
             for (HKQuantitySample *sample in results) {
                 
@@ -297,6 +367,101 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
     // Execute the query
     [_healthStore executeQuery:sampleQuery];
 }
+
+RCT_EXPORT_METHOD(queryDailyTotals
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(nonnull NSNumber *) start
+                  :(nonnull NSNumber *) end
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *startDate = [RCTConvert NSDate:start];
+    NSDate *endDate = [RCTConvert NSDate:end];
+    
+    HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :startDate :reject];
+    
+    // Set the results handler
+    query.initialResultsHandler =
+    ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
+        
+        if (error) {
+            [self rejectError :error :reject];
+            abort();
+        }
+        
+        NSMutableDictionary *data = [NSMutableDictionary new];
+        
+        [results
+         enumerateStatisticsFromDate:startDate
+         toDate:endDate
+         withBlock:^(HKStatistics *result, BOOL *stop) {
+            
+            HKQuantity *quantity = result.sumQuantity;
+            double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+            
+            if(unit == HKUnit.countUnit.unitString) {
+                value = (int)value;
+            }
+            
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+            NSString *dateString = [dateFormatter stringFromDate:result.startDate];
+            [data setValue:@(value) forKey:dateString];
+        }];
+        
+        resolve(data);
+    };
+    
+    // Execute the query
+    [_healthStore executeQuery:query];
+}
+
+RCT_EXPORT_METHOD(queryTotal
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) unit
+                  :(nonnull NSNumber *) start
+                  :(nonnull NSNumber *) end
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSDate *startDate = [RCTConvert NSDate:start];
+    NSDate *endDate = [RCTConvert NSDate:end];
+    
+    HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :startDate :reject];
+    
+    // Set the results handler
+    query.initialResultsHandler =
+    ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
+        
+        if (error) {
+            [self rejectError :error :reject];
+            abort();
+        }
+        
+        __block double total = 0;
+        
+        [results
+         enumerateStatisticsFromDate:startDate
+         toDate:endDate
+         withBlock:^(HKStatistics *result, BOOL *stop) {
+            
+            HKQuantity *quantity = result.sumQuantity;
+            double value = [quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
+            total += value;
+        }];
+        
+        if(unit == HKUnit.countUnit.unitString) {
+            total = (int)total;
+        }
+        
+        resolve([NSString stringWithFormat :@"%f", total]);
+    };
+    
+    // Execute the query
+    [_healthStore executeQuery:query];
+}
+
 
 RCT_EXPORT_METHOD(getReadStatus
                   :(NSString*) dataTypeIdentifier
@@ -376,6 +541,7 @@ RCT_EXPORT_METHOD(recordWorkout
                   :(nonnull NSNumber *) start
                   :(nonnull NSNumber *) end
                   :(nonnull NSNumber *) energyBurned
+                  :(nonnull NSNumber *) distance
                   :(NSDictionary*) metadata
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
@@ -384,10 +550,54 @@ RCT_EXPORT_METHOD(recordWorkout
     NSDate *endDate = [RCTConvert NSDate:end];
     HKQuantity *totalEnergyBurned = [HKQuantity quantityWithUnit:HKUnit.kilocalorieUnit doubleValue:[energyBurned doubleValue]];
     
-    HKWorkout *workout = [HKWorkout workoutWithActivityType:workoutWithActivityType startDate:startDate endDate:endDate duration:0 totalEnergyBurned:totalEnergyBurned totalDistance:nil metadata:metadata];
+    HKQuantity *totalDistance = [HKQuantity quantityWithUnit:HKUnit.meterUnit doubleValue:[distance doubleValue]];
+    
+    HKWorkout *workout = [HKWorkout workoutWithActivityType:workoutWithActivityType startDate:startDate endDate:endDate duration:0 totalEnergyBurned:totalEnergyBurned totalDistance:totalDistance metadata:metadata];
     
     [_healthStore
      saveObject:workout
+     withCompletion:^(BOOL success, NSError *error) {
+        
+        if (success && !error) {
+            resolve(@true);
+        } else {
+            [self rejectError:error :reject];
+        }
+    }];
+}
+
+RCT_EXPORT_METHOD(recordBloodPressure
+                  :(nonnull NSNumber *) systolicPressure
+                  :(nonnull NSNumber *) diastolicPressure
+                  :(nonnull NSNumber *) start
+                  :(nonnull NSNumber *) end
+                  :(NSDictionary*) metadata
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    
+    
+    NSDate *startDate = [RCTConvert NSDate:start];
+    NSDate *endDate = [RCTConvert NSDate:end];
+    HKQuantity *systolicQuantity = [HKQuantity quantityWithUnit:HKUnit.millimeterOfMercuryUnit doubleValue:[systolicPressure doubleValue]];
+    HKQuantity *diastolicQuantity = [HKQuantity quantityWithUnit:HKUnit.millimeterOfMercuryUnit doubleValue:[diastolicPressure doubleValue]];
+    
+    HKQuantityType *systolicType =
+    [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+    HKQuantityType *diastolicType =
+    [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+    
+    HKQuantitySample* systolicSample = [HKQuantitySample quantitySampleWithType:systolicType quantity:systolicQuantity startDate:startDate endDate:endDate];
+    HKQuantitySample* diastolicSample = [HKQuantitySample quantitySampleWithType:diastolicType quantity:diastolicQuantity startDate:startDate endDate:endDate];
+    
+    NSSet<HKSample *>* bloodPressureSet = [NSSet setWithArray:@[systolicSample, diastolicSample]];
+    
+    HKCorrelationType* bloodPressureType = [HKCorrelationType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
+    HKCorrelation* bloodPressureSample = [HKCorrelation correlationWithType:bloodPressureType startDate:startDate endDate:endDate objects:bloodPressureSet metadata:metadata];
+    
+    
+    [_healthStore
+     saveObject:bloodPressureSample
      withCompletion:^(BOOL success, NSError *error) {
         
         if (success && !error) {

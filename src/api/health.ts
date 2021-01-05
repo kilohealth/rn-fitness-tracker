@@ -1,6 +1,10 @@
 import { NativeModules } from 'react-native';
 
 import { HealthDataTypes, UnitTypes, WorkoutTypes } from '../types/dataTypes';
+import {
+  IHealthDataRecordQuery,
+  IWorkoutQueryData,
+} from '../types/fitnessTypes';
 import { isIOS } from '../utils/helpers';
 
 const { RNHealthTracker } = NativeModules;
@@ -190,6 +194,7 @@ const getStatisticWeekDailyIOS = async <
  * `iOS only!` Returns every record for specified data type and unit for specified number of days
  * @param key {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @param unit {UnitType} e.g. `UnitTypes.grams`
+ * @param numberOfDays {number}
  * @return {Promise<number>}
  */
 const queryDataRecordsIOS = async <
@@ -203,20 +208,7 @@ const queryDataRecordsIOS = async <
   key: DataKey;
   unit: UnitKey;
   numberOfDays: number;
-}): Promise<
-  [
-    {
-      date: string;
-      quantity: number;
-      metadata: { [name: string]: any };
-      source: {
-        name: string;
-        device: string;
-        id: string;
-      };
-    },
-  ]
-> => {
+}): Promise<IHealthDataRecordQuery> => {
   if (isIOS) {
     return RNHealthTracker.queryDataRecordsForNumberOfDays(
       key,
@@ -227,25 +219,103 @@ const queryDataRecordsIOS = async <
 };
 
 /**
+ * `iOS only!` Returns workouts array for specified timeframe, filters by workout type if specified
+ * @param object.startDate {Date | number}
+ * @param object.endDate {Date | number}
+ * @param object.key {WorkoutTypes} e.g. `WorkoutTypes.Running` (Optional)
+ * @return {Promise<IWorkoutQueryData>}
+ */
+const queryWorkoutsIOS = async <WorkoutKey extends keyof typeof WorkoutTypes>({
+  startDate,
+  endDate,
+  key = 0,
+}: {
+  startDate: Date | number;
+  endDate: Date | number;
+  key: WorkoutKey | 0;
+}): Promise<IWorkoutQueryData<WorkoutKey>> => {
+  if (isIOS) {
+    return RNHealthTracker.queryWorkouts(key, +startDate, +endDate);
+  }
+};
+
+/**
+ * `iOS only!` Returns daily totals for specified data type and unit for specified time frame
+ * @param object.key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param object.unit {UnitType} e.g. `UnitTypes.grams`
+ * @param object.startDate {Date | number}
+ * @param object.endDate {Date | number}
+ * @return {Promise<object>}
+ */
+const queryDailyTotalsIOS = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>({
+  key,
+  unit,
+  startDate,
+  endDate,
+}: {
+  key: DataKey;
+  unit: UnitKey;
+  startDate: Date | number;
+  endDate: Date | number;
+}): Promise<{ [date: string]: number }> => {
+  if (isIOS) {
+    return RNHealthTracker.queryDailyTotals(key, unit, +startDate, +endDate);
+  }
+};
+
+/**
+ * `iOS only!` Returns total for specified data type and unit for specified time frame
+ * @param object.key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param object.unit {UnitType} e.g. `UnitTypes.grams`
+ * @param object.startDate {Date | number}
+ * @param object.endDate {Date | number}
+ * @return {Promise<object>}
+ */
+const queryTotalIOS = async <
+  DataKey extends keyof typeof HealthDataTypes,
+  UnitKey extends keyof typeof UnitTypes
+>({
+  key,
+  unit,
+  startDate,
+  endDate,
+}: {
+  key: DataKey;
+  unit: UnitKey;
+  startDate: Date | number;
+  endDate: Date | number;
+}): Promise<{ [date: string]: number }> => {
+  if (isIOS) {
+    return RNHealthTracker.queryTotal(key, unit, +startDate, +endDate);
+  }
+};
+
+/**
  * `iOS only!` Records given workout data to Health API
  * @param object {object}
  * @param object.startDate {Date | number}
  * @param object.endDate {Date | number}
- * @param object.energyBurned {Number} number of calories in kcal
- * @param object.metadata {object}
+ * @param object.energyBurned {Number} number of calories in kcal (Optional)
+ * @param object.totalDistance {number} total distance travelled (Optional)
+ * @param object.metadata {object} (Optional)
  * @return {Promise<boolean>}
  */
 const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
   key,
   startDate,
   endDate,
-  energyBurned,
+  energyBurned = 0,
+  totalDistance = 0,
   metadata = {},
 }: {
   key: DataKey;
   startDate: Date | number;
   endDate: Date | number;
   energyBurned: number;
+  totalDistance: number;
   metadata: { [name: string]: any };
 }): Promise<boolean> => {
   if (isIOS) {
@@ -254,6 +324,38 @@ const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
       +startDate,
       +endDate,
       energyBurned,
+      totalDistance,
+      metadata,
+    );
+  }
+};
+
+/**
+ * `iOS only!` Records given blood pressure data to Health API
+ * @param object {object}
+ * @param object.systolicPressure {Number}
+ * @param object.diastolicPressure {Number}
+ * @param object.date {Date | number}
+ * @param object.metadata {object}
+ * @return {Promise<boolean>}
+ */
+const recordBloodPressureIOS = async ({
+  systolicPressure,
+  diastolicPressure,
+  date,
+  metadata = {},
+}: {
+  systolicPressure: number;
+  diastolicPressure: number;
+  date: Date | number;
+  metadata: { [name: string]: any };
+}): Promise<boolean> => {
+  if (isIOS) {
+    return await RNHealthTracker.recordBloodPressure(
+      systolicPressure,
+      diastolicPressure,
+      +date,
+      +date,
       metadata,
     );
   }
@@ -304,8 +406,12 @@ export const HealthTrackerAPI = {
   getStatisticTotalForWeekIOS,
   getStatisticWeekDailyIOS,
   isTrackingSupportedIOS,
+  recordBloodPressureIOS,
   recordWorkoutIOS,
   queryDataRecordsIOS,
+  queryDailyTotalsIOS,
+  queryTotalIOS,
+  queryWorkoutsIOS,
   setupTrackingIOS,
   writeDataIOS,
   writeDataArrayIOS,
