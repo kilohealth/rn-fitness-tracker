@@ -622,7 +622,7 @@ RCT_EXPORT_METHOD(getAuthorizationStatusForType
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
     
-    HKObjectType *type = [self isWorkout:dataKey] ? HKObjectType.workoutType : [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    HKObjectType *type = [self isWorkout:dataTypeIdentifier] ? HKObjectType.workoutType : [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
     
     NSInteger status = [_healthStore authorizationStatusForType:type];
     resolve(@(status));
