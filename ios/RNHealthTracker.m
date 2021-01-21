@@ -42,8 +42,16 @@
     return NO;
 }
 
-- (HKObjectType *) transformDataKeyToHKObject :(NSString*) dataKey {
+- (BOOL) isWorkout :(NSString*) dataKey {
     if([dataKey isEqualToString:@"Workout"]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+- (HKObjectType *) transformDataKeyToHKObject :(NSString*) dataKey {
+    if([self isWorkout:dataKey]) {
         return [HKObjectType workoutType];
     } else {
         return [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataKey]];
@@ -614,7 +622,7 @@ RCT_EXPORT_METHOD(getAuthorizationStatusForType
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
     
-    HKObjectType *type = [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    HKObjectType *type = [self isWorkout:dataKey] ? HKObjectType.workoutType : [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
     
     NSInteger status = [_healthStore authorizationStatusForType:type];
     resolve(@(status));
