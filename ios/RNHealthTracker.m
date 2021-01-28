@@ -50,12 +50,24 @@
     }
 }
 
+- (NSString *) formatHKQuantityTypeIdentifier :(NSString *) dataKey {
+    return [NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataKey];
+}
+
 - (HKObjectType *) transformDataKeyToHKObject :(NSString*) dataKey {
     if([self isWorkout:dataKey]) {
         return [HKObjectType workoutType];
     } else {
-        return [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataKey]];
+        return [HKObjectType quantityTypeForIdentifier:[self formatHKQuantityTypeIdentifier:dataKey]];
     }
+}
+
+- (HKQuantityType *) transformDataKetToHKQuantityType :(NSString*) dataKey {
+    return [HKObjectType quantityTypeForIdentifier:[self formatHKQuantityTypeIdentifier:dataKey]];
+}
+
+- (HKSampleType *) transformDataKeyToHKSampleType :(NSString*) dataKey {
+    return [HKSampleType quantityTypeForIdentifier:[self formatHKQuantityTypeIdentifier:dataKey]];
 }
 
 
@@ -69,7 +81,7 @@
     
     
     HKQuantityType *quantityType =
-    [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    [self transformDataKetToHKQuantityType: dataTypeIdentifier];
     
     // Create the query
     HKStatisticsCollectionQuery *query =
@@ -145,7 +157,7 @@ RCT_EXPORT_METHOD(writeData
                   :(RCTPromiseRejectBlock) reject) {
     
     HKQuantityType *quantityType =
-    [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    [self transformDataKetToHKQuantityType: dataTypeIdentifier];
     
     HKQuantity *quantity = [HKQuantity quantityWithUnit:[HKUnit unitFromString:unit]
                                             doubleValue:amount];
@@ -178,8 +190,7 @@ RCT_EXPORT_METHOD(writeDataArray
             double quantityDouble = [obj[@"quantity"] doubleValue];
             
             if(key && unitKey && quantityDouble) {
-                HKQuantityType *quantityType =
-                [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", key]];
+                HKQuantityType *quantityType = [self transformDataKetToHKQuantityType: key];
                 
                 HKQuantity *quantity = [HKQuantity quantityWithUnit:[HKUnit unitFromString:unitKey]
                                                         doubleValue:quantityDouble];
@@ -220,7 +231,7 @@ RCT_EXPORT_METHOD(getAbsoluteTotalForToday
     NSDate *start = [RNFitnessUtils beginningOfDay: NSDate.date];
     NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
     
-    HKSampleType *sampleType = [HKSampleType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    HKSampleType *sampleType = [self transformDataKeyToHKSampleType: dataTypeIdentifier];
     NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate :start endDate:end options:0];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:HKSampleSortIdentifierStartDate ascending:YES];
     
@@ -332,7 +343,7 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
     NSDate *start = [RNFitnessUtils daysAgo:NSDate.date :numberOfDays];
     NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
     
-    HKSampleType *sampleType = [HKSampleType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    HKSampleType *sampleType = [self transformDataKeyToHKSampleType: dataTypeIdentifier];
     NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate :start endDate:end options:0];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:HKSampleSortIdentifierStartDate ascending:YES];
     
@@ -479,7 +490,7 @@ RCT_EXPORT_METHOD(getReadStatus
     NSDate *start = [RNFitnessUtils daysAgo:NSDate.date :720];
     NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
     
-    HKSampleType *sampleType = [HKSampleType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    HKSampleType *sampleType = [self transformDataKeyToHKSampleType: dataTypeIdentifier];
     NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate :start endDate:end options:0];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:HKSampleSortIdentifierStartDate ascending:YES];
     
@@ -622,7 +633,7 @@ RCT_EXPORT_METHOD(getAuthorizationStatusForType
                   :(RCTPromiseResolveBlock) resolve
                   :(RCTPromiseRejectBlock) reject) {
     
-    HKObjectType *type = [self isWorkout:dataTypeIdentifier] ? HKObjectType.workoutType : [HKObjectType quantityTypeForIdentifier:[NSString stringWithFormat:@"HKQuantityTypeIdentifier%@", dataTypeIdentifier]];
+    HKObjectType *type = [self transformDataKeyToHKObject: dataTypeIdentifier];
     
     NSInteger status = [_healthStore authorizationStatusForType:type];
     resolve(@(status));
