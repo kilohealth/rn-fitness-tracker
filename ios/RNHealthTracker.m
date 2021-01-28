@@ -307,8 +307,6 @@ RCT_EXPORT_METHOD(queryWorkouts
                 double energyBurned = [workout.totalEnergyBurned doubleValueForUnit:HKUnit.kilocalorieUnit];
                 NSString *isoStartDate = [dateFormatter stringFromDate:workout.startDate];
                 NSString *isoEndDate = [dateFormatter stringFromDate:workout.endDate];
-
-                NSLog(@"%@", workout.UUID.UUIDString);
                 
                 [dataRecords addObject:(@{
                     @"uuid": workout.UUID.UUIDString,
