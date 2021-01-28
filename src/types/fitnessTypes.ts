@@ -39,6 +39,7 @@ export interface IFloorsData {
 
 export type IWorkoutQueryData<WorkoutKey> = [
   {
+    uuid: string;
     duration: number;
     distance: number;
     energyBurned: number;
@@ -56,6 +57,7 @@ export type IWorkoutQueryData<WorkoutKey> = [
 
 export type IHealthDataRecordQuery = [
   {
+    uuid: string;
     date: string;
     quantity: number;
     metadata: { [name: string]: any };
