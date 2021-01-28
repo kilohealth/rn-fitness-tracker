@@ -10,9 +10,9 @@
   "main": "src/index.ts",
   "scripts": {
     "docs": "rm -rf dist && tsc && jsdoc2md --files ./dist/**/*.js  > ./api.md --separators && rm -rf dist",
-    "major": "yarn docs && yarn changelog -M && git add CHANGELOG.md && yarn version --major",
-    "minor": "yarn docs && yarn changelog -m && git add CHANGELOG.md && yarn version --minor",
-    "patch": "yarn docs && yarn changelog -p && git add CHANGELOG.md && yarn version --patch",
+    "major": "yarn docs && yarn changelog -M && git add CHANGELOG.md api.md && yarn version --major",
+    "minor": "yarn docs && yarn changelog -m && git add CHANGELOG.md api.md && yarn version --minor",
+    "patch": "yarn docs && yarn changelog -p && git add CHANGELOG.md api.md && yarn version --patch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

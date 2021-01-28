@@ -20,10 +20,12 @@
     * [~getStepsWeekTotal()](#module_FitnessTrackerAPI..getStepsWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
     * [~getStepsDaily()](#module_FitnessTrackerAPI..getStepsDaily) ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
     * [~getStepsData()](#module_FitnessTrackerAPI..getStepsData) ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
+    * [~queryStepsTotal(startDate, endDate)](#module_FitnessTrackerAPI..queryStepsTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
     * [~getDistanceToday()](#module_FitnessTrackerAPI..getDistanceToday) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getDistanceWeekTotal()](#module_FitnessTrackerAPI..getDistanceWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
     * [~getDistanceDaily()](#module_FitnessTrackerAPI..getDistanceDaily) ⇒ <code>Promise.&lt;IDistanceDaily&gt;</code>
     * [~getDistanceData()](#module_FitnessTrackerAPI..getDistanceData) ⇒ <code>Promise.&lt;IDistanceData&gt;</code>
+    * [~queryDistanceTotal(startDate, endDate)](#module_FitnessTrackerAPI..queryDistanceTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
 
 
 * * *
@@ -87,6 +89,21 @@ Returns steps today and this week's steps object
 
 * * *
 
+<a name="module_FitnessTrackerAPI..queryStepsTotal"></a>
+
+### FitnessTrackerAPI~queryStepsTotal(startDate, endDate) ⇒ <code>Promise.&lt;Number&gt;</code>
+Returns number of steps for given time range
+
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
+
+| Param | Type |
+| --- | --- |
+| startDate | <code>Date</code> \| <code>number</code> | 
+| endDate | <code>Date</code> \| <code>number</code> | 
+
+
+* * *
+
 <a name="module_FitnessTrackerAPI..getDistanceToday"></a>
 
 ### FitnessTrackerAPI~getDistanceToday() ⇒ <code>Promise.&lt;number&gt;</code>
@@ -125,6 +142,21 @@ Returns distance today and this week's distance daily data object
 
 * * *
 
+<a name="module_FitnessTrackerAPI..queryDistanceTotal"></a>
+
+### FitnessTrackerAPI~queryDistanceTotal(startDate, endDate) ⇒ <code>Promise.&lt;Number&gt;</code>
+Returns total distance in meters for given time range
+
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
+
+| Param | Type |
+| --- | --- |
+| startDate | <code>Date</code> \| <code>number</code> | 
+| endDate | <code>Date</code> \| <code>number</code> | 
+
+
+* * *
+
 <a name="module_HealthTrackerAPI"></a>
 
 ## HealthTrackerAPI
@@ -139,8 +171,11 @@ Returns distance today and this week's distance daily data object
     * [~getStatisticTotalForWeekIOS(key, unit)](#module_HealthTrackerAPI..getStatisticTotalForWeekIOS) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getStatisticWeekDailyIOS(key, unit)](#module_HealthTrackerAPI..getStatisticWeekDailyIOS) ⇒ <code>Promise.&lt;object&gt;</code>
     * [~queryDataRecordsIOS(key, unit, numberOfDays)](#module_HealthTrackerAPI..queryDataRecordsIOS) ⇒ <code>Promise.&lt;number&gt;</code>
-    * [~queryDailyTotalsIOS(key, unit)](#module_HealthTrackerAPI..queryDailyTotalsIOS) ⇒ <code>Promise.&lt;object&gt;</code>
+    * [~queryWorkoutsIOS()](#module_HealthTrackerAPI..queryWorkoutsIOS) ⇒ <code>Promise.&lt;IWorkoutQueryData&gt;</code>
+    * [~queryDailyTotalsIOS()](#module_HealthTrackerAPI..queryDailyTotalsIOS) ⇒ <code>Promise.&lt;object&gt;</code>
+    * [~queryTotalIOS()](#module_HealthTrackerAPI..queryTotalIOS) ⇒ <code>Promise.&lt;object&gt;</code>
     * [~recordWorkoutIOS(object)](#module_HealthTrackerAPI..recordWorkoutIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [~recordBloodPressureIOS(object)](#module_HealthTrackerAPI..recordBloodPressureIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
     * [~getAuthStatusForTypeIOS(dataType)](#module_HealthTrackerAPI..getAuthStatusForTypeIOS) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getReadStatusForTypeIOS(dataType, unit)](#module_HealthTrackerAPI..getReadStatusForTypeIOS) ⇒ <code>Promise.&lt;number&gt;</code>
 
@@ -285,17 +320,50 @@ Returns distance today and this week's distance daily data object
 
 * * *
 
-<a name="module_HealthTrackerAPI..queryDailyTotalsIOS"></a>
+<a name="module_HealthTrackerAPI..queryWorkoutsIOS"></a>
 
-### HealthTrackerAPI~queryDailyTotalsIOS(key, unit) ⇒ <code>Promise.&lt;object&gt;</code>
-`iOS only!` Returns daily totals for specified data type and unit for specified number of days
+### HealthTrackerAPI~queryWorkoutsIOS() ⇒ <code>Promise.&lt;IWorkoutQueryData&gt;</code>
+`iOS only!` Returns workouts array for specified timeframe, filters by workout type if specified
 
 **Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
-| unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
+| object.startDate | <code>Date</code> \| <code>number</code> |  |
+| object.endDate | <code>Date</code> \| <code>number</code> |  |
+| object.key | <code>WorkoutTypes</code> | e.g. `WorkoutTypes.Running` (Optional) |
+
+
+* * *
+
+<a name="module_HealthTrackerAPI..queryDailyTotalsIOS"></a>
+
+### HealthTrackerAPI~queryDailyTotalsIOS() ⇒ <code>Promise.&lt;object&gt;</code>
+`iOS only!` Returns daily totals for specified data type and unit for specified time frame
+
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| object.key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| object.unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
+| object.startDate | <code>Date</code> \| <code>number</code> |  |
+| object.endDate | <code>Date</code> \| <code>number</code> |  |
+
+
+* * *
+
+<a name="module_HealthTrackerAPI..queryTotalIOS"></a>
+
+### HealthTrackerAPI~queryTotalIOS() ⇒ <code>Promise.&lt;object&gt;</code>
+`iOS only!` Returns total for specified data type and unit for specified time frame
+
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| object.key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| object.unit | <code>UnitType</code> | e.g. `UnitTypes.grams` |
 | object.startDate | <code>Date</code> \| <code>number</code> |  |
 | object.endDate | <code>Date</code> \| <code>number</code> |  |
 
@@ -314,8 +382,27 @@ Returns distance today and this week's distance daily data object
 | object | <code>object</code> |  |
 | object.startDate | <code>Date</code> \| <code>number</code> |  |
 | object.endDate | <code>Date</code> \| <code>number</code> |  |
-| object.energyBurned | <code>Number</code> | number of calories in kcal |
-| object.metadata | <code>object</code> |  |
+| object.energyBurned | <code>Number</code> | number of calories in kcal (Optional) |
+| object.totalDistance | <code>number</code> | total distance travelled (Optional) |
+| object.metadata | <code>object</code> | (Optional) |
+
+
+* * *
+
+<a name="module_HealthTrackerAPI..recordBloodPressureIOS"></a>
+
+### HealthTrackerAPI~recordBloodPressureIOS(object) ⇒ <code>Promise.&lt;boolean&gt;</code>
+`iOS only!` Records given blood pressure data to Health API
+
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
+
+| Param | Type |
+| --- | --- |
+| object | <code>object</code> | 
+| object.systolicPressure | <code>Number</code> | 
+| object.diastolicPressure | <code>Number</code> | 
+| object.date | <code>Date</code> \| <code>number</code> | 
+| object.metadata | <code>object</code> | 
 
 
 * * *
