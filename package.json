@@ -10,6 +10,9 @@
   "main": "src/index.ts",
   "scripts": {
     "docs": "rm -rf dist && tsc && jsdoc2md --files ./dist/**/*.js  > ./api.md --separators && rm -rf dist",
+    "major": "yarn docs && yarn changelog -M && git add CHANGELOG.md && yarn version --major",
+    "minor": "yarn docs && yarn changelog -m && git add CHANGELOG.md && yarn version --minor",
+    "patch": "yarn docs && yarn changelog -p && git add CHANGELOG.md && yarn version --patch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -43,6 +46,7 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-react": "^7.20.6",
     "eslint-watch": "^7.0.0",
+    "generate-changelog": "^1.8.0",
     "jsdoc-babel": "^0.5.0",
     "jsdoc-to-markdown": "^6.0.1",
     "lint-staged": "^10.3.0",
