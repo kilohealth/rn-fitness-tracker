@@ -308,7 +308,10 @@ RCT_EXPORT_METHOD(queryWorkouts
                 NSString *isoStartDate = [dateFormatter stringFromDate:workout.startDate];
                 NSString *isoEndDate = [dateFormatter stringFromDate:workout.endDate];
 
+                NSLog(@"%@", workout.UUID.UUIDString);
+                
                 [dataRecords addObject:(@{
+                    @"uuid": workout.UUID.UUIDString,
                     @"duration": @(workout.duration),
                     @"startDate": isoStartDate,
                     @"endDate": isoEndDate,
@@ -366,6 +369,7 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
                 double quantity = [sample.quantity doubleValueForUnit:[HKUnit unitFromString:unit]];
                 
                 [dataRecords addObject:(@{
+                    @"uuid": sample.UUID.UUIDString,
                     @"date": isoDate,
                     @"quantity": [NSNumber numberWithDouble: quantity],
                     @"metadata": RCTNullIfNil(sample.metadata),
