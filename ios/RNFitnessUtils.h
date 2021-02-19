@@ -7,7 +7,9 @@
 
 +(NSDate *)daysAgo: (NSDate *)date :(NSInteger)numberOfDays;
 
-+(NSDateFormatter *)dateFormatter;
++(NSDateFormatter *)ISODateTimeFormatter;
+
++(NSDateFormatter *)ISODateFormatter;
 
 @end
   

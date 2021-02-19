@@ -107,6 +107,7 @@ RCT_EXPORT_METHOD(authorize
         // If our device doesn't support HealthKit -> return.
         NSError *error = [NSError errorWithDomain:@"Health tracker" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Health data is not supported on this device"}];
         [self rejectError:error :reject];
+        return;
     }
     
     NSArray *readTypesTransformed = readTypes.count > 0
@@ -284,7 +285,7 @@ RCT_EXPORT_METHOD(queryWorkouts
     
     
     NSMutableArray *dataRecords = [NSMutableArray array];
-    NSDateFormatter *dateFormatter = [RNFitnessUtils dateFormatter];
+    NSDateFormatter *dateFormatter = [RNFitnessUtils ISODateTimeFormatter];
             
     HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKWorkoutType workoutType]
                                                                  predicate:predicate
@@ -353,7 +354,7 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
             
             NSMutableArray *dataRecords = [NSMutableArray array];
             
-            NSDateFormatter *dateFormatter = [RNFitnessUtils dateFormatter];
+            NSDateFormatter *dateFormatter = [RNFitnessUtils ISODateTimeFormatter];
             
             for (HKQuantitySample *sample in results) {
                 
@@ -408,7 +409,7 @@ RCT_EXPORT_METHOD(queryDailyTotals
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         NSMutableDictionary *data = [NSMutableDictionary new];
@@ -457,7 +458,7 @@ RCT_EXPORT_METHOD(queryTotal
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         __block double total = 0;
@@ -537,7 +538,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         [results
@@ -659,7 +660,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForWeek
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         __block double total = 0;
@@ -703,7 +704,7 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         NSMutableDictionary *data = [NSMutableDictionary new];
