@@ -529,7 +529,8 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
                   :(RCTPromiseRejectBlock) reject) {
     
     NSDate *start = [RNFitnessUtils beginningOfDay: NSDate.date];
-    NSDate *end = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:86399 toDate:start options:0]; // Today 23:59, 86399s = 23h 59m 59s
+    NSDate *end = [RNFitnessUtils endOfDay:start];
+    
     HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
     
     // Set the results handler
@@ -651,7 +652,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForWeek
                   :(RCTPromiseRejectBlock) reject) {
     
     NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
-    NSDate *start = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:-604799 toDate:end options:0];  // 604799s = 23h 59m 59s
+    NSDate *start = [RNFitnessUtils startOfXDaysAgo:end :6];
     HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
     
     // Set the results handler
@@ -695,7 +696,7 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
                   :(RCTPromiseRejectBlock) reject) {
     
     NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
-    NSDate *start = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:-604799 toDate:end options:0];  // 604799s = 23h 59m 59s
+    NSDate *start = [RNFitnessUtils startOfXDaysAgo:end :6];
     HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
     
     // Set the results handler
