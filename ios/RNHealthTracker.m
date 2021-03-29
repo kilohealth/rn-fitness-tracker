@@ -107,6 +107,7 @@ RCT_EXPORT_METHOD(authorize
         // If our device doesn't support HealthKit -> return.
         NSError *error = [NSError errorWithDomain:@"Health tracker" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Health data is not supported on this device"}];
         [self rejectError:error :reject];
+        return;
     }
     
     NSArray *readTypesTransformed = readTypes.count > 0
@@ -284,7 +285,7 @@ RCT_EXPORT_METHOD(queryWorkouts
     
     
     NSMutableArray *dataRecords = [NSMutableArray array];
-    NSDateFormatter *dateFormatter = [RNFitnessUtils dateFormatter];
+    NSDateFormatter *dateFormatter = [RNFitnessUtils ISODateTimeFormatter];
             
     HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKWorkoutType workoutType]
                                                                  predicate:predicate
@@ -307,8 +308,6 @@ RCT_EXPORT_METHOD(queryWorkouts
                 double energyBurned = [workout.totalEnergyBurned doubleValueForUnit:HKUnit.kilocalorieUnit];
                 NSString *isoStartDate = [dateFormatter stringFromDate:workout.startDate];
                 NSString *isoEndDate = [dateFormatter stringFromDate:workout.endDate];
-
-                NSLog(@"%@", workout.UUID.UUIDString);
                 
                 [dataRecords addObject:(@{
                     @"uuid": workout.UUID.UUIDString,
@@ -355,7 +354,7 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
             
             NSMutableArray *dataRecords = [NSMutableArray array];
             
-            NSDateFormatter *dateFormatter = [RNFitnessUtils dateFormatter];
+            NSDateFormatter *dateFormatter = [RNFitnessUtils ISODateTimeFormatter];
             
             for (HKQuantitySample *sample in results) {
                 
@@ -410,7 +409,7 @@ RCT_EXPORT_METHOD(queryDailyTotals
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         NSMutableDictionary *data = [NSMutableDictionary new];
@@ -459,7 +458,7 @@ RCT_EXPORT_METHOD(queryTotal
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         __block double total = 0;
@@ -530,7 +529,8 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
                   :(RCTPromiseRejectBlock) reject) {
     
     NSDate *start = [RNFitnessUtils beginningOfDay: NSDate.date];
-    NSDate *end = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:86399 toDate:start options:0]; // Today 23:59, 86399s = 23h 59m 59s
+    NSDate *end = [RNFitnessUtils endOfDay:start];
+    
     HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
     
     // Set the results handler
@@ -539,7 +539,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForToday
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         [results
@@ -652,7 +652,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForWeek
                   :(RCTPromiseRejectBlock) reject) {
     
     NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
-    NSDate *start = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:-604799 toDate:end options:0];  // 604799s = 23h 59m 59s
+    NSDate *start = [RNFitnessUtils startOfXDaysAgo:end :6];
     HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
     
     // Set the results handler
@@ -661,7 +661,7 @@ RCT_EXPORT_METHOD(getStatisticTotalForWeek
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         __block double total = 0;
@@ -696,7 +696,7 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
                   :(RCTPromiseRejectBlock) reject) {
     
     NSDate *end = [RNFitnessUtils endOfDay: NSDate.date];
-    NSDate *start = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitSecond value:-604799 toDate:end options:0];  // 604799s = 23h 59m 59s
+    NSDate *start = [RNFitnessUtils startOfXDaysAgo:end :6];
     HKStatisticsCollectionQuery* query = [self getStatisticDataReadQuery:dataTypeIdentifier :unit :start :reject];
     
     // Set the results handler
@@ -705,7 +705,7 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
         
         if (error) {
             [self rejectError :error :reject];
-            abort();
+            return;
         }
         
         NSMutableDictionary *data = [NSMutableDictionary new];
