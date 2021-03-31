@@ -1,3 +1,9 @@
+#### 1.4.5 (2021-03-31)
+
+##### Bug Fixes
+
+*  Fix iOS ISO date formatting with 12 hour clock (fd478423)
+
 #### 1.4.4 (2021-03-29)
 
 ##### Chores
