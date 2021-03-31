@@ -213,7 +213,7 @@ RCT_EXPORT_METHOD(getFloorsDaily:(RCTPromiseResolveBlock) resolve :(RCTPromiseRe
                 NSNumber *distance = pedometerData.distance;
                 NSNumber *flights = pedometerData.floorsAscended;
                 NSArray *fitnessData = @[steps, distance, flights];
-                NSString *dateString = [RNFitnessUtils FormatIsoDateString:date];
+                NSString *dateString = [RNFitnessUtils formatIsoDateString:date];
                 [data setValue:fitnessData[dataType] forKey:dateString];
                 NSDate *previousDay = [RNFitnessUtils daysAgo: date :1];
                 int newCount = count + 1;
