@@ -34,22 +34,17 @@
     return [self setHoursMinutesSeconds:day :0 :0 :0];
 }
 
-+(NSDateFormatter *)ISODateTimeFormatter {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.timeZone = [[NSTimeZone alloc] initWithName:@"UTC"];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
-    [dateFormatter setCalendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
-    
-    return dateFormatter;
++(NSString *)FormatUtcIsoDateTimeString:(NSDate *)date {
+    return [NSISO8601DateFormatter stringFromDate:date timeZone:[NSTimeZone timeZoneForSecondsFromGMT:0] formatOptions:NSISO8601DateFormatWithFullDate | NSISO8601DateFormatWithFullTime];
 }
 
-+(NSDateFormatter *)ISODateFormatter {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.timeZone = [[NSTimeZone alloc] initWithName:@"UTC"];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    [dateFormatter setCalendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
-    
-    return dateFormatter;
++(NSString *)FormatUtcIsoDateString:(NSDate *)date {
+    return [NSISO8601DateFormatter stringFromDate:date timeZone:[NSTimeZone timeZoneForSecondsFromGMT:0] formatOptions:NSISO8601DateFormatWithFullDate];
 }
+
++(NSString *)FormatIsoDateString:(NSDate *)date {
+    return [NSISO8601DateFormatter stringFromDate:date timeZone:NSTimeZone.systemTimeZone formatOptions:NSISO8601DateFormatWithFullDate];
+}
+
 
 @end

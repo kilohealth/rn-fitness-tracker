@@ -285,7 +285,6 @@ RCT_EXPORT_METHOD(queryWorkouts
     
     
     NSMutableArray *dataRecords = [NSMutableArray array];
-    NSDateFormatter *dateFormatter = [RNFitnessUtils ISODateTimeFormatter];
             
     HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKWorkoutType workoutType]
                                                                  predicate:predicate
@@ -306,8 +305,8 @@ RCT_EXPORT_METHOD(queryWorkouts
                 
                 double distance = [workout.totalDistance doubleValueForUnit:HKUnit.meterUnit];
                 double energyBurned = [workout.totalEnergyBurned doubleValueForUnit:HKUnit.kilocalorieUnit];
-                NSString *isoStartDate = [dateFormatter stringFromDate:workout.startDate];
-                NSString *isoEndDate = [dateFormatter stringFromDate:workout.endDate];
+                NSString *isoStartDate = [RNFitnessUtils FormatUtcIsoDateTimeString:workout.startDate];
+                NSString *isoEndDate = [RNFitnessUtils FormatUtcIsoDateTimeString:workout.endDate];
                 
                 [dataRecords addObject:(@{
                     @"uuid": workout.UUID.UUIDString,
@@ -354,11 +353,10 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
             
             NSMutableArray *dataRecords = [NSMutableArray array];
             
-            NSDateFormatter *dateFormatter = [RNFitnessUtils ISODateTimeFormatter];
             
             for (HKQuantitySample *sample in results) {
                 
-                NSString *isoDate = [dateFormatter stringFromDate:sample.endDate];
+                NSString *isoDate = [RNFitnessUtils FormatUtcIsoDateTimeString:sample.endDate];
                 
                 NSString *sourceDevice = @"unknown";
                 if (@available(iOS 11.0, *)) {
@@ -426,9 +424,7 @@ RCT_EXPORT_METHOD(queryDailyTotals
                 value = (int)value;
             }
             
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-            NSString *dateString = [dateFormatter stringFromDate:result.startDate];
+            NSString *dateString = [RNFitnessUtils FormatIsoDateString:result.startDate];
             [data setValue:@(value) forKey:dateString];
         }];
         
@@ -722,9 +718,7 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
                 value = (int)value;
             }
             
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-            NSString *dateString = [dateFormatter stringFromDate:result.startDate];
+            NSString *dateString = [RNFitnessUtils FormatIsoDateString:result.startDate];
             [data setValue:@(value) forKey:dateString];
         }];
         
