@@ -37,17 +37,27 @@ class HistoryClient {
     try {
 
       if (dataType == 0) {
-        getStepHistory(startTime, endTime, 7, new OnStepsFetchComplete() {
+        getStepHistory(startTime, endTime, 7, new OnStepsFetch() {
           @Override
-          public void success(int steps) {
+          public void onSuccess(int steps) {
             promise.resolve(steps);
+          }
+
+          @Override
+          public void onFailure(Exception e) {
+            promise.reject(e);
           }
         });
       } else if (dataType == 1) {
-        getDistanceHistory(startTime, endTime, 7, new OnDistanceFetchComplete() {
+        getDistanceHistory(startTime, endTime, 7, new OnDistanceFetch() {
           @Override
-          public void success(float distance) {
+          public void onSuccess(float distance) {
             promise.resolve(distance);
+          }
+
+          @Override
+          public void onFailure(Exception e) {
+            promise.reject(e);
           }
         });
       }
@@ -65,17 +75,27 @@ class HistoryClient {
       long now = today.getTime();
 
       if (dataType == 0) {
-        getStepHistory(startTime, now, 7, new OnStepsFetchComplete() {
+        getStepHistory(startTime, now, 7, new OnStepsFetch() {
           @Override
-          public void success(int steps) {
+          public void onSuccess(int steps) {
             promise.resolve(steps);
+          }
+
+          @Override
+          public void onFailure(Exception e) {
+            promise.reject(e);
           }
         });
       } else if (dataType == 1) {
-        getDistanceHistory(startTime, now, 7, new OnDistanceFetchComplete() {
+        getDistanceHistory(startTime, now, 7, new OnDistanceFetch() {
           @Override
-          public void success(float distance) {
+          public void onSuccess(float distance) {
             promise.resolve(distance);
+          }
+
+          @Override
+          public void onFailure(Exception e) {
+            promise.reject(e);
           }
         });
       }
@@ -91,15 +111,15 @@ class HistoryClient {
       final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
       Date end = getEndOfDay(date);
-      if(count == 0) {
+      if (count == 0) {
         Date currentTime = Calendar.getInstance().getTime();
         end = currentTime; // make sure current day query time is until current time, not end of the day
       }
       Date start = getStartOfDay(date);
 
-      getStepHistory(start.getTime(), end.getTime(), 1, new OnStepsFetchComplete() {
+      getStepHistory(start.getTime(), end.getTime(), 1, new OnStepsFetch() {
         @Override
-        public void success(int steps) {
+        public void onSuccess(int steps) {
           if (count < 7) {
             stepsData.putInt(formatter.format(date), steps);
             Date previousDate = addDays(date, -1);
@@ -107,6 +127,11 @@ class HistoryClient {
           } else {
             promise.resolve(stepsData);
           }
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+          promise.reject(e);
         }
       });
     } catch (Exception e) {
@@ -120,15 +145,16 @@ class HistoryClient {
       final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
       Date end = getEndOfDay(date);
-      if(count == 0) {
+      if (count == 0) {
         Date currentTime = Calendar.getInstance().getTime();
         end = currentTime; // make sure current day query time is until current time, not end of the day
       }
       Date start = getStartOfDay(date);
 
-      getDistanceHistory(start.getTime(), end.getTime(), 1, new OnDistanceFetchComplete() {
+
+      getDistanceHistory(start.getTime(), end.getTime(), 1, new OnDistanceFetch() {
         @Override
-        public void success(float distance) {
+        public void onSuccess(float distance) {
           if (count < 7) {
             distanceData.putDouble(formatter.format(date), distance);
             Date previousDate = addDays(date, -1);
@@ -136,6 +162,11 @@ class HistoryClient {
           } else {
             promise.resolve(distanceData);
           }
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+          promise.reject(e);
         }
       });
     } catch (Exception e) {
@@ -150,10 +181,15 @@ class HistoryClient {
       Date start = getStartOfDay(today);
       Date currentTime = Calendar.getInstance().getTime();
 
-      getStepHistory(start.getTime(), currentTime.getTime(), 1, new OnStepsFetchComplete() {
+      getStepHistory(start.getTime(), currentTime.getTime(), 1, new OnStepsFetch() {
         @Override
-        public void success(int steps) {
+        public void onSuccess(int steps) {
           promise.resolve(steps);
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+          promise.reject(e);
         }
       });
     } catch (Exception e) {
@@ -168,10 +204,15 @@ class HistoryClient {
       Date start = getStartOfDay(today);
       Date currentTime = Calendar.getInstance().getTime();
 
-      getDistanceHistory(start.getTime(), currentTime.getTime(), 1, new OnDistanceFetchComplete() {
+      getDistanceHistory(start.getTime(), currentTime.getTime(), 1, new OnDistanceFetch() {
         @Override
-        public void success(float distance) {
+        public void onSuccess(float distance) {
           promise.resolve(distance);
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+          promise.reject(e);
         }
       });
     } catch (Exception e) {
@@ -181,7 +222,7 @@ class HistoryClient {
   }
 
 
-  private void getStepHistory(final long startTime, long endTime, int dayCount, final OnStepsFetchComplete fetchCompleteCallback) {
+  private void getStepHistory(final long startTime, long endTime, int dayCount, final OnStepsFetch fetchCompleteCallback) {
 
     DataReadRequest readRequest = new DataReadRequest.Builder()
       .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
@@ -194,20 +235,22 @@ class HistoryClient {
       .addOnFailureListener(new OnFailureListener() {
         @Override
         public void onFailure(Exception e) {
-
+          fetchCompleteCallback.onFailure(e);
         }
       })
       .addOnCompleteListener(new OnCompleteListener<DataReadResponse>() {
         @Override
         public void onComplete(Task<DataReadResponse> task) {
-          DataReadResponse response = task.getResult();
-          int steps = parseStepsDelta(response);
-          fetchCompleteCallback.success(steps);
+          if (task.isSuccessful()) {
+            DataReadResponse response = task.getResult();
+            int steps = parseStepsDelta(response);
+            fetchCompleteCallback.onSuccess(steps);
+          }
         }
       });
   }
 
-  private void getDistanceHistory(final long startTime, long endTime, int dayCount, final OnDistanceFetchComplete fetchCompleteCallback) {
+  private void getDistanceHistory(final long startTime, long endTime, int dayCount, final OnDistanceFetch fetchCompleteCallback) {
 
     DataReadRequest readRequest = new DataReadRequest.Builder()
       .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
@@ -220,15 +263,17 @@ class HistoryClient {
       .addOnFailureListener(new OnFailureListener() {
         @Override
         public void onFailure(Exception e) {
-
+          fetchCompleteCallback.onFailure(e);
         }
       })
       .addOnCompleteListener(new OnCompleteListener<DataReadResponse>() {
         @Override
         public void onComplete(Task<DataReadResponse> task) {
-          DataReadResponse response = task.getResult();
-          float distance = parseDistanceDelta(response);
-          fetchCompleteCallback.success(distance);
+          if (task.isSuccessful()) {
+            DataReadResponse response = task.getResult();
+            float distance = parseDistanceDelta(response);
+            fetchCompleteCallback.onSuccess(distance);
+          }
         }
       });
   }
@@ -308,10 +353,14 @@ class HistoryClient {
 
 }
 
-interface OnStepsFetchComplete {
-  void success(int steps);
+interface OnStepsFetch {
+  void onSuccess(int steps);
+
+  void onFailure(Exception e);
 }
 
-interface OnDistanceFetchComplete {
-  void success(float steps);
+interface OnDistanceFetch {
+  void onSuccess(float steps);
+
+  void onFailure(Exception e);
 }
