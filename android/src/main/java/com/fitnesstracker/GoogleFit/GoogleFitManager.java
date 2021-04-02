@@ -27,7 +27,7 @@ public class GoogleFitManager implements ActivityEventListener {
   private ReactApplicationContext reactContext;
   private Promise authorisationPromise;
 
-  final Exception UnauthorizedEx = new Exception("Unauthorized");
+  final Exception UnauthorizedEx = new Exception("Unauthorized GoogleFit");
 
   FitnessOptions fitnessOptions = FitnessOptions.builder()
     .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
