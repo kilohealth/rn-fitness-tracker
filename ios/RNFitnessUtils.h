@@ -9,11 +9,11 @@
 
 +(NSDate *)startOfXDaysAgo: (NSDate *)date :(NSInteger)numberOfDays;
 
-+(NSString *)FormatUtcIsoDateTimeString:(NSDate *)date;
++(NSString *)formatUtcIsoDateTimeString:(NSDate *)date;
 
-+(NSString *)FormatUtcIsoDateString:(NSDate *)date;
++(NSString *)formatUtcIsoDateString:(NSDate *)date;
 
-+(NSString *)FormatIsoDateString:(NSDate *)date;
++(NSString *)formatIsoDateString:(NSDate *)date;
 
 @end
   

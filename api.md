@@ -1,3 +1,4 @@
+$ /Users/lukebars/Desktop/Kilo:RN-modules/rn-fitness-tracker/node_modules/.bin/jsdoc2md --files ./dist/api/fitness.js ./dist/api/health.js ./dist/api/pedometer.js ./dist/types/dataTypes.js ./dist/types/fitnessTypes.js ./dist/utils/helpers.js ./dist/utils/mockData.js --separators
 ## Modules
 
 <dl>

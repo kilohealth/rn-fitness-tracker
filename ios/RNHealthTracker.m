@@ -305,8 +305,8 @@ RCT_EXPORT_METHOD(queryWorkouts
                 
                 double distance = [workout.totalDistance doubleValueForUnit:HKUnit.meterUnit];
                 double energyBurned = [workout.totalEnergyBurned doubleValueForUnit:HKUnit.kilocalorieUnit];
-                NSString *isoStartDate = [RNFitnessUtils FormatUtcIsoDateTimeString:workout.startDate];
-                NSString *isoEndDate = [RNFitnessUtils FormatUtcIsoDateTimeString:workout.endDate];
+                NSString *isoStartDate = [RNFitnessUtils formatUtcIsoDateTimeString:workout.startDate];
+                NSString *isoEndDate = [RNFitnessUtils formatUtcIsoDateTimeString:workout.endDate];
                 
                 [dataRecords addObject:(@{
                     @"uuid": workout.UUID.UUIDString,
@@ -356,7 +356,7 @@ RCT_EXPORT_METHOD(queryDataRecordsForNumberOfDays
             
             for (HKQuantitySample *sample in results) {
                 
-                NSString *isoDate = [RNFitnessUtils FormatUtcIsoDateTimeString:sample.endDate];
+                NSString *isoDate = [RNFitnessUtils formatUtcIsoDateTimeString:sample.endDate];
                 
                 NSString *sourceDevice = @"unknown";
                 if (@available(iOS 11.0, *)) {
@@ -424,7 +424,7 @@ RCT_EXPORT_METHOD(queryDailyTotals
                 value = (int)value;
             }
             
-            NSString *dateString = [RNFitnessUtils FormatIsoDateString:result.startDate];
+            NSString *dateString = [RNFitnessUtils formatIsoDateString:result.startDate];
             [data setValue:@(value) forKey:dateString];
         }];
         
@@ -718,7 +718,7 @@ RCT_EXPORT_METHOD(getStatisticWeekDaily
                 value = (int)value;
             }
             
-            NSString *dateString = [RNFitnessUtils FormatIsoDateString:result.startDate];
+            NSString *dateString = [RNFitnessUtils formatIsoDateString:result.startDate];
             [data setValue:@(value) forKey:dateString];
         }];
         

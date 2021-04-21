@@ -1,3 +1,15 @@
+#### 1.4.6 (2021-04-21)
+
+##### Bug Fixes
+
+*  Add onFailure rejections in GoogleFit History client, check if task is succesful (754c0d26)
+*  Added "Unauthorized GoogleFit" exception (620c11bb)
+*  Check if historyClient exists before invoking it's methods (50b9c065)
+
+##### Refactors
+
+*  Formatting function to camelCase (18ee8a12)
+
 #### 1.4.5 (2021-03-31)
 
 ##### Bug Fixes

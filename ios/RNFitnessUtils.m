@@ -34,15 +34,15 @@
     return [self setHoursMinutesSeconds:day :0 :0 :0];
 }
 
-+(NSString *)FormatUtcIsoDateTimeString:(NSDate *)date {
++(NSString *)formatUtcIsoDateTimeString:(NSDate *)date {
     return [NSISO8601DateFormatter stringFromDate:date timeZone:[NSTimeZone timeZoneForSecondsFromGMT:0] formatOptions:NSISO8601DateFormatWithFullDate | NSISO8601DateFormatWithFullTime];
 }
 
-+(NSString *)FormatUtcIsoDateString:(NSDate *)date {
++(NSString *)formatUtcIsoDateString:(NSDate *)date {
     return [NSISO8601DateFormatter stringFromDate:date timeZone:[NSTimeZone timeZoneForSecondsFromGMT:0] formatOptions:NSISO8601DateFormatWithFullDate];
 }
 
-+(NSString *)FormatIsoDateString:(NSDate *)date {
++(NSString *)formatIsoDateString:(NSDate *)date {
     return [NSISO8601DateFormatter stringFromDate:date timeZone:NSTimeZone.systemTimeZone formatOptions:NSISO8601DateFormatWithFullDate];
 }
 
