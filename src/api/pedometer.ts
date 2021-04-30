@@ -41,7 +41,9 @@ const iosAuthorizationStatusCheck = (status: string): IFitnessTrackerStatus => {
  * equals to 1 if supported or 0 if not.
  * @return {Promise<IFitnessTrackerAvailability>}
  */
-const isTrackingSupportedIOS = async (): Promise<IFitnessTrackerAvailability> => {
+const isTrackingSupportedIOS = async (): Promise<
+  IFitnessTrackerAvailability
+> => {
   const response = await RNFitnessTracker.isTrackingSupported();
   return { steps: response[0], distance: response[1], floors: response[2] };
 };
@@ -69,8 +71,12 @@ const setupTracking = async (): Promise<IFitnessTrackerStatus> => {
   if (!isIOS) {
     const apiLevel = await DeviceInfo.getApiLevel();
     const isMotionAuthNeeded = apiLevel >= 29;
-    let motionAuthorized: 'unavailable' | 'denied' | 'blocked' | 'granted' =
-      RESULTS.UNAVAILABLE;
+    let motionAuthorized:
+      | 'unavailable'
+      | 'denied'
+      | 'blocked'
+      | 'granted'
+      | 'limited' = RESULTS.UNAVAILABLE;
 
     if (isMotionAuthNeeded) {
       motionAuthorized = await request(
