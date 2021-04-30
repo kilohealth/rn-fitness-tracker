@@ -1,4 +1,4 @@
-$ /Users/lukebars/Desktop/Kilo:RN-modules/rn-fitness-tracker/node_modules/.bin/jsdoc2md --files ./dist/api/fitness.js ./dist/api/health.js ./dist/api/pedometer.js ./dist/types/dataTypes.js ./dist/types/fitnessTypes.js ./dist/utils/helpers.js ./dist/utils/mockData.js --separators
+$ /Users/lukebars/Desktop/Kilo-RN-modules/rn-fitness-tracker/node_modules/.bin/jsdoc2md --files ./dist/api/fitness.js ./dist/api/health.js ./dist/api/pedometer.js ./dist/types/dataTypes.js ./dist/types/fitnessTypes.js ./dist/utils/helpers.js ./dist/utils/mockData.js --separators
 ## Modules
 
 <dl>
@@ -47,9 +47,9 @@ Sets up step tracking for walking & running steps and distance
 
 **Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| shouldTrackDistance | <code>boolean</code> | if true, adds permission to track distance in Health consent screen |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| shouldTrackDistance | <code>boolean</code> | <code>false</code> | if true, adds permission to track distance in Health consent screen |
 
 
 * * *

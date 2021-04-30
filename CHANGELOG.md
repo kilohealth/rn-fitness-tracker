@@ -1,3 +1,10 @@
+#### 1.4.7 (2021-04-30)
+
+##### Bug Fixes
+
+*  add missing type in pedometer api (206efa9f)
+*  typescript types + dep update (cdbd3133)
+
 #### 1.4.6 (2021-04-21)
 
 ##### Bug Fixes
