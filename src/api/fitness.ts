@@ -29,7 +29,8 @@ const handleAndroidMotionTrackingPermissions = async (
     | 'unavailable'
     | 'denied'
     | 'blocked'
-    | 'granted' = await action(PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION);
+    | 'granted'
+    | 'limited' = await action(PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION);
 
   if (!isMotionAuthNeeded || motionAuthorized === RESULTS.GRANTED) {
     return { authorized: true, shouldOpenAppSettings: false };
