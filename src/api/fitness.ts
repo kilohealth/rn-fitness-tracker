@@ -1,6 +1,7 @@
 import { NativeModules } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import { ResultMap } from 'react-native-permissions/dist/typescript/results';
 
 import {
   IDistanceDaily,
@@ -9,8 +10,8 @@ import {
   IStepsDaily,
   IStepsData,
 } from '../types/fitnessTypes';
-import { HealthDataTypes, UnitTypes } from '../types/dataTypes';
-import { isIOS, isObject } from '../utils/helpers';
+import { HealthDataTypes, HKDataType, UnitTypes } from '../types/dataTypes';
+import { isIOS, isObject, ValueOf } from '../utils/helpers';
 
 const { RNFitnessTracker, RNHealthTracker } = NativeModules;
 
@@ -25,12 +26,9 @@ const handleAndroidMotionTrackingPermissions = async (
   const isMotionAuthNeeded = apiLevel >= 29;
 
   const action = shouldRequestPermission ? request : check;
-  const motionAuthorized:
-    | 'unavailable'
-    | 'denied'
-    | 'blocked'
-    | 'granted'
-    | 'limited' = await action(PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION);
+  const motionAuthorized: ValueOf<ResultMap> = await action(
+    PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION,
+  );
 
   if (!isMotionAuthNeeded || motionAuthorized === RESULTS.GRANTED) {
     return { authorized: true, shouldOpenAppSettings: false };
@@ -88,7 +86,7 @@ const setupTracking = async (
         shouldOpenAppSettings: shouldOpenAppSettings,
       };
     } else {
-      const readTypes = [HealthDataTypes.StepCount];
+      const readTypes: HKDataType[] = [HealthDataTypes.StepCount];
 
       if (shouldTrackDistance) {
         readTypes.push(HealthDataTypes.DistanceWalkingRunning);

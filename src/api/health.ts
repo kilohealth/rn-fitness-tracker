@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { HealthDataTypes, UnitTypes, WorkoutTypes } from '../types/dataTypes';
+import { HKDataType, HKUnit, HKWorkout } from '../types/dataTypes';
 import {
   IHealthDataRecordQuery,
   IWorkoutQueryData,
@@ -30,9 +30,9 @@ const isTrackingSupportedIOS = async (): Promise<boolean> => {
  * @param readTypes {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @return {Promise<boolean>}
  */
-const setupTrackingIOS = async <DataKey extends keyof typeof HealthDataTypes>(
-  shareTypes: DataKey,
-  readTypes: DataKey,
+const setupTrackingIOS = async (
+  shareTypes: HKDataType,
+  readTypes: HKDataType,
 ): Promise<boolean> => {
   if (isIOS) {
     const authorized = await RNHealthTracker.authorize(shareTypes, readTypes);
@@ -50,18 +50,15 @@ const setupTrackingIOS = async <DataKey extends keyof typeof HealthDataTypes>(
  * @param object.customUnixTimestamp {number} optional unix timestamp for record date
  * @return {Promise<boolean>}
  */
-const writeDataIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->({
+const writeDataIOS = async ({
   key,
   unit,
   quantity,
   metadata = {},
   customUnixTimestamp = 0,
 }: {
-  key: DataKey;
-  unit: UnitKey;
+  key: HKDataType;
+  unit: HKUnit;
   quantity: number;
   metadata: { [name: string]: any };
   customUnixTimestamp: number;
@@ -87,13 +84,10 @@ const writeDataIOS = async <
  * @param dataArray.object.metadata {object}
  * @return {Promise<boolean>}
  */
-const writeDataArrayIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->(
+const writeDataArrayIOS = async (
   dataArray: Array<{
-    key: DataKey;
-    unit: UnitKey;
+    key: HKDataType;
+    unit: HKUnit;
     quantity: number;
     metadata: { [name: string]: any };
   }>,
@@ -109,15 +103,12 @@ const writeDataArrayIOS = async <
  * @param unit {UnitType} e.g. `UnitTypes.grams`
  * @return {Promise<number>}
  */
-const getAbsoluteTotalForTodayIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->({
+const getAbsoluteTotalForTodayIOS = async ({
   key,
   unit,
 }: {
-  key: DataKey;
-  unit: UnitKey;
+  key: HKDataType;
+  unit: HKUnit;
 }): Promise<number> => {
   if (isIOS) {
     const total = await RNHealthTracker.getAbsoluteTotalForToday(key, unit);
@@ -131,15 +122,12 @@ const getAbsoluteTotalForTodayIOS = async <
  * @param unit {UnitType} e.g. `UnitTypes.grams`
  * @return {Promise<number>}
  */
-const getStatisticTotalForTodayIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->({
+const getStatisticTotalForTodayIOS = async ({
   key,
   unit,
 }: {
-  key: DataKey;
-  unit: UnitKey;
+  key: HKDataType;
+  unit: HKUnit;
 }): Promise<number> => {
   if (isIOS) {
     const total = await RNHealthTracker.getStatisticTotalForToday(key, unit);
@@ -153,15 +141,12 @@ const getStatisticTotalForTodayIOS = async <
  * @param unit {UnitType} e.g. `UnitTypes.grams`
  * @return {Promise<number>}
  */
-const getStatisticTotalForWeekIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->({
+const getStatisticTotalForWeekIOS = async ({
   key,
   unit,
 }: {
-  key: DataKey;
-  unit: UnitKey;
+  key: HKDataType;
+  unit: HKUnit;
 }): Promise<number> => {
   if (isIOS) {
     const total = await RNHealthTracker.getStatisticTotalForWeek(key, unit);
@@ -175,15 +160,12 @@ const getStatisticTotalForWeekIOS = async <
  * @param unit {UnitType} e.g. `UnitTypes.grams`
  * @return {Promise<object>}
  */
-const getStatisticWeekDailyIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->({
+const getStatisticWeekDailyIOS = async ({
   key,
   unit,
 }: {
-  key: DataKey;
-  unit: UnitKey;
+  key: HKDataType;
+  unit: HKUnit;
 }): Promise<{ [name: string]: number }> => {
   if (isIOS) {
     return RNHealthTracker.getStatisticWeekDaily(key, unit);
@@ -197,16 +179,13 @@ const getStatisticWeekDailyIOS = async <
  * @param numberOfDays {number}
  * @return {Promise<number>}
  */
-const queryDataRecordsIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->({
+const queryDataRecordsIOS = async ({
   key,
   unit,
   numberOfDays,
 }: {
-  key: DataKey;
-  unit: UnitKey;
+  key: HKDataType;
+  unit: HKUnit;
   numberOfDays: number;
 }): Promise<IHealthDataRecordQuery> => {
   if (isIOS) {
@@ -225,15 +204,15 @@ const queryDataRecordsIOS = async <
  * @param object.key {WorkoutTypes} e.g. `WorkoutTypes.Running` (Optional)
  * @return {Promise<IWorkoutQueryData>}
  */
-const queryWorkoutsIOS = async <WorkoutKey extends keyof typeof WorkoutTypes>({
+const queryWorkoutsIOS = async ({
   startDate,
   endDate,
   key = 0,
 }: {
   startDate: Date | number;
   endDate: Date | number;
-  key: WorkoutKey | 0;
-}): Promise<IWorkoutQueryData<WorkoutKey>> => {
+  key: HKWorkout | 0;
+}): Promise<IWorkoutQueryData<HKWorkout>> => {
   if (isIOS) {
     return RNHealthTracker.queryWorkouts(key, +startDate, +endDate);
   }
@@ -247,17 +226,14 @@ const queryWorkoutsIOS = async <WorkoutKey extends keyof typeof WorkoutTypes>({
  * @param object.endDate {Date | number}
  * @return {Promise<object>}
  */
-const queryDailyTotalsIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->({
+const queryDailyTotalsIOS = async ({
   key,
   unit,
   startDate,
   endDate,
 }: {
-  key: DataKey;
-  unit: UnitKey;
+  key: HKDataType;
+  unit: HKUnit;
   startDate: Date | number;
   endDate: Date | number;
 }): Promise<{ [date: string]: number }> => {
@@ -274,17 +250,14 @@ const queryDailyTotalsIOS = async <
  * @param object.endDate {Date | number}
  * @return {Promise<object>}
  */
-const queryTotalIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->({
+const queryTotalIOS = async ({
   key,
   unit,
   startDate,
   endDate,
 }: {
-  key: DataKey;
-  unit: UnitKey;
+  key: HKDataType;
+  unit: HKUnit;
   startDate: Date | number;
   endDate: Date | number;
 }): Promise<{ [date: string]: number }> => {
@@ -303,7 +276,7 @@ const queryTotalIOS = async <
  * @param object.metadata {object} (Optional)
  * @return {Promise<boolean>}
  */
-const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
+const recordWorkoutIOS = async ({
   key,
   startDate,
   endDate,
@@ -311,7 +284,7 @@ const recordWorkoutIOS = async <DataKey extends keyof typeof WorkoutTypes>({
   totalDistance = 0,
   metadata = {},
 }: {
-  key: DataKey;
+  key: HKDataType;
   startDate: Date | number;
   endDate: Date | number;
   energyBurned: number;
@@ -366,11 +339,7 @@ const recordBloodPressureIOS = async ({
  * @param dataType {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @return {Promise<number>} 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized
  */
-const getAuthStatusForTypeIOS = async <
-  DataKey extends keyof typeof WorkoutTypes
->(
-  key: DataKey,
-): Promise<boolean> => {
+const getAuthStatusForTypeIOS = async (key: HKDataType): Promise<boolean> => {
   if (isIOS) {
     return await RNHealthTracker.getAuthorizationStatusForType(key);
   }
@@ -383,15 +352,12 @@ const getAuthStatusForTypeIOS = async <
  * @param unit {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @return {Promise<number>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
  */
-const getReadStatusForTypeIOS = async <
-  DataKey extends keyof typeof HealthDataTypes,
-  UnitKey extends keyof typeof UnitTypes
->({
+const getReadStatusForTypeIOS = async ({
   key,
   unit,
 }: {
-  key: DataKey;
-  unit: UnitKey;
+  key: HKDataType;
+  unit: HKUnit;
 }): Promise<number> => {
   if (isIOS) {
     return await RNHealthTracker.getReadStatus(key, unit);
