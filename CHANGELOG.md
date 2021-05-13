@@ -1,3 +1,14 @@
+#### 1.4.8 (2021-05-13)
+
+##### Chores
+
+*  JSON prettier & babel configs (4f954f07)
+
+##### Bug Fixes
+
+*  add return type for isObject func (03ec3a35)
+*  typescript definitions for healthkit (71eb665d)
+
 #### 1.4.7 (2021-04-30)
 
 ##### Bug Fixes
