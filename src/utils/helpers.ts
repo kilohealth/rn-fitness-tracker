@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-export const isObject = function (obj: any) {
+export const isObject = function (obj: any): boolean {
   const type = typeof obj;
   return type === 'function' || (type === 'object' && !!obj);
 };
