@@ -1,3 +1,9 @@
+#### 1.4.9 (2021-05-21)
+
+##### New Features
+
+*  Added option to delete health records (8cf45a46)
+
 #### 1.4.8 (2021-05-13)
 
 ##### Chores

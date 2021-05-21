@@ -179,6 +179,7 @@ Returns total distance in meters for given time range
     * [~recordBloodPressureIOS(object)](#module_HealthTrackerAPI..recordBloodPressureIOS) ⇒ <code>Promise.&lt;boolean&gt;</code>
     * [~getAuthStatusForTypeIOS(dataType)](#module_HealthTrackerAPI..getAuthStatusForTypeIOS) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getReadStatusForTypeIOS(dataType, unit)](#module_HealthTrackerAPI..getReadStatusForTypeIOS) ⇒ <code>Promise.&lt;number&gt;</code>
+    * [~deleteRecordIOS()](#module_HealthTrackerAPI..deleteRecordIOS) ⇒ <code>Promise.&lt;number&gt;</code>
 
 
 * * *
@@ -436,6 +437,23 @@ Returns total distance in meters for given time range
 | --- | --- | --- |
 | dataType | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
 | unit | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+
+
+* * *
+
+<a name="module_HealthTrackerAPI..deleteRecordIOS"></a>
+
+### HealthTrackerAPI~deleteRecordIOS() ⇒ <code>Promise.&lt;number&gt;</code>
+`iOS only!` Delete record from Health API
+
+**Kind**: inner method of [<code>HealthTrackerAPI</code>](#module_HealthTrackerAPI)  
+**Returns**: <code>Promise.&lt;number&gt;</code> - 0 - notDetermined, 1 - readDenied, 2 - readAuthorized  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| object.key | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| object.uuid | <code>number</code> | optional unique healthkit record id |
+| object.date | <code>number</code> | optional unix timestamp for record date |
 
 
 * * *
