@@ -585,6 +585,49 @@ RCT_EXPORT_METHOD(recordWorkout
     }];
 }
 
+RCT_EXPORT_METHOD(deleteRecord
+                  :(NSString*) dataTypeIdentifier
+                  :(NSString*) UUIDString
+                  :(nonnull NSNumber *) startDate
+                  :(nonnull NSNumber *) endDate
+                  :(RCTPromiseResolveBlock) resolve
+                  :(RCTPromiseRejectBlock) reject) {
+    
+    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:UUIDString];
+    NSPredicate *predicate;
+    
+    if (!uuid) {
+        NSDate *start = [RCTConvert NSDate:startDate];
+        NSDate *end = [RCTConvert NSDate:endDate];
+        predicate = [HKQuery predicateForSamplesWithStartDate:start endDate:end options:0];
+    } else {
+        predicate = [HKQuery predicateForObjectWithUUID:uuid];
+    }
+    
+    HKSampleType *sampleType = [self transformDataKeyToHKSampleType: dataTypeIdentifier];
+    
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:HKSampleSortIdentifierStartDate ascending:YES];
+    
+    HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:sampleType predicate:predicate limit:HKObjectQueryNoLimit sortDescriptors:@[sortDescriptor] resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error) {
+        if (!error && results) {
+            for (HKQuantitySample *sample in results) {
+                [self->_healthStore deleteObject:sample withCompletion:^(BOOL success, NSError * _Nullable error) {
+                    if (!success || error) {
+                        [self rejectError:error :reject];
+                    }
+                }];
+            }
+            
+            resolve(@true);
+        } else {
+            [self rejectError:error :reject];
+        }
+    }];
+    
+    // Execute the query
+    [_healthStore executeQuery:sampleQuery];
+}
+
 RCT_EXPORT_METHOD(recordBloodPressure
                   :(nonnull NSNumber *) systolicPressure
                   :(nonnull NSNumber *) diastolicPressure

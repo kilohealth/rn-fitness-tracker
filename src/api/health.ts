@@ -364,7 +364,34 @@ const getReadStatusForTypeIOS = async ({
   }
 };
 
+/**
+ * `iOS only!` Delete record from Health API
+ * @param object.key {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param object.uuid {number} optional unique healthkit record id
+ * @param object.date {number} optional unix timestamp for record date
+ * @return {Promise<number>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
+ */
+const deleteRecordIOS = async ({
+  key,
+  uuid = null,
+  date = 0,
+}: {
+  key: HKDataType;
+  uuid?: string;
+  date?: number;
+}): Promise<number> => {
+  if (isIOS) {
+    return await RNHealthTracker.deleteRecord(
+      key,
+      uuid,
+      date - 1000,
+      date + 1000,
+    );
+  }
+};
+
 export const HealthTrackerAPI = {
+  deleteRecordIOS,
   getAuthStatusForTypeIOS,
   getReadStatusForTypeIOS,
   getAbsoluteTotalForTodayIOS,
