@@ -86,10 +86,10 @@ const setupTracking = async (
         shouldOpenAppSettings: shouldOpenAppSettings,
       };
     } else {
-      const readTypes: HKDataType[] = [HealthDataTypes.StepCount];
+      const readTypes: HKDataType[] = [HealthDataTypes.StepCount as HKDataType];
 
       if (shouldTrackDistance) {
-        readTypes.push(HealthDataTypes.DistanceWalkingRunning);
+        readTypes.push(HealthDataTypes.DistanceWalkingRunning as HKDataType);
       }
 
       await RNHealthTracker.authorize([], readTypes);
