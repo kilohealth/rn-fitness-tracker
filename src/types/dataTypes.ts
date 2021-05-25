@@ -1,6 +1,6 @@
 import { ValueOf } from '../utils/helpers';
 
-export const HealthDataTypes = {
+export const HealthDataTypes: Record<string, HKDataType> = {
   // Dietary
   Biotin: 'DietaryBiotin',
   Caffeine: 'DietaryCaffeine',
@@ -99,7 +99,7 @@ export const HealthDataTypes = {
 // M    (mega-)   = 10^6               mc   (micro-)  = 10^-6
 // G    (giga-)   = 10^9               n    (nano-)   = 10^-9
 // T    (tera-)   = 10^12              p    (pico-)   = 10^-12
-export const UnitTypes = {
+export const UnitTypes: Record<string, HKUnit> = {
   grams: 'g',
   kilograms: 'kg',
   milligrams: 'mg',
@@ -149,7 +149,7 @@ export const UnitTypes = {
   beatsPerMinute: 'count/min',
 };
 
-export const WorkoutTypes = {
+export const WorkoutTypes: Record<string, HKWorkout> = {
   AmericanFootball: 1,
   Archery: 2,
   AustralianFootball: 3,
