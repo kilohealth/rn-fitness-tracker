@@ -1,3 +1,10 @@
+#### 1.4.10 (2021-05-25)
+
+##### Bug Fixes
+
+*  typescript errors (de016c77)
+*  export healthkit types and constants (80776173)
+
 #### 1.4.9 (2021-05-21)
 
 ##### New Features
