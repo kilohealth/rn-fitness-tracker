@@ -14,7 +14,25 @@ React Native library for step tracking based on Google Fit (Android) and CoreMot
 
 ## Installation
 
+**yarn:**
+
 `$ yarn add @kilohealth/rn-fitness-tracker`
+
+**npm:**
+
+`$ npm i @kilohealth/rn-fitness-tracker`
+
+## Installing dependencies into a bare React Native project#
+In your project directory, run:
+
+**yarn:**
+
+`yarn add react-native-device-info react-native-permissions`
+
+**npm:**
+
+`npm i react-native-device-info react-native-permissions`
+
 
 ## iOS
 
