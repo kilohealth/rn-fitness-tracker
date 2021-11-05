@@ -2,7 +2,6 @@ package com.fitnesstracker.GoogleFit;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -14,27 +13,26 @@ import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataType;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class GoogleFitManager implements ActivityEventListener {
-
-  private int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 111;
-  private int SIGN_IN_REQUEST_CODE = 112;
+  private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 111;
+  private final int SIGN_IN_REQUEST_CODE = 112;
 
   private HistoryClient historyClient;
-  private RecordingService recordingService;
   private Activity activity;
-  private ReactApplicationContext reactContext;
+  private final ReactApplicationContext reactContext;
   private Promise authorisationPromise;
 
   final Exception UnauthorizedEx = new Exception("Unauthorized GoogleFit");
 
   FitnessOptions fitnessOptions = FitnessOptions.builder()
-    .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-    .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-    .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-    .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-    .build();
+      .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+      .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
+      .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
+      .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+      .build();
 
   public GoogleFitManager(ReactApplicationContext reactContext) {
     this.reactContext = reactContext;
@@ -43,13 +41,11 @@ public class GoogleFitManager implements ActivityEventListener {
 
   public void subscribeToActivityData() {
     Fitness.getRecordingClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity))
-      .subscribe(DataType.TYPE_STEP_COUNT_DELTA);
+        .subscribe(DataType.TYPE_STEP_COUNT_DELTA);
   }
 
   @Override
-  public void onNewIntent(Intent intent) {
-
-  }
+  public void onNewIntent(Intent intent) {}
 
   @Override
   public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -104,17 +100,17 @@ public class GoogleFitManager implements ActivityEventListener {
 
   private void requestFitnessPermissions(GoogleSignInAccount googleSignInAccount) {
     GoogleSignIn.requestPermissions(
-      activity,
-      GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-      googleSignInAccount,
-      fitnessOptions
+        activity,
+        GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+        googleSignInAccount,
+        fitnessOptions
     );
   }
 
   private void accessGoogleFit() {
     try {
-      this.recordingService = new RecordingService(activity);
-      this.recordingService.subscribe();
+      RecordingService recordingService = new RecordingService(activity);
+      recordingService.subscribe();
       this.historyClient = new HistoryClient(activity);
       authorisationPromise.resolve(true);
     } catch (Exception e) {
@@ -141,7 +137,22 @@ public class GoogleFitManager implements ActivityEventListener {
 
   public void getStepsDaily(final Promise promise) {
     if (this.historyClient != null) {
-      this.historyClient.getStepsDaily(new Date(), Arguments.createMap(), 0, promise);
+      Date endDate = new Date();
+
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(endDate);
+      cal.add(Calendar.DATE, -7);
+      Date startDate = cal.getTime();
+
+      this.historyClient.getDailyStepsForNumberOfDays(startDate, endDate, Arguments.createMap(), promise);
+    } else {
+      promise.reject(UnauthorizedEx);
+    }
+  }
+
+  public void getStepsDaily(final Promise promise, Date startTime, Date endTime) {
+    if (this.historyClient != null) {
+      this.historyClient.getDailyStepsForNumberOfDays(startTime, endTime, Arguments.createMap(), promise);
     } else {
       promise.reject(UnauthorizedEx);
     }
@@ -186,5 +197,4 @@ public class GoogleFitManager implements ActivityEventListener {
       promise.reject(UnauthorizedEx);
     }
   }
-
 }
