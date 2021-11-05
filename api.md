@@ -1,4 +1,4 @@
-$ /Users/lukebars/Desktop/Kilo-RN-modules/rn-fitness-tracker/node_modules/.bin/jsdoc2md --files ./dist/api/fitness.js ./dist/api/health.js ./dist/api/pedometer.js ./dist/types/dataTypes.js ./dist/types/fitnessTypes.js ./dist/utils/helpers.js ./dist/utils/mockData.js --separators
+$ /Users/matas/Documents/projects/rn-fitness-tracker/node_modules/.bin/jsdoc2md --files ./dist/api/fitness.js ./dist/api/health.js ./dist/api/pedometer.js ./dist/types/dataTypes.js ./dist/types/fitnessTypes.js ./dist/utils/helpers.js ./dist/utils/mockData.js --separators
 ## Modules
 
 <dl>
@@ -19,8 +19,9 @@ $ /Users/lukebars/Desktop/Kilo-RN-modules/rn-fitness-tracker/node_modules/.bin/j
     * [~setupTracking(shouldTrackDistance)](#module_FitnessTrackerAPI..setupTracking) ⇒ <code>Promise.&lt;IFitnessTrackerStatus&gt;</code>
     * [~getStepsToday()](#module_FitnessTrackerAPI..getStepsToday) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getStepsWeekTotal()](#module_FitnessTrackerAPI..getStepsWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
-    * [~getStepsDaily()](#module_FitnessTrackerAPI..getStepsDaily) ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
-    * [~getStepsData()](#module_FitnessTrackerAPI..getStepsData) ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
+    * [~getStepsDaily()](#module_FitnessTrackerAPI..getStepsDaily) ⇒ <code>Promise.&lt;IStepsDaily&gt;</code>
+    * [~queryStepsTotalDaily()](#module_FitnessTrackerAPI..queryStepsTotalDaily) ⇒ <code>Promise.&lt;IStepsDaily&gt;</code>
+    * [~getStepsData()](#module_FitnessTrackerAPI..getStepsData) ⇒ <code>Promise.&lt;IStepsData&gt;</code>
     * [~queryStepsTotal(startDate, endDate)](#module_FitnessTrackerAPI..queryStepsTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
     * [~getDistanceToday()](#module_FitnessTrackerAPI..getDistanceToday) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getDistanceWeekTotal()](#module_FitnessTrackerAPI..getDistanceWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
@@ -74,8 +75,17 @@ Returns number of steps this week
 
 <a name="module_FitnessTrackerAPI..getStepsDaily"></a>
 
-### FitnessTrackerAPI~getStepsDaily() ⇒ <code>Promise.&lt;IWeekDailySteps&gt;</code>
+### FitnessTrackerAPI~getStepsDaily() ⇒ <code>Promise.&lt;IStepsDaily&gt;</code>
 Returns weekly steps object
+
+**Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
+
+* * *
+
+<a name="module_FitnessTrackerAPI..queryStepsTotalDaily"></a>
+
+### FitnessTrackerAPI~queryStepsTotalDaily() ⇒ <code>Promise.&lt;IStepsDaily&gt;</code>
+Returns daily totals of steps for specified time range
 
 **Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
 
@@ -83,7 +93,7 @@ Returns weekly steps object
 
 <a name="module_FitnessTrackerAPI..getStepsData"></a>
 
-### FitnessTrackerAPI~getStepsData() ⇒ <code>Promise.&lt;IStepTrackerData&gt;</code>
+### FitnessTrackerAPI~getStepsData() ⇒ <code>Promise.&lt;IStepsData&gt;</code>
 Returns steps today and this week's steps object
 
 **Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
