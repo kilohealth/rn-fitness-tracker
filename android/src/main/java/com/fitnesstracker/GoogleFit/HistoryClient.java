@@ -24,10 +24,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 class HistoryClient {
-
-  String LOG_TAG = "StepHistoryClient";
-
-  private Activity activity;
+  private final Activity activity;
+  private static final String DATE_FORMAT = "yyyy-MM-dd";
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
   HistoryClient(Activity activity) {
     this.activity = activity;
@@ -106,24 +105,21 @@ class HistoryClient {
     }
   }
 
-  void getStepsDaily(final Date date, final WritableMap stepsData, final int count, final Promise promise) {
+  void getDailyStepsForNumberOfDays(final Date startDate, final Date endDate, final WritableMap stepsData, final Promise promise) {
     try {
-      final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-      Date end = getEndOfDay(date);
-      if (count == 0) {
-        Date currentTime = Calendar.getInstance().getTime();
-        end = currentTime; // make sure current day query time is until current time, not end of the day
+      Date start = getStartOfDay(endDate);
+      Date end = getEndOfDay(endDate);
+      if (formatDate(endDate).equals(formatDate(new Date()))) {
+        end = Calendar.getInstance().getTime(); // make sure current day query time is until current time, not end of the day
       }
-      Date start = getStartOfDay(date);
 
       getStepHistory(start.getTime(), end.getTime(), 1, new OnStepsFetch() {
         @Override
         public void onSuccess(int steps) {
-          if (count < 7) {
-            stepsData.putInt(formatter.format(date), steps);
-            Date previousDate = addDays(date, -1);
-            getStepsDaily(previousDate, stepsData, count + 1, promise);
+          if (startDate.getTime() < getEndOfDay(endDate).getTime()) {
+            stepsData.putInt(formatDate(endDate), steps);
+            Date newEndDate = addDays(endDate, -1);
+            getDailyStepsForNumberOfDays(startDate, newEndDate, stepsData, promise);
           } else {
             promise.resolve(stepsData);
           }
@@ -142,21 +138,17 @@ class HistoryClient {
 
   void getDistanceDaily(final Date date, final WritableMap distanceData, final int count, final Promise promise) {
     try {
-      final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
       Date end = getEndOfDay(date);
       if (count == 0) {
-        Date currentTime = Calendar.getInstance().getTime();
-        end = currentTime; // make sure current day query time is until current time, not end of the day
+        end = Calendar.getInstance().getTime(); // make sure current day query time is until current time, not end of the day
       }
       Date start = getStartOfDay(date);
-
 
       getDistanceHistory(start.getTime(), end.getTime(), 1, new OnDistanceFetch() {
         @Override
         public void onSuccess(float distance) {
           if (count < 7) {
-            distanceData.putDouble(formatter.format(date), distance);
+            distanceData.putDouble(formatDate(date), distance);
             Date previousDate = addDays(date, -1);
             getDistanceDaily(previousDate, distanceData, count + 1, promise);
           } else {
@@ -225,57 +217,57 @@ class HistoryClient {
   private void getStepHistory(final long startTime, long endTime, int dayCount, final OnStepsFetch fetchCompleteCallback) {
 
     DataReadRequest readRequest = new DataReadRequest.Builder()
-      .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
-      .bucketByTime(dayCount, TimeUnit.DAYS)
-      .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-      .build();
+        .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
+        .bucketByTime(dayCount, TimeUnit.DAYS)
+        .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+        .build();
 
     Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity))
-      .readData(readRequest)
-      .addOnFailureListener(new OnFailureListener() {
-        @Override
-        public void onFailure(Exception e) {
-          fetchCompleteCallback.onFailure(e);
-        }
-      })
-      .addOnCompleteListener(new OnCompleteListener<DataReadResponse>() {
-        @Override
-        public void onComplete(Task<DataReadResponse> task) {
-          if (task.isSuccessful()) {
-            DataReadResponse response = task.getResult();
-            int steps = parseStepsDelta(response);
-            fetchCompleteCallback.onSuccess(steps);
+        .readData(readRequest)
+        .addOnFailureListener(new OnFailureListener() {
+          @Override
+          public void onFailure(Exception e) {
+            fetchCompleteCallback.onFailure(e);
           }
-        }
-      });
+        })
+        .addOnCompleteListener(new OnCompleteListener<DataReadResponse>() {
+          @Override
+          public void onComplete(Task<DataReadResponse> task) {
+            if (task.isSuccessful()) {
+              DataReadResponse response = task.getResult();
+              int steps = parseStepsDelta(response);
+              fetchCompleteCallback.onSuccess(steps);
+            }
+          }
+        });
   }
 
   private void getDistanceHistory(final long startTime, long endTime, int dayCount, final OnDistanceFetch fetchCompleteCallback) {
 
     DataReadRequest readRequest = new DataReadRequest.Builder()
-      .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
-      .bucketByTime(dayCount, TimeUnit.DAYS)
-      .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-      .build();
+        .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
+        .bucketByTime(dayCount, TimeUnit.DAYS)
+        .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+        .build();
 
     Fitness.getHistoryClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity))
-      .readData(readRequest)
-      .addOnFailureListener(new OnFailureListener() {
-        @Override
-        public void onFailure(Exception e) {
-          fetchCompleteCallback.onFailure(e);
-        }
-      })
-      .addOnCompleteListener(new OnCompleteListener<DataReadResponse>() {
-        @Override
-        public void onComplete(Task<DataReadResponse> task) {
-          if (task.isSuccessful()) {
-            DataReadResponse response = task.getResult();
-            float distance = parseDistanceDelta(response);
-            fetchCompleteCallback.onSuccess(distance);
+        .readData(readRequest)
+        .addOnFailureListener(new OnFailureListener() {
+          @Override
+          public void onFailure(Exception e) {
+            fetchCompleteCallback.onFailure(e);
           }
-        }
-      });
+        })
+        .addOnCompleteListener(new OnCompleteListener<DataReadResponse>() {
+          @Override
+          public void onComplete(Task<DataReadResponse> task) {
+            if (task.isSuccessful()) {
+              DataReadResponse response = task.getResult();
+              float distance = parseDistanceDelta(response);
+              fetchCompleteCallback.onSuccess(distance);
+            }
+          }
+        });
   }
 
   private int parseStepsDelta(DataReadResponse response) {
@@ -349,6 +341,10 @@ class HistoryClient {
     cal.add(Calendar.DATE, daysDifference);
     Date finalDate = cal.getTime();
     return getStartOfDay(finalDate);
+  }
+
+  private String formatDate(Date date) {
+    return dateFormat.format(date);
   }
 
 }

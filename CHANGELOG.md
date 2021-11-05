@@ -1,3 +1,26 @@
+### 1.5.0 (2021-11-05)
+
+##### Chores
+
+* **android:**  update build.gradle versions (d5194f7a)
+
+##### Documentation Changes
+
+* **fitness:**  added docs about permission handler (f923226d)
+*  Add instructions for additional dependencies (5177d91a)
+
+##### New Features
+
+* **fitness:**  added query for daily steps total (5ba1607b)
+
+##### Bug Fixes
+
+*  typescript definitions for data types (da360413)
+
+##### Refactors
+
+* **android:**  code cleanup and added daily steps query (3a30a15b)
+
 #### 1.4.10 (2021-05-25)
 
 ##### Bug Fixes
