@@ -62,8 +62,7 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
       false,
     );
     if (motionAuthResult.authorized) {
-      const authorized: boolean = await RNFitnessTracker.isTrackingAvailable();
-      motionAuthResult.authorized = authorized;
+      motionAuthResult.authorized = await RNFitnessTracker.isTrackingAvailable();
     }
 
     return motionAuthResult;
@@ -104,13 +103,10 @@ const setupTracking = async (
   } else {
     const motionAuthResult = await handleAndroidMotionTrackingPermissions(true);
     if (motionAuthResult.authorized) {
-      const authorized: boolean = await RNFitnessTracker.authorize();
-      motionAuthResult.authorized = authorized;
-
-      return motionAuthResult;
-    } else {
-      return motionAuthResult;
+      motionAuthResult.authorized = await RNFitnessTracker.authorize();
     }
+
+    return motionAuthResult;
   }
 };
 
@@ -148,7 +144,7 @@ const getStepsWeekTotal = async (): Promise<number> => {
 
 /**
  * Returns weekly steps object
- * @return {Promise<IWeekDailySteps>}
+ * @return {Promise<IStepsDaily>}
  */
 const getStepsDaily = async (): Promise<IStepsDaily> => {
   if (isIOS) {
@@ -162,8 +158,28 @@ const getStepsDaily = async (): Promise<IStepsDaily> => {
 };
 
 /**
+ * Returns daily totals of steps for specified time range
+ * @return {Promise<IStepsDaily>}
+ */
+const queryStepsTotalDaily = async (
+  startDate: Date | number,
+  endDate: Date | number,
+): Promise<IStepsDaily> => {
+  if (isIOS) {
+    return RNHealthTracker.queryDailyTotalsIOS({
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
+      startDate,
+      endDate,
+    });
+  } else {
+    return RNFitnessTracker.queryStepsDaily(+startDate, +endDate);
+  }
+};
+
+/**
  * Returns steps today and this week's steps object
- * @return {Promise<IStepTrackerData>}
+ * @return {Promise<IStepsData>}
  */
 const getStepsData = async (): Promise<IStepsData> => {
   let stepsDaily: IStepsDaily;
@@ -307,16 +323,17 @@ const queryDistanceTotal = async (
 };
 
 export const FitnessTrackerAPI = {
-  getStepsToday,
-  getStepsWeekTotal,
-  getStepsDaily,
-  getStepsData,
-  queryStepsTotal,
-  getDistanceToday,
-  getDistanceWeekTotal,
   getDistanceDaily,
   getDistanceData,
-  queryDistanceTotal,
+  getDistanceToday,
+  getDistanceWeekTotal,
+  getStepsDaily,
+  getStepsData,
+  getStepsToday,
+  getStepsWeekTotal,
   isTrackingAvailable,
+  queryDistanceTotal,
+  queryStepsTotal,
+  queryStepsTotalDaily,
   setupTracking,
 };
