@@ -1,3 +1,9 @@
+#### 1.5.1 (2021-11-08)
+
+##### Documentation Changes
+
+* **fitness:**  added parameter documentation for queryStepsTotalDaily (ef5c403d)
+
 ### 1.5.0 (2021-11-05)
 
 ##### Chores

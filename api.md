@@ -20,7 +20,7 @@ $ /Users/matas/Documents/projects/rn-fitness-tracker/node_modules/.bin/jsdoc2md 
     * [~getStepsToday()](#module_FitnessTrackerAPI..getStepsToday) ⇒ <code>Promise.&lt;number&gt;</code>
     * [~getStepsWeekTotal()](#module_FitnessTrackerAPI..getStepsWeekTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
     * [~getStepsDaily()](#module_FitnessTrackerAPI..getStepsDaily) ⇒ <code>Promise.&lt;IStepsDaily&gt;</code>
-    * [~queryStepsTotalDaily()](#module_FitnessTrackerAPI..queryStepsTotalDaily) ⇒ <code>Promise.&lt;IStepsDaily&gt;</code>
+    * [~queryStepsTotalDaily(startDate, endDate)](#module_FitnessTrackerAPI..queryStepsTotalDaily) ⇒ <code>Promise.&lt;IStepsDaily&gt;</code>
     * [~getStepsData()](#module_FitnessTrackerAPI..getStepsData) ⇒ <code>Promise.&lt;IStepsData&gt;</code>
     * [~queryStepsTotal(startDate, endDate)](#module_FitnessTrackerAPI..queryStepsTotal) ⇒ <code>Promise.&lt;Number&gt;</code>
     * [~getDistanceToday()](#module_FitnessTrackerAPI..getDistanceToday) ⇒ <code>Promise.&lt;number&gt;</code>
@@ -84,10 +84,16 @@ Returns weekly steps object
 
 <a name="module_FitnessTrackerAPI..queryStepsTotalDaily"></a>
 
-### FitnessTrackerAPI~queryStepsTotalDaily() ⇒ <code>Promise.&lt;IStepsDaily&gt;</code>
+### FitnessTrackerAPI~queryStepsTotalDaily(startDate, endDate) ⇒ <code>Promise.&lt;IStepsDaily&gt;</code>
 Returns daily totals of steps for specified time range
 
 **Kind**: inner method of [<code>FitnessTrackerAPI</code>](#module_FitnessTrackerAPI)  
+
+| Param | Type |
+| --- | --- |
+| startDate | <code>Date</code> \| <code>number</code> | 
+| endDate | <code>Date</code> \| <code>number</code> | 
+
 
 * * *
 

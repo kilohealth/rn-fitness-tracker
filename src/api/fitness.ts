@@ -159,6 +159,8 @@ const getStepsDaily = async (): Promise<IStepsDaily> => {
 
 /**
  * Returns daily totals of steps for specified time range
+ * @param startDate {Date | number}
+ * @param endDate {Date | number}
  * @return {Promise<IStepsDaily>}
  */
 const queryStepsTotalDaily = async (
