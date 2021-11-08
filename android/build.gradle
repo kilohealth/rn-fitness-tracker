@@ -1,19 +1,22 @@
-
 buildscript {
+    ext {
+        kotlinVersion = '1.5.31'
+        androidToolsVersion = '4.2.2'
+    }
+
     repositories {
         jcenter()
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
-        }
+        google()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath "com.android.tools.build:gradle:${project.ext.androidToolsVersion}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${project.ext.kotlinVersion}"
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
@@ -21,8 +24,6 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
     }
     lintOptions {
         abortOnError false
@@ -35,15 +36,12 @@ android {
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://maven.google.com/'
-        name 'Google'
-    }
+    google()
 }
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
     implementation 'com.google.android.gms:play-services-fitness:20.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${project.ext.kotlinVersion}"
 }
-  
