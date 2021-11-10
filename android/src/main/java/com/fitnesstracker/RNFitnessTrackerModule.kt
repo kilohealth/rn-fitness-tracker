@@ -22,29 +22,29 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun authorize(promise: Promise) {
     val activity: Activity? = currentActivity
-    this.googleFitManager.authorize(promise, activity)
+    googleFitManager.authorize(promise, activity)
   }
 
 
   @ReactMethod
   fun isTrackingAvailable(promise: Promise) {
     val activity: Activity? = currentActivity
-    this.googleFitManager.isTrackingAvailable(promise, activity)
+    googleFitManager.isTrackingAvailable(promise, activity)
   }
 
   @ReactMethod
   fun getStepsToday(promise: Promise) {
-    this.googleFitManager.getStepsToday(promise)
+    googleFitManager.getStepsToday(promise)
   }
 
   @ReactMethod
   fun getStepsWeekTotal(promise: Promise) {
-    this.googleFitManager.getStepsWeekTotal(promise)
+    googleFitManager.getStepsWeekTotal(promise)
   }
 
   @ReactMethod
   fun getStepsDaily(promise: Promise) {
-    this.googleFitManager.getStepsDaily(promise)
+    googleFitManager.getStepsDaily(promise)
   }
 
   @ReactMethod
@@ -52,17 +52,17 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     val endTime: Long = endDate.toLong()
     val startTime: Long = startDate.toLong()
 
-    this.googleFitManager.getStepsDaily(promise, Date(startTime), Date(endTime))
+    googleFitManager.getStepsDaily(promise, Date(startTime), Date(endTime))
   }
 
   @ReactMethod
   fun getDistanceToday(promise: Promise) {
-    this.googleFitManager.getDistanceToday(promise)
+    googleFitManager.getDistanceToday(promise)
   }
 
   @ReactMethod
   fun getDistanceWeekTotal(promise: Promise) {
-    this.googleFitManager.getDistanceWeekTotal(promise)
+    googleFitManager.getDistanceWeekTotal(promise)
   }
 
   @ReactMethod
@@ -70,7 +70,7 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     val endTime: Long = endDate.toLong()
     val startTime: Long = startDate.toLong()
 
-    this.googleFitManager.queryStepsTotal(promise, startTime, endTime)
+    googleFitManager.queryStepsTotal(promise, startTime, endTime)
   }
 
   @ReactMethod
@@ -78,11 +78,11 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     val endTime: Long = endDate.toLong()
     val startTime: Long = startDate.toLong()
 
-    this.googleFitManager.queryDistanceTotal(promise, startTime, endTime)
+    googleFitManager.queryDistanceTotal(promise, startTime, endTime)
   }
 
   @ReactMethod
   fun getDistanceDaily(promise: Promise) {
-    this.googleFitManager.getDistanceDaily(promise)
+    googleFitManager.getDistanceDaily(promise)
   }
 }
