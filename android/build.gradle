@@ -1,33 +1,47 @@
 buildscript {
     ext {
-        kotlinVersion = '1.5.31'
-        androidToolsVersion = '4.2.2'
+        kotlinVersion = "1.5.31"
+        compileSdkVersion = 30
+        targetSdkVersion = 30
+        minSdkVersion = 21
+        androidToolsVersion = "4.2.2"
     }
+    
+    // Buildscript is evaluated before everything else so we can't use getExt
+    def kotlin_version = rootProject.ext.get('kotlinVersion')
+    def android_tools_version = rootProject.ext.get('androidToolsVersion')
 
     repositories {
-        jcenter()
         google()
+        mavenCentral()
+        jcenter()
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:${project.ext.androidToolsVersion}"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${project.ext.kotlinVersion}"
+        classpath "com.android.tools.build:gradle:$android_tools_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+def getExt(name) {
+    return rootProject.ext.get(name)
+}
+
 android {
-    compileSdkVersion 30
+    compileSdkVersion getExt('compileSdkVersion')
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion getExt('minSdkVersion')
+        targetSdkVersion getExt('targetSdkVersion')
     }
+
     lintOptions {
         abortOnError false
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -36,12 +50,81 @@ android {
 
 repositories {
     mavenCentral()
+    jcenter()
     google()
+
+    def found = false
+    def defaultDir = null
+    def androidSourcesName = 'React Native sources'
+
+    if (rootProject.ext.has('reactNativeAndroidRoot')) {
+        defaultDir = rootProject.ext.get('reactNativeAndroidRoot')
+    } else {
+        defaultDir = new File(
+                projectDir,
+                '/../../../node_modules/react-native/android'
+        )
+    }
+
+    if (defaultDir.exists()) {
+        maven {
+            url defaultDir.toString()
+            name androidSourcesName
+        }
+
+        logger.info(":${project.name}:reactNativeAndroidRoot ${defaultDir.canonicalPath}")
+        found = true
+    } else {
+        def parentDir = rootProject.projectDir
+
+        1.upto(5, {
+            if (found) return true
+            parentDir = parentDir.parentFile
+
+            def androidSourcesDir = new File(
+                    parentDir,
+                    'node_modules/react-native'
+            )
+
+            def androidPrebuiltBinaryDir = new File(
+                    parentDir,
+                    'node_modules/react-native/android'
+            )
+
+            if (androidPrebuiltBinaryDir.exists()) {
+                maven {
+                    url androidPrebuiltBinaryDir.toString()
+                    name androidSourcesName
+                }
+
+                logger.info(":${project.name}:reactNativeAndroidRoot ${androidPrebuiltBinaryDir.canonicalPath}")
+                found = true
+            } else if (androidSourcesDir.exists()) {
+                maven {
+                    url androidSourcesDir.toString()
+                    name androidSourcesName
+                }
+
+                logger.info(":${project.name}:reactNativeAndroidRoot ${androidSourcesDir.canonicalPath}")
+                found = true
+            }
+        })
+    }
+
+    if (!found) {
+        throw new GradleException(
+                "${project.name}: unable to locate React Native android sources. " +
+                        "Ensure you have you installed React Native as a dependency in your project and try again."
+        )
+    }
 }
 
+def kotlin_version = getExt('kotlinVersion')
+
 dependencies {
-    implementation 'com.facebook.react:react-native:+'
+    // noinspection GradleDynamicVersion
+    api 'com.facebook.react:react-native:+'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'com.google.android.gms:play-services-fitness:20.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${project.ext.kotlinVersion}"
 }
