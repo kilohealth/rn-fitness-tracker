@@ -1,8 +1,10 @@
-import { NativeModules } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import { NativeModules } from 'react-native';
 import { ResultMap } from 'react-native-permissions/dist/typescript/results';
 
+import { HealthDataTypes, HKDataType, UnitTypes } from '../types/dataTypes';
+import { HealthTrackerAPI } from './health';
 import {
   IDistanceDaily,
   IDistanceData,
@@ -10,10 +12,9 @@ import {
   IStepsDaily,
   IStepsData,
 } from '../types/fitnessTypes';
-import { HealthDataTypes, HKDataType, UnitTypes } from '../types/dataTypes';
 import { isIOS, isObject, ValueOf } from '../utils/helpers';
 
-const { RNFitnessTracker, RNHealthTracker } = NativeModules;
+const { RNFitnessTracker } = NativeModules;
 
 /**
  * @module FitnessTrackerAPI
@@ -45,10 +46,10 @@ const handleAndroidMotionTrackingPermissions = async (
  */
 const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
   if (isIOS) {
-    const status: number = await RNHealthTracker.getReadStatus(
-      HealthDataTypes.StepCount,
-      UnitTypes.count,
-    );
+    const status: number = await HealthTrackerAPI.getReadStatusForTypeIOS({
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
+    });
 
     if (status === 2) {
       return { authorized: true, shouldOpenAppSettings: false };
@@ -91,7 +92,8 @@ const setupTracking = async (
         readTypes.push(HealthDataTypes.DistanceWalkingRunning);
       }
 
-      await RNHealthTracker.authorize([], readTypes);
+      const shareTypes: HKDataType[] = [];
+      await HealthTrackerAPI.setupTrackingIOS(shareTypes, readTypes);
 
       const { authorized, shouldOpenAppSettings } = await isTrackingAvailable();
 
@@ -116,10 +118,10 @@ const setupTracking = async (
  */
 const getStepsToday = async (): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.getStatisticTotalForToday(
-      HealthDataTypes.StepCount,
-      UnitTypes.count,
-    );
+    const total = await HealthTrackerAPI.getStatisticTotalForTodayIOS({
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
+    });
     return Number(total);
   } else {
     return RNFitnessTracker.getStepsToday();
@@ -132,10 +134,10 @@ const getStepsToday = async (): Promise<number> => {
  */
 const getStepsWeekTotal = async (): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.getStatisticTotalForWeek(
-      HealthDataTypes.StepCount,
-      UnitTypes.count,
-    );
+    const total = await HealthTrackerAPI.getStatisticTotalForWeekIOS({
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
+    });
     return Number(total);
   } else {
     return RNFitnessTracker.getStepsWeekTotal();
@@ -148,10 +150,10 @@ const getStepsWeekTotal = async (): Promise<number> => {
  */
 const getStepsDaily = async (): Promise<IStepsDaily> => {
   if (isIOS) {
-    return RNHealthTracker.getStatisticWeekDaily(
-      HealthDataTypes.StepCount,
-      UnitTypes.count,
-    );
+    return HealthTrackerAPI.getStatisticWeekDailyIOS({
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
+    });
   } else {
     return RNFitnessTracker.getStepsDaily();
   }
@@ -168,7 +170,7 @@ const queryStepsTotalDaily = async (
   endDate: Date | number,
 ): Promise<IStepsDaily> => {
   if (isIOS) {
-    return RNHealthTracker.queryDailyTotalsIOS({
+    return HealthTrackerAPI.queryDailyTotalsIOS({
       key: HealthDataTypes.StepCount,
       unit: UnitTypes.count,
       startDate,
@@ -186,10 +188,10 @@ const queryStepsTotalDaily = async (
 const getStepsData = async (): Promise<IStepsData> => {
   let stepsDaily: IStepsDaily;
   if (isIOS) {
-    stepsDaily = await RNHealthTracker.getStatisticWeekDaily(
-      HealthDataTypes.StepCount,
-      UnitTypes.count,
-    );
+    stepsDaily = await HealthTrackerAPI.getStatisticWeekDailyIOS({
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
+    });
   } else {
     stepsDaily = await RNFitnessTracker.getStepsDaily();
   }
@@ -215,12 +217,12 @@ const queryStepsTotal = async (
   endDate: Date | number,
 ): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.queryTotal(
-      HealthDataTypes.StepCount,
-      UnitTypes.count,
-      +startDate,
-      +endDate,
-    );
+    const total = await HealthTrackerAPI.queryTotalIOS({
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
+      startDate,
+      endDate,
+    });
 
     return Number(total);
   } else {
@@ -234,10 +236,11 @@ const queryStepsTotal = async (
  */
 const getDistanceToday = async (): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.getStatisticTotalForToday(
-      HealthDataTypes.DistanceWalkingRunning,
-      UnitTypes.meters,
-    );
+    const total = await HealthTrackerAPI.getStatisticTotalForTodayIOS({
+      key: HealthDataTypes.DistanceWalkingRunning,
+      unit: UnitTypes.meters,
+    });
+
     return Number(total);
   } else {
     return RNFitnessTracker.getDistanceToday();
@@ -250,10 +253,11 @@ const getDistanceToday = async (): Promise<number> => {
  */
 const getDistanceWeekTotal = async (): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.getStatisticTotalForWeek(
-      HealthDataTypes.DistanceWalkingRunning,
-      UnitTypes.meters,
-    );
+    const total = await HealthTrackerAPI.getStatisticTotalForWeekIOS({
+      key: HealthDataTypes.DistanceWalkingRunning,
+      unit: UnitTypes.meters,
+    });
+
     return Number(total);
   } else {
     return RNFitnessTracker.getDistanceWeekTotal();
@@ -266,10 +270,10 @@ const getDistanceWeekTotal = async (): Promise<number> => {
  */
 const getDistanceDaily = async (): Promise<IDistanceDaily> => {
   if (isIOS) {
-    return RNHealthTracker.getStatisticWeekDaily(
-      HealthDataTypes.DistanceWalkingRunning,
-      UnitTypes.meters,
-    );
+    return HealthTrackerAPI.getStatisticWeekDailyIOS({
+      key: HealthDataTypes.DistanceWalkingRunning,
+      unit: UnitTypes.meters,
+    });
   } else {
     return RNFitnessTracker.getDistanceDaily();
   }
@@ -282,10 +286,10 @@ const getDistanceDaily = async (): Promise<IDistanceDaily> => {
 const getDistanceData = async (): Promise<IDistanceData> => {
   let distanceDaily: IDistanceDaily;
   if (isIOS) {
-    distanceDaily = await RNHealthTracker.getStatisticWeekDaily(
-      HealthDataTypes.DistanceWalkingRunning,
-      UnitTypes.meters,
-    );
+    distanceDaily = await HealthTrackerAPI.getStatisticWeekDailyIOS({
+      key: HealthDataTypes.DistanceWalkingRunning,
+      unit: UnitTypes.meters,
+    });
   } else {
     distanceDaily = await RNFitnessTracker.getDistanceDaily();
   }
@@ -311,12 +315,12 @@ const queryDistanceTotal = async (
   endDate: Date | number,
 ): Promise<number> => {
   if (isIOS) {
-    const total = await RNHealthTracker.queryTotal(
-      HealthDataTypes.DistanceWalkingRunning,
-      UnitTypes.meters,
-      +startDate,
-      +endDate,
-    );
+    const total = await HealthTrackerAPI.queryTotalIOS({
+      key: HealthDataTypes.DistanceWalkingRunning,
+      unit: UnitTypes.meters,
+      startDate,
+      endDate,
+    });
 
     return Number(total);
   } else {
