@@ -26,13 +26,13 @@ const isTrackingSupportedIOS = async (): Promise<boolean> => {
 
 /**
  * `iOS only!` Sets up health tracking and returns status
- * @param shareTypes {HealthDataType} e.g. `HealthDataTypes.Fiber`
- * @param readTypes {HealthDataType} e.g. `HealthDataTypes.Fiber`
+ * @param shareTypes {HealthDataType[]} e.g. `[HealthDataTypes.Fiber]`
+ * @param readTypes {HealthDataType[]} e.g. `[HealthDataTypes.Fiber]`
  * @return {Promise<boolean>}
  */
 const setupTrackingIOS = async (
-  shareTypes: HKDataType,
-  readTypes: HKDataType,
+  shareTypes: HKDataType[],
+  readTypes: HKDataType[],
 ): Promise<boolean> => {
   if (isIOS) {
     const authorized = await RNHealthTracker.authorize(shareTypes, readTypes);
