@@ -1,3 +1,9 @@
+#### 1.5.2 (2021-11-30)
+
+##### Refactors
+
+* **ios:**  fitness api uses health tracker api (7c1bccd1)
+
 #### 1.5.1 (2021-11-08)
 
 ##### Documentation Changes

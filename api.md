@@ -1,4 +1,4 @@
-$ /Users/matas/Documents/projects/rn-fitness-tracker/node_modules/.bin/jsdoc2md --files ./dist/api/fitness.js ./dist/api/health.js ./dist/api/pedometer.js ./dist/types/dataTypes.js ./dist/types/fitnessTypes.js ./dist/utils/helpers.js ./dist/utils/mockData.js --separators
+$ /Users/lukebars/Desktop/module/rn-fitness-tracker/node_modules/.bin/jsdoc2md --files ./dist/api/fitness.js ./dist/api/health.js ./dist/api/pedometer.js ./dist/types/dataTypes.js ./dist/types/fitnessTypes.js ./dist/utils/helpers.js ./dist/utils/mockData.js --separators
 ## Modules
 
 <dl>
@@ -218,8 +218,8 @@ Returns total distance in meters for given time range
 
 | Param | Type | Description |
 | --- | --- | --- |
-| shareTypes | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
-| readTypes | <code>HealthDataType</code> | e.g. `HealthDataTypes.Fiber` |
+| shareTypes | <code>Array.&lt;HealthDataType&gt;</code> | e.g. `[HealthDataTypes.Fiber]` |
+| readTypes | <code>Array.&lt;HealthDataType&gt;</code> | e.g. `[HealthDataTypes.Fiber]` |
 
 
 * * *
