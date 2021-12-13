@@ -28,11 +28,11 @@ public class GoogleFitManager implements ActivityEventListener {
   final Exception UnauthorizedEx = new Exception("Unauthorized GoogleFit");
 
   FitnessOptions fitnessOptions = FitnessOptions.builder()
-      .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-      .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-      .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-      .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-      .build();
+          .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+          .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
+          .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
+          .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+          .build();
 
   public GoogleFitManager(ReactApplicationContext reactContext) {
     this.reactContext = reactContext;
@@ -41,7 +41,7 @@ public class GoogleFitManager implements ActivityEventListener {
 
   public void subscribeToActivityData() {
     Fitness.getRecordingClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity))
-        .subscribe(DataType.TYPE_STEP_COUNT_DELTA);
+            .subscribe(DataType.TYPE_STEP_COUNT_DELTA);
   }
 
   @Override
@@ -67,10 +67,10 @@ public class GoogleFitManager implements ActivityEventListener {
       this.activity = activity;
       this.authorisationPromise = promise;
 
+      GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this.reactContext);
       /* Check if app has google fit permissions */
-      if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this.reactContext), this.fitnessOptions)) {
-        GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this.reactContext);
-        requestFitnessPermissions(googleSignInAccount);
+      if (!GoogleSignIn.hasPermissions(lastSignedInAccount, this.fitnessOptions)) {
+        requestFitnessPermissions(lastSignedInAccount);
       } else {
         accessGoogleFit();
       }
@@ -85,12 +85,13 @@ public class GoogleFitManager implements ActivityEventListener {
       this.activity = activity;
       this.authorisationPromise = promise;
 
-      /* Check if app has google fit permissions */
-      if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this.reactContext), this.fitnessOptions)) {
-        authorisationPromise.resolve(false);
-      } else {
-        authorisationPromise.resolve(true);
+      Boolean hasPermissions = GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this.reactContext), this.fitnessOptions);
+
+      if (hasPermissions) {
+        accessGoogleFit();
       }
+
+      authorisationPromise.resolve(hasPermissions);
     } catch (Exception e) {
       authorisationPromise.reject(e);
       e.printStackTrace();
@@ -100,10 +101,10 @@ public class GoogleFitManager implements ActivityEventListener {
 
   private void requestFitnessPermissions(GoogleSignInAccount googleSignInAccount) {
     GoogleSignIn.requestPermissions(
-        activity,
-        GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-        googleSignInAccount,
-        fitnessOptions
+            activity,
+            GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+            googleSignInAccount,
+            fitnessOptions
     );
   }
 
