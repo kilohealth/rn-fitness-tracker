@@ -1,4 +1,4 @@
-package com.fitnesstracker.GoogleFit
+package com.fitnesstracker.googleFit
 
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ActivityEventListener

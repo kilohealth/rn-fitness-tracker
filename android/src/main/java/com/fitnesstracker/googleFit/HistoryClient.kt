@@ -1,4 +1,4 @@
-package com.fitnesstracker.GoogleFit
+package com.fitnesstracker.googleFit
 
 import android.app.Activity
 import com.facebook.react.bridge.Promise

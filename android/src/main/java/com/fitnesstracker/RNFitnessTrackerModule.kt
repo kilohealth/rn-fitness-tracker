@@ -6,7 +6,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.fitnesstracker.GoogleFit.GoogleFitManager
+import com.fitnesstracker.googleFit.GoogleFitManager
 
 import java.util.Date
 
