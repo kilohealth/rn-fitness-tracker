@@ -58,7 +58,13 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
 
             val recordingService = RecordingService(activity!!)
 
-            authorisationPromise!!.resolve(recordingService.hasGoogleFitPermission())
+            val hasPermissions = recordingService.hasGoogleFitPermission()
+
+            if (hasPermissions) {
+                accessGoogleFit()
+            }
+
+            authorisationPromise!!.resolve(hasPermissions)
         } catch (e: Exception) {
             promiseException(authorisationPromise, e)
         }
