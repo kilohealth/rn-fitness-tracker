@@ -8,8 +8,8 @@ import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import java.lang.Exception
 
-class RecordingService(private val activity: Activity) {
-    val googleSignInAccount: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(activity)
+class RecordingService(private val activity: Activity?) {
+    private val googleSignInAccount: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(activity!!)
 
     fun subscribe(dataType: DataType) {
         try {
@@ -17,7 +17,7 @@ class RecordingService(private val activity: Activity) {
                 throw NullPointerException("null reference, user has never signed in")
             } else {
                 val recordingClient = Fitness.getRecordingClient(
-                    activity, googleSignInAccount
+                    activity!!, googleSignInAccount
                 )
 
                 recordingClient.subscribe(dataType)
@@ -29,7 +29,7 @@ class RecordingService(private val activity: Activity) {
 
     fun requestFitnessPermissions() {
         GoogleSignIn.requestPermissions(
-            activity,
+            activity!!,
             GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
             googleSignInAccount,
             fitnessOptions

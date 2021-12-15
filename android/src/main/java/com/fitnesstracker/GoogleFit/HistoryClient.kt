@@ -7,11 +7,18 @@ import com.facebook.react.bridge.WritableMap
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.fitness.data.Bucket
+import com.google.android.gms.fitness.data.DataPoint
+import com.google.android.gms.fitness.data.DataSet
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.fitness.data.DataType
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+
+enum class AvailableDataTypes {
+    STEPS, DISTANCE
+}
 
 internal class HistoryClient(private val activity: Activity) {
     fun getTotalForTimeRange(promise: Promise, startTime: Long, endTime: Long, dataType: Int) {
@@ -224,6 +231,72 @@ internal class HistoryClient(private val activity: Activity) {
             }
     }
 
+    private fun getParseDataType(dataTypes: Array<DataType>): AvailableDataTypes {
+        return if (dataTypes.contains(DataType.TYPE_DISTANCE_DELTA)) {
+            AvailableDataTypes.DISTANCE
+        } else {
+            AvailableDataTypes.STEPS
+        }
+    }
+
+    private fun getDataHistory(
+        startTime: Long,
+        endTime: Long,
+        dayCount: Int,
+        fetchCompleteCallback: OnDistanceFetch,
+        dataTypes: Array<DataType>
+    ) {
+        var readRequestBuilder = DataReadRequest.Builder()
+        for (i in dataTypes) {
+            readRequestBuilder = readRequestBuilder.aggregate(i)
+        }
+        readRequestBuilder = readRequestBuilder.bucketByTime(dayCount, TimeUnit.DAYS)
+            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+
+        val readRequest = readRequestBuilder.build()
+
+        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
+            .readData(readRequest)
+            .addOnFailureListener { e -> fetchCompleteCallback.onFailure(e) }
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val response = task.result
+                    val type: AvailableDataTypes = getParseDataType(dataTypes)
+                    val data = parseDataDelta(response, type)
+                    fetchCompleteCallback.onSuccess(data)
+                }
+            }
+    }
+
+    private fun parseDataDelta(response: DataReadResponse, type: AvailableDataTypes): Float {
+        val buckets: List<Bucket> = response.buckets
+        var count = 0f
+
+        for (bucket in buckets) {
+            val dataSets: List<DataSet> = bucket.dataSets
+
+            for (dataSet in dataSets) {
+                val dataPoints: List<DataPoint> = dataSet.dataPoints
+
+                for (dataPoint in dataPoints) {
+                    if (dataPoint.dataType == DataType.TYPE_STEP_COUNT_DELTA) {
+
+                        for (field in dataPoint.dataType.fields) {
+                            when (type) {
+                                AvailableDataTypes.STEPS -> count += dataPoint.getValue(field)
+                                    .asFloat()
+                                AvailableDataTypes.DISTANCE -> count += dataPoint.getValue(field)
+                                    .asFloat()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return count
+    }
+
     private fun parseStepsDelta(response: DataReadResponse): Int {
         val buckets = response.buckets
         var stepCount = 0
@@ -311,5 +384,10 @@ internal interface OnStepsFetch {
 
 internal interface OnDistanceFetch {
     fun onSuccess(steps: Float)
+    fun onFailure(e: Exception?)
+}
+
+internal interface OnFetch<T> {
+    fun onSuccess(data: T)
     fun onFailure(e: Exception?)
 }

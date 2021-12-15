@@ -15,6 +15,10 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
     private var activity: Activity? = null
     private var authorisationPromise: Promise? = null
 
+    init {
+        reactContext.addActivityEventListener(this)
+    }
+
     override fun onNewIntent(intent: Intent?) {}
     override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
         val recordingService = RecordingService(activity!!)
@@ -34,12 +38,8 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
 
     fun authorize(promise: Promise?, activity: Activity?) {
         try {
-            this.activity = activity
             authorisationPromise = promise
 
-            /**
-             * Maybe I should pass reactContext not activity
-             */
             val recordingService = RecordingService(activity!!)
 
             if (recordingService.hasGoogleFitPermission()) {
@@ -54,7 +54,6 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
 
     fun isTrackingAvailable(promise: Promise?, activity: Activity?) {
         try {
-            this.activity = activity
             authorisationPromise = promise
 
             val recordingService = RecordingService(activity!!)
@@ -157,10 +156,6 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
     private fun promiseException(promise: Promise?, e: Exception) {
         promise!!.reject(e)
         e.printStackTrace()
-    }
-
-    init {
-        reactContext.addActivityEventListener(this)
     }
 
     companion object {
