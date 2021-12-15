@@ -1,3 +1,9 @@
+#### 1.5.3 (2021-12-14)
+
+##### Bug Fixes
+
+*  access google fit if tracking available (2db332d8)
+
 #### 1.5.2 (2021-11-30)
 
 ##### Bug Fixes
