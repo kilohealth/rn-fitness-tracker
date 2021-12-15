@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = "1.5.31"
+        kotlinVersion = "1.6.0"
         compileSdkVersion = 30
         targetSdkVersion = 30
         minSdkVersion = 21
@@ -125,6 +125,6 @@ dependencies {
     // noinspection GradleDynamicVersion
     api 'com.facebook.react:react-native:+'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.google.android.gms:play-services-fitness:20.0.0'
-    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation 'com.google.android.gms:play-services-fitness:21.0.0'
+    implementation 'com.google.android.gms:play-services-auth:20.0.0'
 }
