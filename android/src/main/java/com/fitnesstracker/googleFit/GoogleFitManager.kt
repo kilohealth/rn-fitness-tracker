@@ -12,7 +12,6 @@ import java.util.*
 
 class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventListener {
     private var historyClient: HistoryClient? = null
-    private var activity: Activity? = null
     private var authorisationPromise: Promise? = null
 
     init {
@@ -27,7 +26,7 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
             if (resultCode == Activity.RESULT_OK) {
                 recordingService.subscribe(DataType.TYPE_STEP_COUNT_DELTA)
 
-                accessGoogleFit()
+                accessGoogleFit(recordingService, activity)
             } else {
                 authorisationPromise!!.resolve(false)
             }
@@ -43,7 +42,7 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
             val recordingService = RecordingService(activity!!)
 
             if (recordingService.hasGoogleFitPermission()) {
-                accessGoogleFit()
+                accessGoogleFit(recordingService, activity)
             } else {
                 recordingService.requestFitnessPermissions()
             }
@@ -61,7 +60,7 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
             val hasPermissions = recordingService.hasGoogleFitPermission()
 
             if (hasPermissions) {
-                accessGoogleFit()
+                accessGoogleFit(recordingService, activity)
             }
 
             authorisationPromise!!.resolve(hasPermissions)
@@ -70,9 +69,8 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
-    private fun accessGoogleFit() {
+    private fun accessGoogleFit(recordingService: RecordingService, activity: Activity?) {
         try {
-            val recordingService = RecordingService(activity!!)
             recordingService.subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
             historyClient = HistoryClient(activity!!)
             authorisationPromise!!.resolve(true)

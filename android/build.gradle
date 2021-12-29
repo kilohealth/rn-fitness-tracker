@@ -1,15 +1,10 @@
 buildscript {
     ext {
-        kotlinVersion = "1.6.0"
         compileSdkVersion = 30
-        targetSdkVersion = 30
+        kotlinVersion = "1.6.0"
         minSdkVersion = 21
-        androidToolsVersion = "4.2.2"
+        targetSdkVersion = 30
     }
-    
-    // Buildscript is evaluated before everything else so we can't use getExt
-    def kotlin_version = rootProject.ext.get('kotlinVersion')
-    def android_tools_version = rootProject.ext.get('androidToolsVersion')
 
     repositories {
         google()
@@ -18,8 +13,8 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:$android_tools_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.android.tools.build:gradle:4.2.2"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
 
@@ -119,12 +114,10 @@ repositories {
     }
 }
 
-def kotlin_version = getExt('kotlinVersion')
-
 dependencies {
     // noinspection GradleDynamicVersion
     api 'com.facebook.react:react-native:+'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation 'com.google.android.gms:play-services-fitness:21.0.0'
     implementation 'com.google.android.gms:play-services-auth:20.0.0'
 }

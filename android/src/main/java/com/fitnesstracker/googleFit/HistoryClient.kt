@@ -196,7 +196,7 @@ internal class HistoryClient(private val activity: Activity) {
             .bucketByTime(dayCount, TimeUnit.DAYS)
             .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
             .build()
-        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity))
+        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
             .readData(readRequest)
             .addOnFailureListener { e -> fetchCompleteCallback.onFailure(e) }
             .addOnCompleteListener { task ->
@@ -219,7 +219,7 @@ internal class HistoryClient(private val activity: Activity) {
             .bucketByTime(dayCount, TimeUnit.DAYS)
             .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
             .build()
-        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity))
+        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
             .readData(readRequest)
             .addOnFailureListener { e -> fetchCompleteCallback.onFailure(e) }
             .addOnCompleteListener { task ->
