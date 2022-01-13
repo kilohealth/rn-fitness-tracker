@@ -1,4 +1,4 @@
-package com.fitnesstracker.googleFit
+package com.fitnesstracker.googlefit
 
 import android.app.Activity
 import com.fitnesstracker.permission.Permission
