@@ -3,6 +3,7 @@ import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import { NativeModules } from 'react-native';
 import { ResultMap } from 'react-native-permissions/dist/typescript/results';
 
+import { AndroidPermissionValues } from '../types/permissions';
 import { HealthDataTypes, HKDataType, UnitTypes } from '../types/dataTypes';
 import { HealthTrackerAPI } from './health';
 import {
@@ -42,9 +43,12 @@ const handleAndroidMotionTrackingPermissions = async (
 
 /**
  * Returns if step tracking is authorized and available on both platforms
+ * @param permissions {Array<AndroidPermissionValues>} - list of permissions to check if tracking is available
  * @return {Promise<IFitnessTrackerStatus>}
  */
-const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
+const isTrackingAvailable = async (
+  permissions: AndroidPermissionValues[],
+): Promise<IFitnessTrackerStatus> => {
   if (isIOS) {
     const status: number = await HealthTrackerAPI.getReadStatusForTypeIOS({
       key: HealthDataTypes.StepCount,
@@ -63,7 +67,9 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
       false,
     );
     if (motionAuthResult.authorized) {
-      motionAuthResult.authorized = await RNFitnessTracker.isTrackingAvailable();
+      motionAuthResult.authorized = await RNFitnessTracker.isTrackingAvailable(
+        permissions,
+      );
     }
 
     return motionAuthResult;
@@ -72,14 +78,16 @@ const isTrackingAvailable = async (): Promise<IFitnessTrackerStatus> => {
 
 /**
  * Sets up step tracking for walking & running steps and distance
- * @param shouldTrackDistance {boolean} - if true, adds permission to track distance in Health consent screen
+ * @param permissions {Array<AndroidPermissionValues>} - list of permissions to track
  * @return {Promise<IFitnessTrackerStatus>}
  */
 const setupTracking = async (
-  shouldTrackDistance = false,
+  permissions: AndroidPermissionValues[],
 ): Promise<IFitnessTrackerStatus> => {
   if (isIOS) {
-    const { authorized, shouldOpenAppSettings } = await isTrackingAvailable();
+    const { authorized, shouldOpenAppSettings } = await isTrackingAvailable(
+      permissions,
+    );
     if (!authorized && shouldOpenAppSettings) {
       return {
         authorized: authorized,
@@ -88,14 +96,17 @@ const setupTracking = async (
     } else {
       const readTypes: HKDataType[] = [HealthDataTypes.StepCount];
 
-      if (shouldTrackDistance) {
-        readTypes.push(HealthDataTypes.DistanceWalkingRunning);
-      }
+      // Todo: update with new permission array
+      // if (shouldTrackDistance) {
+      //   readTypes.push(HealthDataTypes.DistanceWalkingRunning);
+      // }
 
       const shareTypes: HKDataType[] = [];
       await HealthTrackerAPI.setupTrackingIOS(shareTypes, readTypes);
 
-      const { authorized, shouldOpenAppSettings } = await isTrackingAvailable();
+      const { authorized, shouldOpenAppSettings } = await isTrackingAvailable(
+        permissions,
+      );
 
       return {
         authorized: authorized,
@@ -105,7 +116,9 @@ const setupTracking = async (
   } else {
     const motionAuthResult = await handleAndroidMotionTrackingPermissions(true);
     if (motionAuthResult.authorized) {
-      motionAuthResult.authorized = await RNFitnessTracker.authorize();
+      motionAuthResult.authorized = await RNFitnessTracker.authorize(
+        permissions,
+      );
     }
 
     return motionAuthResult;

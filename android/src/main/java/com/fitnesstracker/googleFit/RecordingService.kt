@@ -1,15 +1,22 @@
 package com.fitnesstracker.googleFit
 
 import android.app.Activity
+import com.fitnesstracker.permission.Permission
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import java.lang.Exception
+import java.util.ArrayList
 
 class RecordingService(private val activity: Activity?) {
-    private val googleSignInAccount: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(activity!!)
+    companion object {
+        private const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 111
+    }
+
+    private val googleSignInAccount: GoogleSignInAccount? =
+        GoogleSignIn.getLastSignedInAccount(activity!!)
 
     fun subscribe(dataType: DataType) {
         try {
@@ -27,7 +34,24 @@ class RecordingService(private val activity: Activity?) {
         }
     }
 
-    fun requestFitnessPermissions() {
+    private fun generateFitnessOptions(permissions: ArrayList<Permission>): FitnessOptions {
+        val fitnessOptionsBuilder: FitnessOptions.Builder = FitnessOptions.builder()
+
+        for (permission in permissions) {
+            for (dataType in permission.dataTypes) {
+                fitnessOptionsBuilder.addDataType(
+                    dataType,
+                    permission.permissionAccess
+                )
+            }
+        }
+
+        return fitnessOptionsBuilder.build()
+    }
+
+    fun requestFitnessPermissions(permissions: ArrayList<Permission>) {
+        val fitnessOptions = generateFitnessOptions(permissions)
+
         GoogleSignIn.requestPermissions(
             activity!!,
             GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
@@ -36,17 +60,12 @@ class RecordingService(private val activity: Activity?) {
         )
     }
 
-    fun hasGoogleFitPermission(): Boolean {
-        return GoogleSignIn.hasPermissions(googleSignInAccount, fitnessOptions)
-    }
+    fun hasGoogleFitPermission(permissions: ArrayList<Permission>): Boolean {
+        val fitnessOptions = generateFitnessOptions(permissions)
 
-    companion object {
-        private const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 111
-        private val fitnessOptions: FitnessOptions = FitnessOptions.builder()
-            .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-            .build()
+        return GoogleSignIn.hasPermissions(
+            googleSignInAccount,
+            fitnessOptions
+        )
     }
 }

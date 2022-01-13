@@ -1,4 +1,4 @@
-package com.fitnesstracker.googleFit
+package com.fitnesstracker.GoogleFit
 
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ActivityEventListener
@@ -7,60 +7,72 @@ import com.facebook.react.bridge.Promise
 import java.lang.Exception
 import android.content.Intent
 import com.facebook.react.bridge.Arguments
+import com.fitnesstracker.permission.Permission
+import com.fitnesstracker.permission.PermissionKind
 import com.google.android.gms.fitness.data.DataType
 import java.util.*
 
 class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventListener {
     private var historyClient: HistoryClient? = null
     private var authorisationPromise: Promise? = null
+    private var recordingService: RecordingService? = null
 
     init {
         reactContext.addActivityEventListener(this)
     }
 
     override fun onNewIntent(intent: Intent?) {}
-    override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
-        val recordingService = RecordingService(activity!!)
+    override fun onActivityResult(
+        activity: Activity?,
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        if (recordingService == null) {
+            recordingService = RecordingService(activity!!)
+        }
 
-        if (requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                recordingService.subscribe(DataType.TYPE_STEP_COUNT_DELTA)
-
-                accessGoogleFit(recordingService, activity)
-            } else {
-                authorisationPromise!!.resolve(false)
-            }
-        } else if (requestCode == SIGN_IN_REQUEST_CODE) {
-            recordingService.requestFitnessPermissions()
+        if (resultCode == Activity.RESULT_OK && requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
+            accessGoogleFit(activity)
+        } else {
+            authorisationPromise!!.resolve(false)
         }
     }
 
-    fun authorize(promise: Promise?, activity: Activity?) {
+    fun authorize(promise: Promise, activity: Activity?, permissions: ArrayList<Permission>) {
         try {
             authorisationPromise = promise
 
-            val recordingService = RecordingService(activity!!)
+            recordingService = RecordingService(activity!!)
 
-            if (recordingService.hasGoogleFitPermission()) {
-                accessGoogleFit(recordingService, activity)
+            if (recordingService!!.hasGoogleFitPermission(permissions)) {
+                accessGoogleFit(activity)
             } else {
-                recordingService.requestFitnessPermissions()
+                if (permissions.find { it.permissionKind == PermissionKind.STEPS } !== null) {
+                    // Subscribes to tracking steps even if google fit is not installed
+                    // Todo: test if this works
+                    recordingService!!.subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
+                }
+
+                recordingService!!.requestFitnessPermissions(permissions)
             }
         } catch (e: Exception) {
             promiseException(authorisationPromise, e)
         }
     }
 
-    fun isTrackingAvailable(promise: Promise?, activity: Activity?) {
+    fun isTrackingAvailable(promise: Promise, activity: Activity?, permissions: ArrayList<Permission>) {
         try {
             authorisationPromise = promise
 
-            val recordingService = RecordingService(activity!!)
+            if (recordingService == null) {
+                recordingService = RecordingService(activity!!)
+            }
 
-            val hasPermissions = recordingService.hasGoogleFitPermission()
+            val hasPermissions = recordingService!!.hasGoogleFitPermission(permissions)
 
-            if (hasPermissions) {
-                accessGoogleFit(recordingService, activity)
+            if (hasPermissions && historyClient == null) {
+                accessGoogleFit(activity, false)
             }
 
             authorisationPromise!!.resolve(hasPermissions)
@@ -69,11 +81,11 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
-    private fun accessGoogleFit(recordingService: RecordingService, activity: Activity?) {
+    private fun accessGoogleFit(activity: Activity?, resolvePromise: Boolean = true) {
         try {
-            recordingService.subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
             historyClient = HistoryClient(activity!!)
-            authorisationPromise!!.resolve(true)
+
+            if (resolvePromise) authorisationPromise!!.resolve(true)
         } catch (e: Exception) {
             promiseException(authorisationPromise, e)
         }
@@ -164,6 +176,5 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
 
     companion object {
         private const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 111
-        private const val SIGN_IN_REQUEST_CODE = 112
     }
 }
