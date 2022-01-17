@@ -220,30 +220,6 @@ const getStepsData = async (): Promise<IStepsData> => {
 };
 
 /**
- * Returns number of steps for given time range
- * @param startDate {Date | number}
- * @param endDate {Date | number}
- * @return {Promise<Number>}
- */
-const queryStepsTotal = async (
-  startDate: Date | number,
-  endDate: Date | number,
-): Promise<number> => {
-  if (isIOS) {
-    const total = await HealthTrackerAPI.queryTotalIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
-      startDate,
-      endDate,
-    });
-
-    return Number(total);
-  } else {
-    return RNFitnessTracker.queryStepsTotal(+startDate, +endDate);
-  }
-};
-
-/**
  * Returns walking and running distance today in meters
  * @return {Promise<number>} number of meters
  */
@@ -319,15 +295,18 @@ const getDistanceData = async (): Promise<IDistanceData> => {
 
 /**
  * Returns total distance in meters for given time range
+ * @param dataType {AndroidPermissionValues}
  * @param startDate {Date | number}
  * @param endDate {Date | number}
  * @return {Promise<Number>}
  */
-const queryDistanceTotal = async (
+const queryTotal = async (
+  dataType: AndroidPermissionValues,
   startDate: Date | number,
   endDate: Date | number,
 ): Promise<number> => {
   if (isIOS) {
+    // Todo: make ios use DataType
     const total = await HealthTrackerAPI.queryTotalIOS({
       key: HealthDataTypes.DistanceWalkingRunning,
       unit: UnitTypes.meters,
@@ -337,7 +316,7 @@ const queryDistanceTotal = async (
 
     return Number(total);
   } else {
-    return RNFitnessTracker.queryDistanceTotal(+startDate, +endDate);
+    return RNFitnessTracker.queryTotal(dataType, +startDate, +endDate);
   }
 };
 
@@ -351,8 +330,7 @@ export const FitnessTrackerAPI = {
   getStepsToday,
   getStepsWeekTotal,
   isTrackingAvailable,
-  queryDistanceTotal,
-  queryStepsTotal,
+  queryTotal,
   queryStepsTotalDaily,
   setupTracking,
 };

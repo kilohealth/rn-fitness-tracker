@@ -9,8 +9,10 @@ import android.content.Intent
 import com.facebook.react.bridge.Arguments
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
+import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import java.util.*
+import kotlin.collections.ArrayList
 
 class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventListener {
     private var historyClient: HistoryClient? = null
@@ -61,7 +63,11 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
-    fun isTrackingAvailable(promise: Promise, activity: Activity?, permissions: ArrayList<Permission>) {
+    fun isTrackingAvailable(
+        promise: Promise,
+        activity: Activity?,
+        permissions: ArrayList<Permission>
+    ) {
         try {
             authorisationPromise = promise
 
@@ -142,15 +148,16 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
-    fun queryStepsTotal(promise: Promise, startTime: Long, endTime: Long) {
+    fun queryTotal(promise: Promise, dataType: String, startTime: Long, endTime: Long) {
         if (historyNotNull(promise)) {
-            historyClient!!.getTotalForTimeRange(promise, startTime, endTime, 0)
-        }
-    }
+            val permission = Permission(
+                PermissionKind.getByValue(dataType),
+                FitnessOptions.ACCESS_READ
+            )
+            val dataTypes: ArrayList<DataType> = permission.dataTypes
+            val isFloat: Boolean = permission.isFloat
 
-    fun queryDistanceTotal(promise: Promise, startTime: Long, endTime: Long) {
-        if (historyNotNull(promise)) {
-            historyClient!!.getTotalForTimeRange(promise, startTime, endTime, 1)
+            historyClient!!.getTotalForTimeRange(promise, startTime, endTime, dataTypes, isFloat)
         }
     }
 

@@ -2,41 +2,47 @@ package com.fitnesstracker.googlefit
 
 import android.app.Activity
 import com.facebook.react.bridge.Promise
-import java.lang.Exception
 import com.facebook.react.bridge.WritableMap
-import com.google.android.gms.fitness.request.DataReadRequest
-import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.data.Bucket
 import com.google.android.gms.fitness.data.DataPoint
 import com.google.android.gms.fitness.data.DataSet
-import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.fitness.data.DataType
+import com.google.android.gms.fitness.Fitness
+import com.google.android.gms.fitness.request.DataReadRequest
+import com.google.android.gms.fitness.result.DataReadResponse
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.Task
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
-enum class AvailableDataTypes {
-    STEPS, DISTANCE
-}
-
-internal class HistoryClient(private val activity: Activity) {
-    fun getTotalForTimeRange(promise: Promise, startTime: Long, endTime: Long, dataType: Int) {
+class HistoryClient(private val activity: Activity) {
+    fun getTotalForTimeRange(
+        promise: Promise,
+        startTime: Long,
+        endTime: Long,
+        dataTypes: ArrayList<DataType>,
+        isFloat: Boolean
+    ) {
         try {
-            if (dataType == 0) {
-                getStepHistory(startTime, endTime, 7, object : OnStepsFetch {
-                    override fun onSuccess(steps: Int) {
-                        promise.resolve(steps)
+            if (isFloat) {
+                getFloatDataHistory(startTime, endTime, 7, dataTypes, object : OnFloatFetch {
+                    override fun onSuccess(data: Float) {
+                        promise.resolve(data)
                     }
 
                     override fun onFailure(e: Exception?) {
                         promise.reject(e)
                     }
                 })
-            } else if (dataType == 1) {
-                getDistanceHistory(startTime, endTime, 7, object : OnDistanceFetch {
-                    override fun onSuccess(distance: Float) {
-                        promise.resolve(distance)
+            } else {
+                getIntDataHistory(startTime, endTime, 7, dataTypes, object : OnIntFetch {
+                    override fun onSuccess(data: Int) {
+                        promise.resolve(data)
                     }
 
                     override fun onFailure(e: Exception?) {
@@ -231,44 +237,95 @@ internal class HistoryClient(private val activity: Activity) {
             }
     }
 
-    private fun getParseDataType(dataTypes: Array<DataType>): AvailableDataTypes {
-        return if (dataTypes.contains(DataType.TYPE_DISTANCE_DELTA)) {
-            AvailableDataTypes.DISTANCE
-        } else {
-            AvailableDataTypes.STEPS
-        }
-    }
-
-    private fun getDataHistory(
+    private fun createReadRequest(
         startTime: Long,
         endTime: Long,
         dayCount: Int,
-        fetchCompleteCallback: OnDistanceFetch,
-        dataTypes: Array<DataType>
-    ) {
-        var readRequestBuilder = DataReadRequest.Builder()
-        for (i in dataTypes) {
-            readRequestBuilder = readRequestBuilder.aggregate(i)
-        }
-        readRequestBuilder = readRequestBuilder.bucketByTime(dayCount, TimeUnit.DAYS)
-            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+        dataTypes: ArrayList<DataType>
+    ): DataReadRequest {
+        val readRequestBuilder = DataReadRequest.Builder()
 
-        val readRequest = readRequestBuilder.build()
+        for (i in dataTypes) readRequestBuilder.aggregate(i)
 
-        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
-            .readData(readRequest)
-            .addOnFailureListener { e -> fetchCompleteCallback.onFailure(e) }
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val response = task.result
-                    val type: AvailableDataTypes = getParseDataType(dataTypes)
-                    val data = parseDataDelta(response, type)
-                    fetchCompleteCallback.onSuccess(data)
-                }
-            }
+        readRequestBuilder.bucketByTime(dayCount, TimeUnit.DAYS)
+        readRequestBuilder.setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+
+        return readRequestBuilder.build()
     }
 
-    private fun parseDataDelta(response: DataReadResponse, type: AvailableDataTypes): Float {
+    private fun getHistoryClient(readRequest: DataReadRequest, onFailure: OnFailureListener, onSuccess: OnCompleteListener<DataReadResponse>) {
+        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
+            .readData(readRequest)
+            .addOnFailureListener(onFailure)
+            .addOnCompleteListener(onSuccess)
+    }
+
+    private fun getIntDataHistory(
+        startTime: Long,
+        endTime: Long,
+        dayCount: Int,
+        dataTypes: ArrayList<DataType>,
+        fetchCompleteCallback: OnIntFetch
+    ) {
+        val readRequest: DataReadRequest =
+            createReadRequest(startTime, endTime, dayCount, dataTypes)
+        val onFailure = { e: Exception -> fetchCompleteCallback.onFailure(e) }
+        val onSuccess = { task: Task<DataReadResponse> ->
+            if (task.isSuccessful) {
+                val response = task.result
+                val data = parseIntDataDelta(response, dataTypes)
+                fetchCompleteCallback.onSuccess(data)
+            }
+        }
+
+        getHistoryClient(readRequest, onFailure, onSuccess)
+    }
+
+    private fun parseIntDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Int {
+        val buckets: List<Bucket> = response.buckets
+        var count = 0
+
+        for (bucket in buckets) {
+            val dataSets: List<DataSet> = bucket.dataSets
+
+            for (dataSet in dataSets) {
+                val dataPoints: List<DataPoint> = dataSet.dataPoints
+
+                for (dataPoint in dataPoints) {
+                    if (type.contains(dataPoint.dataType)) {
+                        for (field in dataPoint.dataType.fields) {
+                            count += dataPoint.getValue(field).asInt()
+                        }
+                    }
+                }
+            }
+        }
+
+        return count
+    }
+
+    private fun getFloatDataHistory(
+        startTime: Long,
+        endTime: Long,
+        dayCount: Int,
+        dataTypes: ArrayList<DataType>,
+        fetchCompleteCallback: OnFloatFetch
+    ) {
+        val readRequest: DataReadRequest =
+            createReadRequest(startTime, endTime, dayCount, dataTypes)
+        val onFailure = { e: Exception -> fetchCompleteCallback.onFailure(e) }
+        val onSuccess = { task: Task<DataReadResponse> ->
+            if (task.isSuccessful) {
+                val response = task.result
+                val data = parseFloatDataDelta(response, dataTypes)
+                fetchCompleteCallback.onSuccess(data)
+            }
+        }
+
+        getHistoryClient(readRequest, onFailure, onSuccess)
+    }
+
+    private fun parseFloatDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Float {
         val buckets: List<Bucket> = response.buckets
         var count = 0f
 
@@ -279,15 +336,9 @@ internal class HistoryClient(private val activity: Activity) {
                 val dataPoints: List<DataPoint> = dataSet.dataPoints
 
                 for (dataPoint in dataPoints) {
-                    if (dataPoint.dataType == DataType.TYPE_STEP_COUNT_DELTA) {
-
+                    if (type.contains(dataPoint.dataType)) {
                         for (field in dataPoint.dataType.fields) {
-                            when (type) {
-                                AvailableDataTypes.STEPS -> count += dataPoint.getValue(field)
-                                    .asFloat()
-                                AvailableDataTypes.DISTANCE -> count += dataPoint.getValue(field)
-                                    .asFloat()
-                            }
+                            count += dataPoint.getValue(field).asFloat()
                         }
                     }
                 }
@@ -377,17 +428,22 @@ internal class HistoryClient(private val activity: Activity) {
     }
 }
 
-internal interface OnStepsFetch {
+interface OnStepsFetch {
     fun onSuccess(steps: Int)
     fun onFailure(e: Exception?)
 }
 
-internal interface OnDistanceFetch {
-    fun onSuccess(steps: Float)
+interface OnDistanceFetch {
+    fun onSuccess(distance: Float)
     fun onFailure(e: Exception?)
 }
 
-internal interface OnFetch<T> {
-    fun onSuccess(data: T)
+interface OnFloatFetch {
+    fun onSuccess(data: Float)
+    fun onFailure(e: Exception?)
+}
+
+interface OnIntFetch {
+    fun onSuccess(data: Int)
     fun onFailure(e: Exception?)
 }

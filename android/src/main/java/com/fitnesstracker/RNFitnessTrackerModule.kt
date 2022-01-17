@@ -75,19 +75,11 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun queryStepsTotal(startDate: Double, endDate: Double, promise: Promise) {
+    fun queryTotal(dataType: String, startDate: Double, endDate: Double, promise: Promise) {
         val endTime: Long = endDate.toLong()
         val startTime: Long = startDate.toLong()
 
-        googleFitManager.queryStepsTotal(promise, startTime, endTime)
-    }
-
-    @ReactMethod
-    fun queryDistanceTotal(startDate: Double, endDate: Double, promise: Promise) {
-        val endTime: Long = endDate.toLong()
-        val startTime: Long = startDate.toLong()
-
-        googleFitManager.queryDistanceTotal(promise, startTime, endTime)
+        googleFitManager.queryTotal(promise, dataType, startTime, endTime)
     }
 
     @ReactMethod
