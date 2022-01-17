@@ -1,7 +1,6 @@
 package com.fitnesstracker
 
 import android.app.Activity
-import android.util.Log
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
