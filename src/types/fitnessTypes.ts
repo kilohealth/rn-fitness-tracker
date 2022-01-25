@@ -10,22 +10,13 @@ export interface IFitnessTrackerAvailability {
   floors: number;
 }
 
-export interface IStepsDaily {
+export interface DailyData {
   [key: string]: number;
 }
 
-export interface IStepsData {
-  stepsToday: number;
-  stepsDaily: IStepsDaily;
-}
-
-export interface IDistanceDaily {
-  [key: string]: number;
-}
-
-export interface IDistanceData {
-  distanceToday: number;
-  distanceDaily: IDistanceDaily;
+export interface TodayAndDailyData {
+  today: number;
+  daily: DailyData;
 }
 
 export interface IFloorsDaily {
@@ -34,7 +25,7 @@ export interface IFloorsDaily {
 
 export interface IFloorsData {
   floorsToday: number;
-  floorsDaily: IDistanceDaily;
+  floorsDaily: DailyData;
 }
 
 export type IWorkoutQueryData<WorkoutKey> = [

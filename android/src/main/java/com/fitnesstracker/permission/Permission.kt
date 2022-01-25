@@ -1,5 +1,6 @@
 package com.fitnesstracker.permission
 
+import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 
 enum class PermissionKind(val kind: String) {
@@ -27,7 +28,7 @@ enum class PermissionKind(val kind: String) {
     }
 }
 
-class Permission(val permissionKind: PermissionKind, val permissionAccess: Int) {
+class Permission(val permissionKind: PermissionKind, val permissionAccess: Int = FitnessOptions.ACCESS_READ) {
     val dataTypes: ArrayList<DataType> = ArrayList()
     val isFloat: Boolean
 

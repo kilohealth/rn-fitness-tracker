@@ -109,33 +109,6 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
-    fun getStepsDaily(promise: Promise) {
-        if (historyNotNull(promise)) {
-            val endDate = Date()
-            val cal = Calendar.getInstance()
-            cal.time = endDate
-            cal.add(Calendar.DATE, -7)
-            val startDate = cal.time
-            historyClient!!.getDailyStepsForNumberOfDays(
-                startDate,
-                endDate,
-                Arguments.createMap(),
-                promise
-            )
-        }
-    }
-
-    fun getStepsDaily(promise: Promise, startTime: Date?, endTime: Date?) {
-        if (historyNotNull(promise)) {
-            historyClient!!.getDailyStepsForNumberOfDays(
-                startTime!!,
-                endTime!!,
-                Arguments.createMap(),
-                promise
-            )
-        }
-    }
-
     fun getDistanceToday(promise: Promise) {
         if (historyNotNull(promise)) {
             historyClient!!.getDistanceToday(promise)
@@ -150,20 +123,28 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
 
     fun queryTotal(promise: Promise, dataType: String, startTime: Long, endTime: Long) {
         if (historyNotNull(promise)) {
-            val permission = Permission(
-                PermissionKind.getByValue(dataType),
-                FitnessOptions.ACCESS_READ
-            )
-            val dataTypes: ArrayList<DataType> = permission.dataTypes
-            val isFloat: Boolean = permission.isFloat
+            val permission = Permission(PermissionKind.getByValue(dataType))
 
-            historyClient!!.getTotalForTimeRange(promise, startTime, endTime, dataTypes, isFloat)
+            historyClient!!.queryTotal(promise, startTime, endTime, permission)
         }
     }
 
-    fun getDistanceDaily(promise: Promise) {
+    fun queryDailyTotals(promise: Promise, dataType: String, startDate: Date, endDate: Date) {
         if (historyNotNull(promise)) {
-            historyClient!!.getDistanceDaily(Date(), Arguments.createMap(), 0, promise)
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            historyClient!!.queryDailyTotals(promise, startDate, endDate, permission, Arguments.createMap())
+        }
+    }
+
+    fun getStatisticWeekDaily(promise: Promise, dataType: String) {
+        if (historyNotNull(promise)) {
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            val endDate = Date()
+            val startDate = DateHelper.addDays(endDate, -7)
+
+            historyClient!!.queryDailyTotals(promise, startDate, endDate, permission, Arguments.createMap())
         }
     }
 

@@ -7,11 +7,9 @@ import { AndroidPermissionValues } from '../types/permissions';
 import { HealthDataTypes, HKDataType, UnitTypes } from '../types/dataTypes';
 import { HealthTrackerAPI } from './health';
 import {
-  IDistanceDaily,
-  IDistanceData,
+  DailyData,
   IFitnessTrackerStatus,
-  IStepsDaily,
-  IStepsData,
+  TodayAndDailyData,
 } from '../types/fitnessTypes';
 import { isIOS, isObject, ValueOf } from '../utils/helpers';
 
@@ -158,65 +156,30 @@ const getStepsWeekTotal = async (): Promise<number> => {
 };
 
 /**
- * Returns weekly steps object
- * @return {Promise<IStepsDaily>}
- */
-const getStepsDaily = async (): Promise<IStepsDaily> => {
-  if (isIOS) {
-    return HealthTrackerAPI.getStatisticWeekDailyIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
-    });
-  } else {
-    return RNFitnessTracker.getStepsDaily();
-  }
-};
-
-/**
- * Returns daily totals of steps for specified time range
- * @param startDate {Date | number}
- * @param endDate {Date | number}
- * @return {Promise<IStepsDaily>}
- */
-const queryStepsTotalDaily = async (
-  startDate: Date | number,
-  endDate: Date | number,
-): Promise<IStepsDaily> => {
-  if (isIOS) {
-    return HealthTrackerAPI.queryDailyTotalsIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
-      startDate,
-      endDate,
-    });
-  } else {
-    return RNFitnessTracker.queryStepsDaily(+startDate, +endDate);
-  }
-};
-
-/**
  * Returns steps today and this week's steps object
- * @return {Promise<IStepsData>}
+ * @return {Promise<TodayAndDailyData>}
  */
-const getStepsData = async (): Promise<IStepsData> => {
-  let stepsDaily: IStepsDaily;
+const getData = async (
+  dataType: AndroidPermissionValues,
+): Promise<TodayAndDailyData> => {
+  let daily: DailyData;
   if (isIOS) {
-    stepsDaily = await HealthTrackerAPI.getStatisticWeekDailyIOS({
+    // todo change data type
+    daily = await HealthTrackerAPI.getStatisticWeekDailyIOS({
       key: HealthDataTypes.StepCount,
       unit: UnitTypes.count,
     });
   } else {
-    stepsDaily = await RNFitnessTracker.getStepsDaily();
+    daily = await RNFitnessTracker.getStatisticWeekDaily(dataType);
   }
 
-  let stepsToday = 0;
+  let today = 0;
 
-  if (isObject(stepsDaily)) {
-    const today = Object.keys(stepsDaily).sort()[6];
-    stepsToday = stepsDaily?.[today];
+  if (isObject(daily)) {
+    today = daily?.[Object.keys(daily).sort()[6]];
   }
 
-  return { stepsToday, stepsDaily: stepsDaily || {} };
+  return { today, daily: daily || {} };
 };
 
 /**
@@ -254,46 +217,6 @@ const getDistanceWeekTotal = async (): Promise<number> => {
 };
 
 /**
- * Returns daily distance object
- * @return {Promise<IDistanceDaily>}
- */
-const getDistanceDaily = async (): Promise<IDistanceDaily> => {
-  if (isIOS) {
-    return HealthTrackerAPI.getStatisticWeekDailyIOS({
-      key: HealthDataTypes.DistanceWalkingRunning,
-      unit: UnitTypes.meters,
-    });
-  } else {
-    return RNFitnessTracker.getDistanceDaily();
-  }
-};
-
-/**
- * Returns distance today and this week's distance daily data object
- * @return {Promise<IDistanceData>}
- */
-const getDistanceData = async (): Promise<IDistanceData> => {
-  let distanceDaily: IDistanceDaily;
-  if (isIOS) {
-    distanceDaily = await HealthTrackerAPI.getStatisticWeekDailyIOS({
-      key: HealthDataTypes.DistanceWalkingRunning,
-      unit: UnitTypes.meters,
-    });
-  } else {
-    distanceDaily = await RNFitnessTracker.getDistanceDaily();
-  }
-
-  let distanceToday = 0;
-
-  if (isObject(distanceDaily)) {
-    const today = Object.keys(distanceDaily).sort()[6];
-    distanceToday = distanceDaily?.[today];
-  }
-
-  return { distanceToday, distanceDaily: distanceDaily || {} };
-};
-
-/**
  * Returns total distance in meters for given time range
  * @param dataType {AndroidPermissionValues}
  * @param startDate {Date | number}
@@ -320,17 +243,58 @@ const queryTotal = async (
   }
 };
 
+/**
+ * Returns total distance in meters for given time range
+ * @param dataType {AndroidPermissionValues}
+ * @param startDate {Date | number}
+ * @param endDate {Date | number}
+ * @return {Promise<Number>}
+ */
+const queryDailyTotals = async (
+  dataType: AndroidPermissionValues,
+  startDate: Date | number,
+  endDate: Date | number,
+): Promise<DailyData> => {
+  if (isIOS) {
+    // todo create method for ios
+    return HealthTrackerAPI.queryDailyTotalsIOS({
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
+      startDate,
+      endDate,
+    });
+  } else {
+    return RNFitnessTracker.queryDailyTotals(dataType, +startDate, +endDate);
+  }
+};
+
+/**
+ * Returns weekly steps object
+ * @return {Promise<DailyData>}
+ */
+const getStatisticWeekDaily = async (
+  dataType: AndroidPermissionValues,
+): Promise<DailyData> => {
+  if (isIOS) {
+    // todo do types for ios
+    return HealthTrackerAPI.getStatisticWeekDailyIOS({
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
+    });
+  } else {
+    return RNFitnessTracker.getStatisticWeekDaily(dataType);
+  }
+};
+
 export const FitnessTrackerAPI = {
-  getDistanceDaily,
-  getDistanceData,
+  getData,
   getDistanceToday,
   getDistanceWeekTotal,
-  getStepsDaily,
-  getStepsData,
+  getStatisticWeekDaily,
   getStepsToday,
   getStepsWeekTotal,
   isTrackingAvailable,
+  queryDailyTotals,
   queryTotal,
-  queryStepsTotalDaily,
   setupTracking,
 };

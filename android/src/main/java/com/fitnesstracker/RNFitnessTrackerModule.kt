@@ -52,19 +52,6 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun getStepsDaily(promise: Promise) {
-        googleFitManager.getStepsDaily(promise)
-    }
-
-    @ReactMethod
-    fun queryStepsDaily(startDate: Double, endDate: Double, promise: Promise) {
-        val endTime: Long = endDate.toLong()
-        val startTime: Long = startDate.toLong()
-
-        googleFitManager.getStepsDaily(promise, Date(startTime), Date(endTime))
-    }
-
-    @ReactMethod
     fun getDistanceToday(promise: Promise) {
         googleFitManager.getDistanceToday(promise)
     }
@@ -83,8 +70,16 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun getDistanceDaily(promise: Promise) {
-        googleFitManager.getDistanceDaily(promise)
+    fun queryDailyTotals(dataType: String, startDate: Double, endDate: Double, promise: Promise) {
+        val endTime: Long = endDate.toLong()
+        val startTime: Long = startDate.toLong()
+
+        googleFitManager.queryDailyTotals(promise, dataType, Date(startTime), Date(endTime))
+    }
+
+    @ReactMethod
+    fun getStatisticWeekDaily(dataType: String, promise: Promise) {
+        googleFitManager.getStatisticWeekDaily(promise, dataType)
     }
 
     private fun createPermissionsFromReactArray(readPermissions: ReadableArray, promise: Promise): ArrayList<Permission> {
@@ -94,12 +89,7 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             try {
                 val permissionKind = readPermissions.getString(i)
 
-                result.add(
-                    Permission(
-                        PermissionKind.getByValue(permissionKind),
-                        FitnessOptions.ACCESS_READ
-                    )
-                )
+                result.add(Permission(PermissionKind.getByValue(permissionKind)))
             } catch (e: NullPointerException) {
                 promise.reject(e)
                 e.printStackTrace()
