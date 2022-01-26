@@ -103,21 +103,9 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
-    fun getStepsWeekTotal(promise: Promise) {
-        if (historyNotNull(promise)) {
-            historyClient!!.getWeekData(promise, 0)
-        }
-    }
-
     fun getDistanceToday(promise: Promise) {
         if (historyNotNull(promise)) {
             historyClient!!.getDistanceToday(promise)
-        }
-    }
-
-    fun getDistanceWeekTotal(promise: Promise) {
-        if (historyNotNull(promise)) {
-            historyClient!!.getWeekData(promise, 1)
         }
     }
 
@@ -145,6 +133,17 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
             val startDate = DateHelper.addDays(endDate, -7)
 
             historyClient!!.queryDailyTotals(promise, startDate, endDate, permission, Arguments.createMap())
+        }
+    }
+
+    fun getStatisticWeekTotal(promise: Promise, dataType: String) {
+        if (historyNotNull(promise)) {
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            val endDate = Date()
+            val startDate = DateHelper.addDays(endDate, -7)
+
+            historyClient!!.queryTotal(promise, startDate.time, endDate.time, permission)
         }
     }
 

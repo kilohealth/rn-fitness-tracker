@@ -140,22 +140,6 @@ const getStepsToday = async (): Promise<number> => {
 };
 
 /**
- * Returns number of steps this week
- * @return {Promise<Number>}
- */
-const getStepsWeekTotal = async (): Promise<number> => {
-  if (isIOS) {
-    const total = await HealthTrackerAPI.getStatisticTotalForWeekIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
-    });
-    return Number(total);
-  } else {
-    return RNFitnessTracker.getStepsWeekTotal();
-  }
-};
-
-/**
  * Returns steps today and this week's steps object
  * @return {Promise<TodayAndDailyData>}
  */
@@ -200,23 +184,6 @@ const getDistanceToday = async (): Promise<number> => {
 };
 
 /**
- * Returns walking and running distance this week in meters
- * @return {Promise<Number>} number of meters
- */
-const getDistanceWeekTotal = async (): Promise<number> => {
-  if (isIOS) {
-    const total = await HealthTrackerAPI.getStatisticTotalForWeekIOS({
-      key: HealthDataTypes.DistanceWalkingRunning,
-      unit: UnitTypes.meters,
-    });
-
-    return Number(total);
-  } else {
-    return RNFitnessTracker.getDistanceWeekTotal();
-  }
-};
-
-/**
  * Returns total distance in meters for given time range
  * @param dataType {AndroidPermissionValues}
  * @param startDate {Date | number}
@@ -240,6 +207,26 @@ const queryTotal = async (
     return Number(total);
   } else {
     return RNFitnessTracker.queryTotal(dataType, +startDate, +endDate);
+  }
+};
+
+/**
+ * Returns walking and running distance this week in meters
+ * @return {Promise<Number>} number of meters
+ */
+const getStatisticWeekTotal = async (
+  dataType: AndroidPermissionValues,
+): Promise<number> => {
+  if (isIOS) {
+    // todo use data types for ios
+    const total = await HealthTrackerAPI.getStatisticTotalForWeekIOS({
+      key: HealthDataTypes.DistanceWalkingRunning,
+      unit: UnitTypes.meters,
+    });
+
+    return Number(total);
+  } else {
+    return RNFitnessTracker.getStatisticWeekTotal(dataType);
   }
 };
 
@@ -289,10 +276,9 @@ const getStatisticWeekDaily = async (
 export const FitnessTrackerAPI = {
   getData,
   getDistanceToday,
-  getDistanceWeekTotal,
+  getStatisticWeekTotal,
   getStatisticWeekDaily,
   getStepsToday,
-  getStepsWeekTotal,
   isTrackingAvailable,
   queryDailyTotals,
   queryTotal,

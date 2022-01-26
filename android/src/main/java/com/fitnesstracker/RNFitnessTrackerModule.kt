@@ -47,18 +47,8 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun getStepsWeekTotal(promise: Promise) {
-        googleFitManager.getStepsWeekTotal(promise)
-    }
-
-    @ReactMethod
     fun getDistanceToday(promise: Promise) {
         googleFitManager.getDistanceToday(promise)
-    }
-
-    @ReactMethod
-    fun getDistanceWeekTotal(promise: Promise) {
-        googleFitManager.getDistanceWeekTotal(promise)
     }
 
     @ReactMethod
@@ -80,6 +70,11 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun getStatisticWeekDaily(dataType: String, promise: Promise) {
         googleFitManager.getStatisticWeekDaily(promise, dataType)
+    }
+
+    @ReactMethod
+    fun getStatisticWeekTotal(dataType: String, promise: Promise) {
+        googleFitManager.getStatisticWeekTotal(promise, dataType)
     }
 
     private fun createPermissionsFromReactArray(readPermissions: ReadableArray, promise: Promise): ArrayList<Permission> {
