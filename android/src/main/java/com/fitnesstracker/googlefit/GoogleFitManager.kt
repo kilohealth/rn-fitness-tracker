@@ -147,6 +147,17 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
+    fun getStatisticTodayTotal(promise: Promise, dataType: String) {
+        if (historyNotNull(promise)) {
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            val endDate = Date()
+            val startDate = DateHelper.getStartOfDay(endDate)
+
+            historyClient!!.queryTotal(promise, startDate.time, endDate.time, permission)
+        }
+    }
+
     private fun historyNotNull(promise: Promise): Boolean {
         return if (historyClient != null) {
             true

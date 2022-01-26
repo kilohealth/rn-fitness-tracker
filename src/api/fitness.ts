@@ -127,15 +127,18 @@ const setupTracking = async (
  * Returns number of steps today
  * @return {Promise<number>}
  */
-const getStepsToday = async (): Promise<number> => {
+const getStatisticTodayTotal = async (
+  dataType: AndroidPermissionValues,
+): Promise<number> => {
   if (isIOS) {
+    // todo use datatype for ios
     const total = await HealthTrackerAPI.getStatisticTotalForTodayIOS({
       key: HealthDataTypes.StepCount,
       unit: UnitTypes.count,
     });
     return Number(total);
   } else {
-    return RNFitnessTracker.getStepsToday();
+    return RNFitnessTracker.getStatisticTodayTotal(dataType);
   }
 };
 
@@ -164,23 +167,6 @@ const getData = async (
   }
 
   return { today, daily: daily || {} };
-};
-
-/**
- * Returns walking and running distance today in meters
- * @return {Promise<number>} number of meters
- */
-const getDistanceToday = async (): Promise<number> => {
-  if (isIOS) {
-    const total = await HealthTrackerAPI.getStatisticTotalForTodayIOS({
-      key: HealthDataTypes.DistanceWalkingRunning,
-      unit: UnitTypes.meters,
-    });
-
-    return Number(total);
-  } else {
-    return RNFitnessTracker.getDistanceToday();
-  }
 };
 
 /**
@@ -275,10 +261,9 @@ const getStatisticWeekDaily = async (
 
 export const FitnessTrackerAPI = {
   getData,
-  getDistanceToday,
-  getStatisticWeekTotal,
+  getStatisticTodayTotal,
   getStatisticWeekDaily,
-  getStepsToday,
+  getStatisticWeekTotal,
   isTrackingAvailable,
   queryDailyTotals,
   queryTotal,
