@@ -35,7 +35,7 @@ class Permission(val permissionKind: PermissionKind, val permissionAccess: Int =
     init {
         when (permissionKind) {
             PermissionKind.ACTIVITY -> {
-                dataTypes.add(DataType.AGGREGATE_ACTIVITY_SUMMARY)
+//                dataTypes.add(DataType.AGGREGATE_ACTIVITY_SUMMARY)
                 dataTypes.add(DataType.TYPE_ACTIVITY_SEGMENT)
                 isFloat = false
             }
@@ -52,7 +52,7 @@ class Permission(val permissionKind: PermissionKind, val permissionAccess: Int =
             PermissionKind.CALORIES -> {
                 dataTypes.add(DataType.AGGREGATE_CALORIES_EXPENDED)
                 dataTypes.add(DataType.TYPE_CALORIES_EXPENDED)
-                isFloat = false
+                isFloat = true
             }
             PermissionKind.CYCLING -> {
                 dataTypes.add(DataType.TYPE_CYCLING_PEDALING_CADENCE)
@@ -67,11 +67,11 @@ class Permission(val permissionKind: PermissionKind, val permissionAccess: Int =
                 isFloat = true
             }
             PermissionKind.HEART_RATE -> {
-                dataTypes.add(DataType.AGGREGATE_HEART_POINTS)
-                dataTypes.add(DataType.AGGREGATE_HEART_RATE_SUMMARY)
-                dataTypes.add(DataType.TYPE_HEART_POINTS)
+//                dataTypes.add(DataType.AGGREGATE_HEART_POINTS)
+//                dataTypes.add(DataType.AGGREGATE_HEART_RATE_SUMMARY)
+//                dataTypes.add(DataType.TYPE_HEART_POINTS)
                 dataTypes.add(DataType.TYPE_HEART_RATE_BPM)
-                isFloat = false
+                isFloat = true
             }
             PermissionKind.HEIGHT -> {
                 dataTypes.add(DataType.AGGREGATE_HEIGHT_SUMMARY)

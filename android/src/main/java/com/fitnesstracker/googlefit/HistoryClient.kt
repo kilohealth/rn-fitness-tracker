@@ -1,7 +1,6 @@
 package com.fitnesstracker.googlefit
 
 import android.app.Activity
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.WritableMap
 import com.fitnesstracker.permission.Permission
@@ -17,7 +16,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import java.lang.Exception
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -31,15 +29,20 @@ class HistoryClient(private val activity: Activity) {
     ) {
         try {
             if (permission.isFloat) {
-                getFloatDataHistory(startTime, endTime, 7, permission.dataTypes, object : OnFloatFetch {
-                    override fun onSuccess(data: Float) {
-                        promise.resolve(data)
-                    }
+                getFloatDataHistory(
+                    startTime,
+                    endTime,
+                    7,
+                    permission.dataTypes,
+                    object : OnFloatFetch {
+                        override fun onSuccess(data: Float) {
+                            promise.resolve(data)
+                        }
 
-                    override fun onFailure(e: Exception?) {
-                        promise.reject(e)
-                    }
-                })
+                        override fun onFailure(e: Exception?) {
+                            promise.reject(e)
+                        }
+                    })
             } else {
                 getIntDataHistory(startTime, endTime, 7, permission.dataTypes, object : OnIntFetch {
                     override fun onSuccess(data: Int) {
@@ -73,160 +76,64 @@ class HistoryClient(private val activity: Activity) {
             val start = DateHelper.getStartOfDay(endDate)
 
             if (permission.isFloat) {
-                getFloatDataHistory(start.time, end.time, 1, permission.dataTypes, object : OnFloatFetch {
-                    override fun onSuccess(data: Float) {
-                        if (startDate.time < endDate.time) {
-                            dataMap.putDouble(DateHelper.formatDate(start), data.toDouble())
-                            val previousDate = DateHelper.addDays(endDate, -1)
-                            queryDailyTotals(promise, startDate, previousDate, permission, dataMap)
-                        } else {
-                            promise.resolve(dataMap)
+                getFloatDataHistory(
+                    start.time,
+                    end.time,
+                    1,
+                    permission.dataTypes,
+                    object : OnFloatFetch {
+                        override fun onSuccess(data: Float) {
+                            if (startDate.time < endDate.time) {
+                                dataMap.putDouble(DateHelper.formatDate(start), data.toDouble())
+                                val previousDate = DateHelper.addDays(endDate, -1)
+                                queryDailyTotals(
+                                    promise,
+                                    startDate,
+                                    previousDate,
+                                    permission,
+                                    dataMap
+                                )
+                            } else {
+                                promise.resolve(dataMap)
+                            }
                         }
-                    }
 
-                    override fun onFailure(e: Exception?) {
-                        promise.reject(e)
-                    }
-                })
+                        override fun onFailure(e: Exception?) {
+                            promise.reject(e)
+                        }
+                    })
             } else {
-                getIntDataHistory(start.time, end.time, 1, permission.dataTypes, object : OnIntFetch {
-                    override fun onSuccess(data: Int) {
-                        if (startDate.time < endDate.time) {
-                            dataMap.putInt(DateHelper.formatDate(start), data)
-                            val previousDate = DateHelper.addDays(endDate, -1)
-                            queryDailyTotals(promise, startDate, previousDate, permission, dataMap)
-                        } else {
-                            promise.resolve(dataMap)
+                getIntDataHistory(
+                    start.time,
+                    end.time,
+                    1,
+                    permission.dataTypes,
+                    object : OnIntFetch {
+                        override fun onSuccess(data: Int) {
+                            if (startDate.time < endDate.time) {
+                                dataMap.putInt(DateHelper.formatDate(start), data)
+                                val previousDate = DateHelper.addDays(endDate, -1)
+                                queryDailyTotals(
+                                    promise,
+                                    startDate,
+                                    previousDate,
+                                    permission,
+                                    dataMap
+                                )
+                            } else {
+                                promise.resolve(dataMap)
+                            }
                         }
-                    }
 
-                    override fun onFailure(e: Exception?) {
-                        promise.reject(e)
-                    }
-                })
+                        override fun onFailure(e: Exception?) {
+                            promise.reject(e)
+                        }
+                    })
             }
         } catch (e: Exception) {
             promise.reject(e)
             e.printStackTrace()
         }
-    }
-
-    fun getWeekData(promise: Promise, dataType: Int) {
-        try {
-            val today = Date()
-            val startTime = DateHelper.setMidnight(DateHelper.addDays(today, -7)).timeInMillis
-            val now = today.time
-            if (dataType == 0) {
-                getStepHistory(startTime, now, 7, object : OnStepsFetch {
-                    override fun onSuccess(steps: Int) {
-                        promise.resolve(steps)
-                    }
-
-                    override fun onFailure(e: Exception?) {
-                        promise.reject(e)
-                    }
-                })
-            } else if (dataType == 1) {
-                getDistanceHistory(startTime, now, 7, object : OnDistanceFetch {
-                    override fun onSuccess(distance: Float) {
-                        promise.resolve(distance)
-                    }
-
-                    override fun onFailure(e: Exception?) {
-                        promise.reject(e)
-                    }
-                })
-            }
-        } catch (e: Exception) {
-            promise.reject(e)
-            e.printStackTrace()
-        }
-    }
-
-    fun getStepsToday(promise: Promise) {
-        try {
-            val today = Date()
-            val start = DateHelper.getStartOfDay(today)
-            val currentTime = Calendar.getInstance().time
-            getStepHistory(start.time, currentTime.time, 1, object : OnStepsFetch {
-                override fun onSuccess(steps: Int) {
-                    promise.resolve(steps)
-                }
-
-                override fun onFailure(e: Exception?) {
-                    promise.reject(e)
-                }
-            })
-        } catch (e: Exception) {
-            promise.reject(e)
-            e.printStackTrace()
-        }
-    }
-
-    fun getDistanceToday(promise: Promise) {
-        try {
-            val today = Date()
-            val start = DateHelper.getStartOfDay(today)
-            val currentTime = Calendar.getInstance().time
-            getDistanceHistory(start.time, currentTime.time, 1, object : OnDistanceFetch {
-                override fun onSuccess(distance: Float) {
-                    promise.resolve(distance)
-                }
-
-                override fun onFailure(e: Exception?) {
-                    promise.reject(e)
-                }
-            })
-        } catch (e: Exception) {
-            promise.reject(e)
-            e.printStackTrace()
-        }
-    }
-
-    private fun getStepHistory(
-        startTime: Long,
-        endTime: Long,
-        dayCount: Int,
-        fetchCompleteCallback: OnStepsFetch
-    ) {
-        val readRequest = DataReadRequest.Builder()
-            .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
-            .bucketByTime(dayCount, TimeUnit.DAYS)
-            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-            .build()
-        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
-            .readData(readRequest)
-            .addOnFailureListener { e -> fetchCompleteCallback.onFailure(e) }
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val response = task.result
-                    val steps = parseStepsDelta(response)
-                    fetchCompleteCallback.onSuccess(steps)
-                }
-            }
-    }
-
-    private fun getDistanceHistory(
-        startTime: Long,
-        endTime: Long,
-        dayCount: Int,
-        fetchCompleteCallback: OnDistanceFetch
-    ) {
-        val readRequest = DataReadRequest.Builder()
-            .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
-            .bucketByTime(dayCount, TimeUnit.DAYS)
-            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-            .build()
-        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
-            .readData(readRequest)
-            .addOnFailureListener { e -> fetchCompleteCallback.onFailure(e) }
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val response = task.result
-                    val distance = parseDistanceDelta(response)
-                    fetchCompleteCallback.onSuccess(distance)
-                }
-            }
     }
 
     private fun createReadRequest(
@@ -245,7 +152,11 @@ class HistoryClient(private val activity: Activity) {
         return readRequestBuilder.build()
     }
 
-    private fun getHistoryClient(readRequest: DataReadRequest, onFailure: OnFailureListener, onSuccess: OnCompleteListener<DataReadResponse>) {
+    private fun getHistoryClient(
+        readRequest: DataReadRequest,
+        onFailure: OnFailureListener,
+        onSuccess: OnCompleteListener<DataReadResponse>
+    ) {
         Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
             .readData(readRequest)
             .addOnFailureListener(onFailure)
@@ -339,56 +250,6 @@ class HistoryClient(private val activity: Activity) {
 
         return count
     }
-
-    private fun parseStepsDelta(response: DataReadResponse): Int {
-        val buckets = response.buckets
-        var stepCount = 0
-        for (bucket in buckets) {
-            val dataSets = bucket.dataSets
-            for (dataSet in dataSets) {
-                val dataPoints = dataSet.dataPoints
-                for (dataPoint in dataPoints) {
-                    if (dataPoint.dataType == DataType.TYPE_STEP_COUNT_DELTA) {
-                        for (field in dataPoint.dataType.fields) {
-                            if (field.name == "steps") {
-                                stepCount += dataPoint.getValue(field).asInt()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return stepCount
-    }
-
-    private fun parseDistanceDelta(response: DataReadResponse): Float {
-        val buckets = response.buckets
-        var distanceTotal = 0f
-        for (bucket in buckets) {
-            val dataSets = bucket.dataSets
-            for (dataSet in dataSets) {
-                val dataPoints = dataSet.dataPoints
-                for (dataPoint in dataPoints) {
-                    if (dataPoint.dataType == DataType.TYPE_DISTANCE_DELTA) {
-                        for (field in dataPoint.dataType.fields) {
-                            distanceTotal += dataPoint.getValue(field).asFloat()
-                        }
-                    }
-                }
-            }
-        }
-        return distanceTotal
-    }
-}
-
-interface OnStepsFetch {
-    fun onSuccess(steps: Int)
-    fun onFailure(e: Exception?)
-}
-
-interface OnDistanceFetch {
-    fun onSuccess(distance: Float)
-    fun onFailure(e: Exception?)
 }
 
 interface OnFloatFetch {

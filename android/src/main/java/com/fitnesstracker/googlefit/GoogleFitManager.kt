@@ -9,7 +9,6 @@ import android.content.Intent
 import com.facebook.react.bridge.Arguments
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
-import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import java.util.*
 import kotlin.collections.ArrayList
@@ -94,18 +93,6 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
             if (resolvePromise) authorisationPromise!!.resolve(true)
         } catch (e: Exception) {
             promiseException(authorisationPromise, e)
-        }
-    }
-
-    fun getStepsToday(promise: Promise) {
-        if (historyNotNull(promise)) {
-            historyClient!!.getStepsToday(promise)
-        }
-    }
-
-    fun getDistanceToday(promise: Promise) {
-        if (historyNotNull(promise)) {
-            historyClient!!.getDistanceToday(promise)
         }
     }
 
