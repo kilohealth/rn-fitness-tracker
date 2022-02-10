@@ -7,4 +7,3 @@ export { AndroidPermissions } from './types/permissions';
 
 export { FitnessTrackerAPI as default } from './api/fitness';
 export { HealthTrackerAPI } from './api/health';
-export { PedometerAPI } from './api/pedometer';
