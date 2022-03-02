@@ -13,7 +13,7 @@ package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
 Pod::Spec.new do |s|
 
-  s.name         = "RNFitnessTracker"
+  s.name         = 'RNFitnessTracker'
   s.version      = package['version']
   s.summary      = package['description']
   s.description  = package['description']
@@ -22,7 +22,6 @@ Pod::Spec.new do |s|
   s.homepage     = package['homepage']
   s.license = { :type => 'MIT', :text => <<-LICENSE
                      MIT License
-                     Copyright © 2019 Dovile Maminskaite
                      Permission is hereby granted, free of charge, to any person obtaining a copy
                      of this software and associated documentation files (the "Software"), to deal
                      in the Software without restriction, including without limitation the rights
@@ -42,12 +41,13 @@ Pod::Spec.new do |s|
                    }
 
 
-  s.platform = :ios, "10.0"
+  s.platform = :ios, '10.0'
 
   s.source = { :git => "https://github.com/doville/rn-fitness-tracker.git", :tag => s.version }
 
   s.preserve_paths = 'LICENSE'
-  s.source_files  = "ios/*.{h,m}"
+  s.ios.deployment_target = '10.0'
+  s.source_files  = 'ios/*.{h,m,swift}'
 
   s.dependency 'React'
 
