@@ -26,19 +26,19 @@ class RNHealthTracker: NSObject {
         "HKQuantityTypeIdentifier\(dataKey)"
     }
 
-    private func transformDataKeyToHKQuantityType(dataKey: String) -> HKQuantityType? {
+    private func transformDataKeyToHKQuantityType(_ dataKey: String) -> HKQuantityType? {
         HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: formatHKQuantityTypeIdentifier(dataKey)))
     }
 
-    private func transformDataKeyToHKSampleType(dataKey: String) -> HKSampleType? {
+    private func transformDataKeyToHKSampleType(_ dataKey: String) -> HKSampleType? {
         HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: formatHKQuantityTypeIdentifier(dataKey)))
     }
 
-    private func transformDataKeyToHKObject(dataKey: String) -> HKObjectType {
+    private func transformDataKeyToHKObject(_ dataKey: String) -> HKObjectType? {
         if dataKey == "Workout" {
             return HKObjectType.workoutType()
         } else {
-            return HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: dataKey))!
+            return HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: formatHKQuantityTypeIdentifier(dataKey)))
         }
     }
 
@@ -46,7 +46,8 @@ class RNHealthTracker: NSObject {
         let descriptions = [
             "E_UNKNOWN",
             "E_DEVELOPER_ERROR",
-            "E_EXECUTING_QUERY"
+            "E_EXECUTING_QUERY",
+            "E_DEVICE_NOT_SUPPORTED"
         ]
         guard let code = code else {
             return descriptions[0]
@@ -63,43 +64,86 @@ class RNHealthTracker: NSObject {
         let start: Date? = RNFitnessUtilsTestttttttttt.daysAgo(date: currentDate, 720)
         let end: Date? = RNFitnessUtilsTestttttttttt.endOfDay(date: currentDate)
 
-        guard let sampleType = transformDataKeyToHKSampleType(dataKey: dataTypeIdentifier) else {
+        guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
         let predicate: NSPredicate = HKQuery.predicateForSamples(withStart: start, end: end, options: HKQueryOptions(rawValue: 0))
         let sortDescriptor: NSSortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 
-        let sampleQuery: HKSampleQuery = HKSampleQuery.init(sampleType: sampleType, predicate: predicate, limit: 1, sortDescriptors: [sortDescriptor]) { (query: HKSampleQuery, results: [HKSample]?, error: Error?) in
-            if error != nil {
-                reject(self.standardErrorCode(2), error?.localizedDescription, error)
+        let sampleQuery: HKSampleQuery = HKSampleQuery.init(sampleType: sampleType, predicate: predicate, limit: 1, sortDescriptors: [sortDescriptor]) { (query: HKSampleQuery, samples: [HKSample]?, error: Error?) in
+            
+            if let error = error {
+                if error.localizedDescription == "Authorization not determined" {
+                    resolve(0)
+                } else {
+                    reject(self.standardErrorCode(2), error.localizedDescription, error)
+                }
+                
                 return
             }
             
-            if results != nil {
-                var quantitySum = 0.0;
 
-                guard let samples = results as? [HKQuantitySample] else {
-                    reject(self.standardErrorCode(0), "Error getting results as HKQuantitySample", nil)
-                    return
-                }
+            guard let samples = samples as? [HKQuantitySample] else {
+                reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
+                return
+            }
+            
+            var quantitySum = 0.0;
+            for sample in samples {
+                let value: Double = sample.quantity.doubleValue(for: HKUnit.init(from: unit))
+                quantitySum += value
+            }
 
-
-                for sample in samples {
-                    let value: Double = sample.quantity.doubleValue(for: HKUnit.init(from: unit))
-                    quantitySum += value
-                }
-
-                if quantitySum > 0 {
-                    resolve(2)
-                } else {
-                    resolve(1)
-                }
+            if quantitySum > 0 {
+                resolve(2)
             } else {
-                resolve(0)
+                resolve(1)
             }
         }
 
         healthStore.execute(sampleQuery)
+    }
+    
+    @objc public func authorize(_ shareTypes: [String], readTypes: [String], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+        if !HKHealthStore.isHealthDataAvailable() {
+            reject(self.standardErrorCode(3), "Health data is not supported on this device.", nil)
+            return
+        }
+        
+        var read: Set<HKObjectType>? = nil
+        var toShare: Set<HKSampleType>? = nil
+        
+        if !readTypes.isEmpty {
+            read = Set()
+            
+            for dataType in readTypes {
+                guard let object: HKObjectType = transformDataKeyToHKObject(dataType) else {
+                    reject(standardErrorCode(1), "Invalid read dataTypes.", nil)
+                    return
+                }
+                read!.insert(object)
+            }
+        }
+        
+        if !shareTypes.isEmpty {
+            toShare = Set()
+            
+            for dataType in shareTypes {
+                guard let object: HKSampleType = transformDataKeyToHKSampleType(dataType) else {
+                    reject(standardErrorCode(1), "Invalid share dataTypes.", nil)
+                    return
+                }
+                toShare!.insert(object)
+            }
+        }
+        
+        healthStore.requestAuthorization(toShare: toShare, read: read) { success, error in
+            if let error = error {
+                reject(self.standardErrorCode(nil), error.localizedDescription, error)
+            } else {
+                resolve(true)
+            }
+        }
     }
 
 }

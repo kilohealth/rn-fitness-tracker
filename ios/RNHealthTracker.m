@@ -8,4 +8,9 @@ RCT_EXTERN_METHOD(getReadStatus:
                   unit:(NSString*)unit
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(authorize:
+                  (NSArray*)shareTypes
+                  readTypes:(NSArray*)readTypes
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end
