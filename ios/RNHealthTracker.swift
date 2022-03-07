@@ -47,7 +47,8 @@ class RNHealthTracker: NSObject {
             "E_UNKNOWN",
             "E_DEVELOPER_ERROR",
             "E_EXECUTING_QUERY",
-            "E_DEVICE_NOT_SUPPORTED"
+            "E_DEVICE_NOT_SUPPORTED",
+            "E_DATABASE_INACCESSIBLE"
         ]
         guard let code = code else {
             return descriptions[0]
@@ -144,6 +145,62 @@ class RNHealthTracker: NSObject {
                 resolve(true)
             }
         }
+    }
+    
+    @objc public func getStatisticTotalForToday(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let currentDate = Date()
+        let start: Date = RNFitnessUtilsTestttttttttt.startOfDay(date: currentDate)
+        let end: Date = RNFitnessUtilsTestttttttttt.endOfDay(date: start)
+        var interval: DateComponents = DateComponents()
+        interval.day = 1
+        
+        guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
+            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+        }
+        
+        // Create the query.
+        let query = HKStatisticsCollectionQuery(quantityType: quantityType,
+                                                quantitySamplePredicate: nil,
+                                                options: .cumulativeSum,
+                                                anchorDate: start,
+                                                intervalComponents: interval)
+        
+        // Set the results handler.
+        query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
+            
+            // Handle errors here.
+            if let error = error as? HKError {
+                switch (error.code) {
+                case .errorDatabaseInaccessible:
+                    // HealthKit couldn't access the database because the device is locked.
+                    reject(self.standardErrorCode(4), error.localizedDescription, error)
+                    return
+                default:
+                    // Handle other HealthKit errors here.
+                    reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                    return
+                }
+            }
+            
+            guard let statsCollection = results else {
+                // You should only hit this case if you have an unhandled error. Check for bugs
+                // in your code that creates the query, or explicitly handle the error.
+                reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
+                return
+            }
+            
+            statsCollection.enumerateStatistics(from: start, to: end) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
+                guard let quantity: HKQuantity = result.sumQuantity() else {
+                    reject(self.standardErrorCode(nil), "cumulativeSum option was not set.", error)
+                    return
+                }
+                
+                let value: Double = quantity.doubleValue(for: HKUnit.init(from: unit))
+                resolve("\(value)")
+            }
+        }
+        
+        healthStore.execute(query)
     }
 
 }

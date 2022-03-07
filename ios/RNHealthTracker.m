@@ -13,4 +13,9 @@ RCT_EXTERN_METHOD(authorize:
                   readTypes:(NSArray*)readTypes
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(getStatisticTotalForToday:
+                  (NSString*)dataTypeIdentifier
+                  unit:(NSString*)unit
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end

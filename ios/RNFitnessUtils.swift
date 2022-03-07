@@ -15,8 +15,11 @@ class RNFitnessUtilsTestttttttttt: NSObject {
         return NSCalendar.current.date(bySettingHour: hours, minute: minutes, second: seconds, of: date)!;
     }
     
+    static func startOfDay(date: Date) -> Date {
+        return self.setHoursMinutesSeconds(date: date, hours: 0, minutes: 0, seconds: 0);
+    }
+    
     static func endOfDay(date: Date) -> Date {
-        print(self.setHoursMinutesSeconds(date: date, hours: 23, minutes: 59, seconds: 59));
         return self.setHoursMinutesSeconds(date: date, hours: 23, minutes: 59, seconds: 59);
     }
     
