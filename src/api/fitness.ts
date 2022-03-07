@@ -184,8 +184,8 @@ const queryTotal = async (
   if (isIOS) {
     // Todo: make ios use DataType
     const total = await HealthTrackerAPI.queryTotalIOS({
-      key: HealthDataTypes.DistanceWalkingRunning,
-      unit: UnitTypes.meters,
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
       startDate,
       endDate,
     });
@@ -206,8 +206,8 @@ const getStatisticWeekTotal = async (
   if (isIOS) {
     // todo use data types for ios
     const total = await HealthTrackerAPI.getStatisticTotalForWeekIOS({
-      key: HealthDataTypes.DistanceWalkingRunning,
-      unit: UnitTypes.meters,
+      key: HealthDataTypes.StepCount,
+      unit: UnitTypes.count,
     });
 
     return Number(total);
