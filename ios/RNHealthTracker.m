@@ -23,6 +23,11 @@ RCT_EXTERN_METHOD(getStatisticTotalForWeek:
                   unit:(NSString*)unit
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(queryTotal:
+                  (NSString*)dataTypeIdentifier
+                  unit:(NSString*)unit
+                  start:(nonnull NSNumber *)start
+                  end:(nonnull NSNumber *)end
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end
-
-

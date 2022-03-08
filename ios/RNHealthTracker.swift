@@ -11,14 +11,9 @@ import HealthKit
 
 @objc(RNHealthTracker)
 class RNHealthTracker: NSObject {
-    private var healthStore: HKHealthStore
+    private let healthStore: HKHealthStore = HKHealthStore()
 
-    override init() {
-        healthStore = HKHealthStore()
-        super.init()
-    }
-    
-    static func requiresMainQueueSetup() -> Bool {
+    @objc static func requiresMainQueueSetup() -> Bool {
         return true
     }
     
@@ -83,7 +78,6 @@ class RNHealthTracker: NSObject {
                 return
             }
             
-
             guard let samples = samples as? [HKQuantitySample] else {
                 reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
                 return
@@ -203,8 +197,6 @@ class RNHealthTracker: NSObject {
         healthStore.execute(query)
     }
     
-    
-    
     @objc public func getStatisticTotalForWeek(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         let currentDate = Date()
         let end: Date = RNFitnessUtilsTestttttttttt.endOfDay(date: currentDate)
@@ -267,6 +259,71 @@ class RNHealthTracker: NSObject {
         }
         
         healthStore.execute(query)
+    }
+
+    @objc public func queryTotal(_ dataTypeIdentifier: String, unit: String, start: NSNumber, end: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+        
+        let startDate = Date(timeIntervalSince1970: TimeInterval(start.intValue / 1000))
+        let endDate = Date(timeIntervalSince1970: TimeInterval(end.intValue / 1000))
+        var interval: DateComponents = DateComponents()
+        interval.day = 1
+
+        guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
+            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+        }
+
+        // Create the query.
+        let query = HKStatisticsCollectionQuery(quantityType: quantityType,
+                                                quantitySamplePredicate: nil,
+                                                options: .cumulativeSum,
+                                                anchorDate: startDate,
+                                                intervalComponents: interval)
+
+        // Set the results handler.
+        query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
+
+            // Handle errors here.
+            if let error = error as? HKError {
+                switch (error.code) {
+                case .errorDatabaseInaccessible:
+                    // HealthKit couldn't access the database because the device is locked.
+                    reject(self.standardErrorCode(4), error.localizedDescription, error)
+                    return
+                default:
+                    // Handle other HealthKit errors here.
+                    reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                    return
+                }
+            }
+
+            guard let statsCollection = results else {
+                // You should only hit this case if you have an unhandled error. Check for bugs
+                // in your code that creates the query, or explicitly handle the error.
+                reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
+                return
+            }
+
+            var total: Double = 0;
+
+            statsCollection.enumerateStatistics(from: startDate, to: endDate) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
+                if let quantity: HKQuantity = result.sumQuantity() {
+                    let value: Double = quantity.doubleValue(for: HKUnit.init(from: unit))
+                    total += value;
+                }
+            }
+
+            if unit == HKUnit.count().unitString {
+                resolve("\(Int(total))")
+            } else {
+                resolve("\(total)")
+            }
+        }
+
+        healthStore.execute(query)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.healthStore.stop(query)
+        }
     }
 
 }
