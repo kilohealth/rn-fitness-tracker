@@ -1,5 +1,3 @@
-#import <StoreKit/StoreKit.h>
-
 #import <React/RCTBridgeModule.h>
 
 @interface RCT_EXTERN_MODULE (RNHealthTracker, NSObject)
@@ -33,6 +31,13 @@ RCT_EXTERN_METHOD(queryTotal:
 RCT_EXTERN_METHOD(getStatisticWeekDaily:
                   (NSString*)dataTypeIdentifier
                   unit:(NSString*)unit
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(queryDailyTotals:
+                  (NSString*)dataTypeIdentifier
+                  unit:(NSString*)unit
+                  start:(nonnull NSNumber *)start
+                  end:(nonnull NSNumber *)end
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 @end
