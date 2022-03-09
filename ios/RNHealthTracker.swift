@@ -464,4 +464,27 @@ class RNHealthTracker: NSObject {
         }
     }
     
+    @objc public func writeData(_ dataTypeIdentifier: String, unit: String, amount: NSNumber, metadata: Dictionary<String, Any>, timestamp: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+        
+        guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
+            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+        }
+        
+        let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: amount.doubleValue)
+        var date: Date = Date()
+        if timestamp != 0 {
+            date = Date(timeIntervalSince1970: TimeInterval(timestamp.intValue / 1000))
+        }
+        
+        let dataObject: HKQuantitySample = HKQuantitySample.init(type: quantityType, quantity: quantity, start: date, end: date, metadata: metadata)
+        
+        healthStore.save(dataObject) { success, error in
+            if let error = error {
+                reject(self.standardErrorCode(nil), error.localizedDescription, error)
+            } else {
+                resolve(success)
+            }
+        }
+    }
+    
 }

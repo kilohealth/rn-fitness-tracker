@@ -40,4 +40,12 @@ RCT_EXTERN_METHOD(queryDailyTotals:
                   end:(nonnull NSNumber *)end
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(writeData:
+                  (NSString*)dataTypeIdentifier
+                  unit:(NSString*)unit
+                  amount: (nonnull NSNumber*) amount
+                  metadata: (NSDictionary*) metadata
+                  timestamp: (nonnull NSNumber*) timestamp
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end
