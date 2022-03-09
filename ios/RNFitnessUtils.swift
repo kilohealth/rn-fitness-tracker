@@ -37,4 +37,11 @@ class RNFitnessUtilsTestttttttttt: NSObject {
         return self.setHoursMinutesSeconds(date: day!, hours: 0, minutes: 0, seconds: 0)
     }
     
+    static func formatIsoDateString(_ date: Date) -> String {
+        let formatter: ISO8601DateFormatter = ISO8601DateFormatter.init()
+        formatter.formatOptions = .withFullDate
+        formatter.timeZone = TimeZone.current
+        
+        return formatter.string(from: date)
+    }
 }

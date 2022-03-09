@@ -30,4 +30,9 @@ RCT_EXTERN_METHOD(queryTotal:
                   end:(nonnull NSNumber *)end
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(getStatisticWeekDaily:
+                  (NSString*)dataTypeIdentifier
+                  unit:(NSString*)unit
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end
