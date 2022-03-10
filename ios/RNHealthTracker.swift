@@ -464,15 +464,15 @@ class RNHealthTracker: NSObject {
         }
     }
     
-    @objc public func writeData(_ dataTypeIdentifier: String, unit: String, amount: NSNumber, metadata: Dictionary<String, Any>, timestamp: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc public func writeData(_ dataTypeIdentifier: String, unit: String, quantity: NSNumber, metadata: Dictionary<String, Any>, timestamp: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         
         guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
         
-        let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: amount.doubleValue)
+        let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: quantity.doubleValue)
         var date: Date = Date()
-        if timestamp != 0 {
+        if timestamp.intValue != 0 {
             date = Date(timeIntervalSince1970: TimeInterval(timestamp.intValue / 1000))
         }
         
@@ -484,6 +484,58 @@ class RNHealthTracker: NSObject {
             } else {
                 resolve(success)
             }
+        }
+    }
+    
+    @objc public func writeDataArray(
+        _ dataArray: NSArray,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
+        
+        if dataArray.count > 0 {
+            var dataArrayTransformed: [HKQuantitySample] = []
+            
+            for (index, obj) in dataArray.enumerated() {
+                
+                guard let obj = obj as? NSDictionary else {
+                    return reject(standardErrorCode(1), "Wrong data passed to RNHealthTracker:writeDataArray", nil)
+                }
+                
+                guard let dataTypeIdentifier: String = (obj["key"] as? String),
+                      let unit: String = (obj["unit"] as? String),
+                      let amount: NSNumber = (obj["quantity"] as? NSNumber),
+                      let timestamp: NSNumber = (obj["timestamp"] as? NSNumber),
+                      let metadata: Dictionary<String, Any> = (obj["metadata"] as? Dictionary<String, Any>)
+                else {
+                    return reject(standardErrorCode(1), "Wrong data passed to RNHealthTracker:writeDataArray, dataArray id \(index)", nil)
+                }
+                
+                var date: Date = Date()
+                if timestamp.intValue != -1 {
+                    date = Date(timeIntervalSince1970: TimeInterval(timestamp.intValue / 1000))
+                }
+                
+                guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
+                    return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+                }
+                
+                let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: amount.doubleValue)
+                
+                let dataObject: HKQuantitySample = HKQuantitySample.init(type: quantityType, quantity: quantity, start: date, end: date, metadata: metadata)
+                
+                dataArrayTransformed.append(dataObject)
+            }
+            
+            healthStore.save(dataArrayTransformed)  { success, error in
+                if let error = error {
+                    reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                } else {
+                    resolve(success)
+                }
+            }
+        } else {
+            return reject(standardErrorCode(1), "Empty array was passed.", nil)
         }
     }
     

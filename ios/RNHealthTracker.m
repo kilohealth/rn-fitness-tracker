@@ -48,4 +48,8 @@ RCT_EXTERN_METHOD(writeData:
                   timestamp: (nonnull NSNumber*) timestamp
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(writeDataArray:
+                  (NSArray*)dataArray
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end

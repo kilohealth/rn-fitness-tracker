@@ -55,13 +55,13 @@ const writeDataIOS = async ({
   unit,
   quantity,
   metadata = {},
-  customUnixTimestamp = 0,
+  timestamp = 0,
 }: {
   key: HKDataType;
   unit: HKUnit;
   quantity: number;
   metadata: { [name: string]: any };
-  customUnixTimestamp: number;
+  timestamp: number;
 }): Promise<boolean> => {
   if (isIOS) {
     return await RNHealthTracker.writeData(
@@ -69,7 +69,7 @@ const writeDataIOS = async ({
       quantity,
       unit,
       metadata,
-      customUnixTimestamp,
+      timestamp,
     );
   }
 };
@@ -90,6 +90,7 @@ const writeDataArrayIOS = async (
     unit: HKUnit;
     quantity: number;
     metadata: { [name: string]: any };
+    timestamp: number;
   }>,
 ): Promise<boolean> => {
   if (isIOS) {
