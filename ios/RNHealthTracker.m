@@ -59,4 +59,13 @@ RCT_EXTERN_METHOD(queryDataRecordsForNumberOfDays:
                   limit:(nonnull NSNumber*)limit
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(recordWorkout:
+                  (nonnull NSNumber*)workoutWithActivityType
+                  start:(nonnull NSNumber*)start
+                  end:(nonnull NSNumber*)end
+                  energyBurned:(nonnull NSNumber*)energyBurned
+                  distance:(nonnull NSNumber*)distance
+                  metadata:(NSDictionary*)metadata
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end

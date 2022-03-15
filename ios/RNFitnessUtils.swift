@@ -44,4 +44,8 @@ class RNFitnessUtilsTestttttttttt: NSObject {
         
         return formatter.string(from: date)
     }
+    
+    static func getDateFrom(timestamp: Int) -> Date {
+        Date(timeIntervalSince1970: TimeInterval(timestamp / 1000))
+    }
 }

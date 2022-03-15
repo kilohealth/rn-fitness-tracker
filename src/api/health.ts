@@ -288,12 +288,12 @@ const recordWorkoutIOS = async ({
   totalDistance = 0,
   metadata = {},
 }: {
-  key: HKDataType;
+  key: HKWorkout;
   startDate: Date | number;
   endDate: Date | number;
   energyBurned: number;
   totalDistance: number;
-  metadata: { [name: string]: any };
+  metadata?: { [name: string]: any };
 }): Promise<boolean> => {
   if (isIOS) {
     return await RNHealthTracker.recordWorkout(

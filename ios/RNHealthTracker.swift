@@ -26,7 +26,11 @@ class RNHealthTracker: NSObject {
     }
 
     private func transformDataKeyToHKSampleType(_ dataKey: String) -> HKSampleType? {
-        HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: formatHKQuantityTypeIdentifier(dataKey)))
+        if dataKey == "Workout" {
+            return HKSampleType.workoutType()
+        } else {
+            return HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: formatHKQuantityTypeIdentifier(dataKey)))
+        }
     }
 
     private func transformDataKeyToHKObject(_ dataKey: String) -> HKObjectType? {
@@ -105,14 +109,14 @@ class RNHealthTracker: NSObject {
             return
         }
         
-        var read: Set<HKObjectType>? = nil
+        var read: Set<HKSampleType>? = nil
         var toShare: Set<HKSampleType>? = nil
         
         if !readTypes.isEmpty {
             read = Set()
             
             for dataType in readTypes {
-                guard let object: HKObjectType = transformDataKeyToHKObject(dataType) else {
+                guard let object: HKSampleType = transformDataKeyToHKSampleType(dataType) else {
                     reject(standardErrorCode(1), "Invalid read dataTypes.", nil)
                     return
                 }
@@ -263,8 +267,8 @@ class RNHealthTracker: NSObject {
 
     @objc public func queryTotal(_ dataTypeIdentifier: String, unit: String, start: NSNumber, end: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         
-        let startDate = Date(timeIntervalSince1970: TimeInterval(start.intValue / 1000))
-        let endDate = Date(timeIntervalSince1970: TimeInterval(end.intValue / 1000))
+        let startDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
+        let endDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
         var interval: DateComponents = DateComponents()
         interval.day = 1
 
@@ -398,8 +402,8 @@ class RNHealthTracker: NSObject {
     
     @objc public func queryDailyTotals(_ dataTypeIdentifier: String, unit: String, start: NSNumber, end: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         
-        let startDate: Date = Date(timeIntervalSince1970: TimeInterval(start.intValue / 1000))
-        let endDate: Date = Date(timeIntervalSince1970: TimeInterval(end.intValue / 1000))
+        let startDate: Date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
+        let endDate: Date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
         var interval: DateComponents = DateComponents()
         interval.day = 1
 
@@ -473,7 +477,7 @@ class RNHealthTracker: NSObject {
         let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: quantity.doubleValue)
         var date: Date = Date()
         if timestamp.intValue != 0 {
-            date = Date(timeIntervalSince1970: TimeInterval(timestamp.intValue / 1000))
+            date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: timestamp.intValue)
         }
         
         let dataObject: HKQuantitySample = HKQuantitySample.init(type: quantityType, quantity: quantity, start: date, end: date, metadata: metadata)
@@ -513,7 +517,7 @@ class RNHealthTracker: NSObject {
                 
                 var date: Date = Date()
                 if timestamp.intValue != -1 {
-                    date = Date(timeIntervalSince1970: TimeInterval(timestamp.intValue / 1000))
+                    date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: timestamp.intValue)
                 }
                 
                 guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
@@ -604,6 +608,45 @@ class RNHealthTracker: NSObject {
         }
 
         healthStore.execute(sampleQuery)
+    }
+    
+    @objc public func recordWorkout(
+        _ workoutWithActivityType: NSNumber,
+        start: NSNumber,
+        end: NSNumber,
+        energyBurned: NSNumber,
+        distance: NSNumber,
+        metadata: Dictionary<String, Any>,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let startDate: Date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
+        let endDate: Date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+        let totalEnergyBurned: HKQuantity = HKQuantity.init(unit: .kilocalorie(), doubleValue: energyBurned.doubleValue)
+
+        let totalDistance: HKQuantity = HKQuantity.init(unit: .meter(), doubleValue: distance.doubleValue)
+        guard let activityType = HKWorkoutActivityType.init(rawValue: workoutWithActivityType.uintValue) else {
+            return reject(standardErrorCode(1), "Invalid workoutWithActivityType.", nil)
+        }
+        
+        let workout: HKWorkout = HKWorkout.init(
+            activityType: activityType,
+            start: startDate,
+            end: endDate,
+            duration: 0,
+            totalEnergyBurned: totalEnergyBurned,
+            totalDistance: totalDistance,
+            metadata: metadata
+        )
+        
+        healthStore.save(workout) { success, error in
+            // TODO make this seperate function
+            if let error = error {
+                reject(self.standardErrorCode(nil), error.localizedDescription, error)
+            } else {
+                resolve(success)
+            }
+        }
     }
     
 }
