@@ -539,4 +539,71 @@ class RNHealthTracker: NSObject {
         }
     }
     
+    struct DataRecord {
+        let uuid: String
+        let date: String
+        let quantity: Double
+        let metadata: Dictionary<String, Any>?
+        let source: Dictionary<String, String?>
+    }
+    
+    @objc public func queryDataRecordsForNumberOfDays(
+        _ dataTypeIdentifier: String,
+        unit: String,
+        numberOfDays: NSNumber,
+        limit: NSNumber,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
+        let currentDate = Date()
+        let start: Date = RNFitnessUtilsTestttttttttt.startOfXDaysAgo(date: currentDate, numberOfDays: numberOfDays.intValue)
+        let end: Date = RNFitnessUtilsTestttttttttt.endOfDay(date: currentDate)
+            
+        guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
+            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+        }
+        let predicate: NSPredicate = HKQuery.predicateForSamples(withStart: start, end: end, options: HKQueryOptions(rawValue: 0))
+        let sortDescriptor: NSSortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+
+        let limit = limit.intValue == 0 ? HKObjectQueryNoLimit : limit.intValue
+        let sampleQuery: HKSampleQuery = HKSampleQuery.init(sampleType: sampleType, predicate: predicate, limit: limit, sortDescriptors: [sortDescriptor]) { (query: HKSampleQuery, samples: [HKSample]?, error: Error?) in
+            
+            if let error = error {
+                return reject(self.standardErrorCode(2), error.localizedDescription, error)
+            }
+            
+            var dataRecords: [Dictionary<String, Any?>] = []
+            
+            guard let samples = samples as? [HKQuantitySample] else {
+                reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
+                return
+            }
+            
+            for sample in samples {
+                let isoDate = RNFitnessUtilsTestttttttttt.formatIsoDateString(sample.endDate)
+                
+                let sourceDevice: String = sample.sourceRevision.productType ?? "unknown"
+                
+                let quantity: Double = sample.quantity.doubleValue(for: HKUnit.init(from: unit))
+                
+                dataRecords.append([
+                    "uuid": sample.uuid.uuidString,
+                    "date": isoDate,
+                    "quantity": quantity,
+                    "metadata": sample.metadata,
+                    "source": [
+                        "name": sample.sourceRevision.source.name,
+                        "device": sourceDevice,
+                        "version": sample.sourceRevision.version,
+                        "id": sample.sourceRevision.source.bundleIdentifier,
+                    ]
+                ])
+            }
+            
+            resolve(dataRecords);
+        }
+
+        healthStore.execute(sampleQuery)
+    }
+    
 }

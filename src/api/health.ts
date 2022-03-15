@@ -184,16 +184,19 @@ const queryDataRecordsIOS = async ({
   key,
   unit,
   numberOfDays,
+  limit = 0,
 }: {
   key: HKDataType;
   unit: HKUnit;
   numberOfDays: number;
+  limit?: number;
 }): Promise<IHealthDataRecordQuery> => {
   if (isIOS) {
     return RNHealthTracker.queryDataRecordsForNumberOfDays(
       key,
       unit,
       numberOfDays,
+      limit,
     );
   }
 };

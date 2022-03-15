@@ -43,13 +43,20 @@ RCT_EXTERN_METHOD(queryDailyTotals:
 RCT_EXTERN_METHOD(writeData:
                   (NSString*)dataTypeIdentifier
                   unit:(NSString*)unit
-                  amount: (nonnull NSNumber*) amount
-                  metadata: (NSDictionary*) metadata
-                  timestamp: (nonnull NSNumber*) timestamp
+                  amount:(nonnull NSNumber*)amount
+                  metadata:(NSDictionary*)metadata
+                  timestamp:(nonnull NSNumber*)timestamp
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(writeDataArray:
                   (NSArray*)dataArray
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(queryDataRecordsForNumberOfDays:
+                  (NSString*)dataTypeIdentifier
+                  unit:(NSString*)unit
+                  numberOfDays:(nonnull NSNumber*)numberOfDays
+                  limit:(nonnull NSNumber*)limit
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 @end
