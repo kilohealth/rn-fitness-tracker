@@ -316,7 +316,7 @@ const recordWorkoutIOS = async ({
  * @param object.metadata {object}
  * @return {Promise<boolean>}
  */
-const recordBloodPressureIOS = async ({
+const writeBloodPressureIOS = async ({
   systolicPressure,
   diastolicPressure,
   date,
@@ -325,10 +325,10 @@ const recordBloodPressureIOS = async ({
   systolicPressure: number;
   diastolicPressure: number;
   date: Date | number;
-  metadata: { [name: string]: any };
+  metadata?: { [name: string]: any };
 }): Promise<boolean> => {
   if (isIOS) {
-    return await RNHealthTracker.recordBloodPressure(
+    return await RNHealthTracker.writeBloodPressure(
       systolicPressure,
       diastolicPressure,
       +date,
@@ -403,7 +403,7 @@ export const HealthTrackerAPI = {
   getStatisticTotalForWeekIOS,
   getStatisticWeekDailyIOS,
   isTrackingSupportedIOS,
-  recordBloodPressureIOS,
+  writeBloodPressureIOS,
   recordWorkoutIOS,
   queryDataRecordsIOS,
   queryDailyTotalsIOS,

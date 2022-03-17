@@ -99,7 +99,11 @@ const setupTracking = async (
       //   readTypes.push(HealthDataTypes.DistanceWalkingRunning);
       // }
 
-      const shareTypes: HKDataType[] = [HealthDataTypes.Workout];
+      const shareTypes: HKDataType[] = [
+        HealthDataTypes.Workout,
+        HealthDataTypes.BloodPressureSystolic,
+        HealthDataTypes.BloodPressureDiastolic,
+      ];
       await HealthTrackerAPI.setupTrackingIOS(shareTypes, readTypes);
 
       const { authorized, shouldOpenAppSettings } = await isTrackingAvailable(

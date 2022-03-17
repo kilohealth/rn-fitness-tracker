@@ -74,4 +74,12 @@ RCT_EXTERN_METHOD(queryWorkouts:
                   end:(nonnull NSNumber*)end
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(writeBloodPressure:
+                  (nonnull NSNumber*)systolicPressure
+                  diastolicPressure:(nonnull NSNumber*)diastolicPressure
+                  start:(nonnull NSNumber*)start
+                  end:(nonnull NSNumber*)end
+                  metadata:(NSDictionary*)metadata
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end

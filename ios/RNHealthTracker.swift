@@ -727,4 +727,42 @@ class RNHealthTracker: NSObject {
         }
     }
     
+    @objc public func writeBloodPressure(
+        _ systolicPressure: NSNumber,
+        diastolicPressure: NSNumber,
+        start: NSNumber,
+        end: NSNumber,
+        metadata: Dictionary<String, Any>,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let startDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
+        let endDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+        let systolicQuantity: HKQuantity = HKQuantity.init(unit: HKUnit.millimeterOfMercury(), doubleValue: systolicPressure.doubleValue)
+        let diastolicQuantity: HKQuantity = HKQuantity.init(unit: HKUnit.millimeterOfMercury(), doubleValue: diastolicPressure.doubleValue)
+
+        guard
+            let systolicType = HKObjectType.quantityType(forIdentifier: .bloodPressureSystolic),
+            let diastolicType = HKObjectType.quantityType(forIdentifier: .bloodPressureDiastolic),
+            let bloodPressureType = HKCorrelationType.correlationType(forIdentifier: .bloodPressure)
+        else {
+            return reject(standardErrorCode(0), "Error getting quantity type.", nil)
+        }
+        
+        let systolicSample = HKQuantitySample.init(type: systolicType, quantity: systolicQuantity, start: startDate, end: endDate)
+        let diastolicSample = HKQuantitySample.init(type: diastolicType, quantity: diastolicQuantity, start: startDate, end: endDate)
+        
+        let bloodPressureSet: Set<HKSample> = Set([systolicSample, diastolicSample])
+        
+        let bloodPressureSample = HKCorrelation.init(type: bloodPressureType, start: startDate, end: endDate, objects: bloodPressureSet, metadata: metadata)
+        
+        healthStore.save(bloodPressureSample) { success, error in
+            if let error = error {
+                reject(self.standardErrorCode(nil), error.localizedDescription, error)
+            } else {
+                resolve(success)
+            }
+        }
+    }
+    
 }
