@@ -68,4 +68,10 @@ RCT_EXTERN_METHOD(recordWorkout:
                   metadata:(NSDictionary*)metadata
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(queryWorkouts:
+                  (nonnull NSNumber*)workoutWithActivityType
+                  start:(nonnull NSNumber*)start
+                  end:(nonnull NSNumber*)end
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end

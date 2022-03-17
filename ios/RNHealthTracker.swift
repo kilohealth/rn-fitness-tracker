@@ -649,4 +649,82 @@ class RNHealthTracker: NSObject {
         }
     }
     
+    @objc public func queryWorkouts(
+        _ workoutActivityType: NSNumber,
+        start: NSNumber,
+        end: NSNumber,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let startDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
+        let endDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+        
+        var predicate: NSPredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.init(rawValue: 0))
+        
+        if workoutActivityType.uintValue > 0 {
+            guard let workoutType = HKWorkoutActivityType.init(rawValue: workoutActivityType.uintValue) else {
+                return reject(standardErrorCode(1), "Invalid workoutActivityType.", nil)
+            }
+            let workoutTypePredicate = HKQuery.predicateForWorkouts(with: workoutType)
+            predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [predicate, workoutTypePredicate])
+        }
+        
+        let sortDescriptor = NSSortDescriptor.init(key: HKSampleSortIdentifierStartDate, ascending: false)
+        
+        let query: HKSampleQuery = HKSampleQuery.init(
+            sampleType: HKWorkoutType.workoutType(),
+            predicate: predicate,
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [sortDescriptor]
+        ) { query, samples, error in
+
+            if let error = error {
+                return reject(self.standardErrorCode(2), error.localizedDescription, error)
+            }
+
+            var dataRecords: [Dictionary<String, Any?>] = []
+
+            guard let samples = samples as? [HKWorkout] else {
+                reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
+                return
+            }
+
+            for sample in samples {
+
+                let workout: HKWorkout = sample
+
+                let sourceDevice: String = sample.sourceRevision.productType ?? "unknown"
+
+                let distance: Double? = workout.totalDistance?.doubleValue(for: .meter())
+                let energyBurned: Double? = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie())
+                let isoStartDate = RNFitnessUtilsTestttttttttt.formatIsoDateString(workout.startDate)
+                let isoEndDate = RNFitnessUtilsTestttttttttt.formatIsoDateString(workout.endDate)
+
+                dataRecords.append([
+                    "uuid": workout.uuid.uuidString,
+                    "duration": workout.duration,
+                    "startDate": isoStartDate,
+                    "endDate": isoEndDate,
+                    "energyBurned": energyBurned,
+                    "distance": distance,
+                    "type": workout.workoutActivityType,
+                    "metadata": workout.metadata,
+                    "source": [
+                        "name": workout.sourceRevision.source.name,
+                        "device": sourceDevice,
+                        "id": workout.sourceRevision.source.bundleIdentifier,
+                    ]
+                ])
+            }
+
+            resolve(dataRecords);
+        }
+
+        healthStore.execute(query)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.healthStore.stop(query)
+        }
+    }
+    
 }
