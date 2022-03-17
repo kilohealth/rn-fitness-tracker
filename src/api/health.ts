@@ -343,7 +343,7 @@ const writeBloodPressureIOS = async ({
  * @param dataType {HealthDataType} e.g. `HealthDataTypes.Fiber`
  * @return {Promise<number>} 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized
  */
-const getAuthStatusForTypeIOS = async (key: HKDataType): Promise<boolean> => {
+const getAuthStatusForTypeIOS = async (key: HKDataType): Promise<number> => {
   if (isIOS) {
     return await RNHealthTracker.getAuthorizationStatusForType(key);
   }

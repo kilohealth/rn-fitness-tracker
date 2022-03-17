@@ -765,4 +765,18 @@ class RNHealthTracker: NSObject {
         }
     }
     
+    @objc public func getAuthorizationStatusForType(
+        _ dataTypeIdentifier: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        guard let type = transformDataKeyToHKObject(dataTypeIdentifier) else {
+            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+        }
+        
+        let status = healthStore.authorizationStatus(for: type)
+        
+        resolve(status.rawValue)
+    }
+    
 }

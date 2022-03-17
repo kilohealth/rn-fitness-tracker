@@ -82,4 +82,8 @@ RCT_EXTERN_METHOD(writeBloodPressure:
                   metadata:(NSDictionary*)metadata
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(getAuthorizationStatusForType:
+                  (NSString*)dataTypeIdentifier
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end
