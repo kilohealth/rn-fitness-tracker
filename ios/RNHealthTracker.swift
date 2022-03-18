@@ -468,15 +468,23 @@ class RNHealthTracker: NSObject {
         }
     }
     
-    @objc public func writeData(_ dataTypeIdentifier: String, unit: String, quantity: NSNumber, metadata: Dictionary<String, Any>, timestamp: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc public func writeData(
+        _ dataTypeIdentifier: String,
+        unit: String,
+        amount: NSNumber,
+        metadata: Dictionary<String, Any>,
+        timestamp: NSNumber,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
         
         guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
         
-        let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: quantity.doubleValue)
+        let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: amount.doubleValue)
         var date: Date = Date()
-        if timestamp.intValue != 0 {
+        if timestamp.intValue != -1 {
             date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: timestamp.intValue)
         }
         
@@ -508,7 +516,7 @@ class RNHealthTracker: NSObject {
                 
                 guard let dataTypeIdentifier: String = (obj["key"] as? String),
                       let unit: String = (obj["unit"] as? String),
-                      let amount: NSNumber = (obj["quantity"] as? NSNumber),
+                      let amount: NSNumber = (obj["amount"] as? NSNumber),
                       let timestamp: NSNumber = (obj["timestamp"] as? NSNumber),
                       let metadata: Dictionary<String, Any> = (obj["metadata"] as? Dictionary<String, Any>)
                 else {
@@ -779,4 +787,81 @@ class RNHealthTracker: NSObject {
         resolve(status.rawValue)
     }
     
+    @objc public func deleteRecord(
+        _ dataTypeIdentifier: String,
+        uuid: String?,
+        start: NSNumber,
+        end: NSNumber,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        var predicate: NSPredicate
+        
+        if let uuid = uuid {
+            if let uuid: UUID = UUID.init(uuidString: uuid) {
+                predicate = HKQuery.predicateForObject(with: uuid)
+            } else {
+                return reject(standardErrorCode(1), "Invalid uuid.", nil)
+            }
+        } else {
+            if start.intValue > 0 && end.intValue > 0 {
+                let startDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
+                let endDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+                predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.init(rawValue: 0))
+            } else {
+                return reject(standardErrorCode(1), "startDate and endDate must be defined more than 0.", nil)
+            }
+        }
+        
+        guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
+            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+        }
+        
+        let sortDescriptor = NSSortDescriptor.init(key: HKSampleSortIdentifierStartDate, ascending: true)
+        
+        let sampleQuery: HKSampleQuery = HKSampleQuery.init(
+            sampleType: sampleType,
+            predicate: predicate,
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [sortDescriptor]
+        ) { (query: HKSampleQuery, samples: [HKObject]?, error: Error?) in
+        
+            if let error = error {
+                return reject(self.standardErrorCode(0), error.localizedDescription, error)
+            }
+            
+            guard let samples = samples else {
+                reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
+                return
+            }
+            
+            if samples.count == 0 {
+                resolve(0)
+                return
+            }
+            
+            var count = samples.count
+            var deletedSamples = 0
+            
+            for sample in samples {
+                self.healthStore.delete(sample) { success, error in
+                    count -= 1
+                    
+                    if let error = error {
+                        print(error.localizedDescription)
+//                        return reject(self.standardErrorCode(0), error.localizedDescription, error)
+                    } else {
+                        deletedSamples += 1
+                    }
+                    
+                    if count < 1 {
+                        resolve(deletedSamples)
+                    }
+                }
+            }
+        }
+
+        healthStore.execute(sampleQuery)
+    }
+
 }

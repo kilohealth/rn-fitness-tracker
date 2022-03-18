@@ -53,21 +53,21 @@ const setupTrackingIOS = async (
 const writeDataIOS = async ({
   key,
   unit,
-  quantity,
+  amount,
   metadata = {},
   timestamp = 0,
 }: {
   key: HKDataType;
   unit: HKUnit;
-  quantity: number;
+  amount: number;
   metadata: { [name: string]: any };
-  timestamp: number;
+  timestamp?: number;
 }): Promise<boolean> => {
   if (isIOS) {
     return await RNHealthTracker.writeData(
       key,
-      quantity,
       unit,
+      amount,
       metadata,
       timestamp,
     );
@@ -88,9 +88,9 @@ const writeDataArrayIOS = async (
   dataArray: Array<{
     key: HKDataType;
     unit: HKUnit;
-    quantity: number;
+    amount: number;
     metadata: { [name: string]: any };
-    timestamp: number;
+    timestamp?: number;
   }>,
 ): Promise<boolean> => {
   if (isIOS) {
@@ -378,18 +378,21 @@ const getReadStatusForTypeIOS = async ({
 const deleteRecordIOS = async ({
   key,
   uuid = null,
-  date = 0,
+  startDate = 0,
+  endDate = 0,
 }: {
   key: HKDataType;
   uuid?: string;
-  date?: number;
+  startDate?: Date | number;
+  endDate?: Date | number;
 }): Promise<number> => {
   if (isIOS) {
     return await RNHealthTracker.deleteRecord(
       key,
       uuid,
-      date - 1000,
-      date + 1000,
+      +startDate,
+      // TODO remove 1000ms
+      +endDate + 1000,
     );
   }
 };

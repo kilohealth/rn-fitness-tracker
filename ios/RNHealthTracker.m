@@ -86,4 +86,11 @@ RCT_EXTERN_METHOD(getAuthorizationStatusForType:
                   (NSString*)dataTypeIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(deleteRecord:
+                  (NSString*)dataTypeIdentifier
+                  uuid:(NSString*)uuid
+                  start:(nonnull NSNumber*)start
+                  end:(nonnull NSNumber*)end
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end
