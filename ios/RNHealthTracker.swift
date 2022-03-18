@@ -795,11 +795,12 @@ class RNHealthTracker: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        var predicate: NSPredicate
+        var predicate: NSPredicate = HKQuery.predicateForObjects(from: HKSource.default())
         
         if let uuid = uuid {
             if let uuid: UUID = UUID.init(uuidString: uuid) {
-                predicate = HKQuery.predicateForObject(with: uuid)
+                let predicateUuid = HKQuery.predicateForObject(with: uuid)
+                predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [predicate, predicateUuid])
             } else {
                 return reject(standardErrorCode(1), "Invalid uuid.", nil)
             }
@@ -807,7 +808,8 @@ class RNHealthTracker: NSObject {
             if start.intValue > 0 && end.intValue > 0 {
                 let startDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
                 let endDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
-                predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.init(rawValue: 0))
+                let predicateForDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.init(rawValue: 0))
+                predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [predicate, predicateForDate])
             } else {
                 return reject(standardErrorCode(1), "startDate and endDate must be defined more than 0.", nil)
             }
