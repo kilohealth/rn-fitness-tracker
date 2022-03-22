@@ -8,7 +8,7 @@ import { HealthDataTypes, HKDataType, UnitTypes } from '../types/dataTypes';
 import { HealthTrackerAPI } from './health';
 import {
   DailyData,
-  IFitnessTrackerStatus,
+  FitnessTrackerStatus,
   TodayAndDailyData,
 } from '../types/fitnessTypes';
 import { isIOS, isObject, ValueOf } from '../utils/helpers';
@@ -21,7 +21,7 @@ const { RNFitnessTracker } = NativeModules;
 
 const handleAndroidMotionTrackingPermissions = async (
   shouldRequestPermission: boolean,
-): Promise<IFitnessTrackerStatus> => {
+): Promise<FitnessTrackerStatus> => {
   const apiLevel = await DeviceInfo.getApiLevel();
   const isMotionAuthNeeded = apiLevel >= 29;
 
@@ -42,11 +42,11 @@ const handleAndroidMotionTrackingPermissions = async (
 /**
  * Returns if step tracking is authorized and available on both platforms
  * @param permissions {Array<AndroidPermissionValues>} - list of permissions to check if tracking is available
- * @return {Promise<IFitnessTrackerStatus>}
+ * @return {Promise<FitnessTrackerStatus>}
  */
 const isTrackingAvailable = async (
   permissions: AndroidPermissionValues[],
-): Promise<IFitnessTrackerStatus> => {
+): Promise<FitnessTrackerStatus> => {
   if (isIOS) {
     const status: number = await HealthTrackerAPI.getReadStatusForTypeIOS({
       key: HealthDataTypes.StepCount,
@@ -77,11 +77,11 @@ const isTrackingAvailable = async (
 /**
  * Sets up step tracking for walking & running steps and distance
  * @param permissions {Array<AndroidPermissionValues>} - list of permissions to track
- * @return {Promise<IFitnessTrackerStatus>}
+ * @return {Promise<FitnessTrackerStatus>}
  */
 const setupTracking = async (
   permissions: AndroidPermissionValues[],
-): Promise<IFitnessTrackerStatus> => {
+): Promise<FitnessTrackerStatus> => {
   if (isIOS) {
     const { authorized, shouldOpenAppSettings } = await isTrackingAvailable(
       permissions,

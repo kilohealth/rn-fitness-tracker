@@ -1,13 +1,7 @@
-export interface IFitnessTrackerStatus {
+export interface FitnessTrackerStatus {
   authorized: boolean;
   shouldOpenAppSettings: boolean;
   trackingNotSupported?: boolean;
-}
-
-export interface IFitnessTrackerAvailability {
-  steps: number;
-  distance: number;
-  floors: number;
 }
 
 export interface DailyData {
@@ -19,16 +13,7 @@ export interface TodayAndDailyData {
   daily: DailyData;
 }
 
-export interface IFloorsDaily {
-  [key: string]: number;
-}
-
-export interface IFloorsData {
-  floorsToday: number;
-  floorsDaily: DailyData;
-}
-
-export type IWorkoutQueryData<WorkoutKey> = [
+export type WorkoutQueryData<WorkoutKey> = [
   {
     uuid: string;
     duration: number;
@@ -46,7 +31,7 @@ export type IWorkoutQueryData<WorkoutKey> = [
   },
 ];
 
-export type IHealthDataRecordQuery = [
+export type HealthDataRecordQuery = [
   {
     uuid: string;
     date: string;

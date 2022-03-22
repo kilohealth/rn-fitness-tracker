@@ -1,10 +1,7 @@
 import { NativeModules } from 'react-native';
 
 import { HKDataType, HKUnit, HKWorkout } from '../types/dataTypes';
-import {
-  IHealthDataRecordQuery,
-  IWorkoutQueryData,
-} from '../types/fitnessTypes';
+import { HealthDataRecordQuery, WorkoutQueryData } from '../types/fitnessTypes';
 import { isIOS } from '../utils/helpers';
 
 const { RNHealthTracker } = NativeModules;
@@ -190,7 +187,7 @@ const queryDataRecordsIOS = async ({
   unit: HKUnit;
   numberOfDays: number;
   limit?: number;
-}): Promise<IHealthDataRecordQuery> => {
+}): Promise<HealthDataRecordQuery> => {
   if (isIOS) {
     return RNHealthTracker.queryDataRecordsForNumberOfDays(
       key,
@@ -206,7 +203,7 @@ const queryDataRecordsIOS = async ({
  * @param object.startDate {Date | number}
  * @param object.endDate {Date | number}
  * @param object.key {WorkoutTypes} e.g. `WorkoutTypes.Running` (Optional)
- * @return {Promise<IWorkoutQueryData>}
+ * @return {Promise<WorkoutQueryData>}
  */
 const queryWorkoutsIOS = async ({
   startDate,
@@ -216,7 +213,7 @@ const queryWorkoutsIOS = async ({
   startDate: Date | number;
   endDate: Date | number;
   key: HKWorkout | 0;
-}): Promise<IWorkoutQueryData<HKWorkout>> => {
+}): Promise<WorkoutQueryData<HKWorkout>> => {
   if (isIOS) {
     return RNHealthTracker.queryWorkouts(key, +startDate, +endDate);
   }
