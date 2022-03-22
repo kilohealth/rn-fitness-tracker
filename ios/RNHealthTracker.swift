@@ -60,7 +60,12 @@ class RNHealthTracker: NSObject {
         return descriptions[code]
     }
 
-    @objc public func getReadStatus(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc public func getReadStatus(
+        _ dataTypeIdentifier: String,
+        unit: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
         let currentDate = Date()
         let start: Date? = RNFitnessUtils.daysAgo(date: currentDate, 720)
         let end: Date? = RNFitnessUtils.endOfDay(date: currentDate)
@@ -104,7 +109,12 @@ class RNHealthTracker: NSObject {
         healthStore.execute(sampleQuery)
     }
     
-    @objc public func authorize(_ shareTypes: [String], readTypes: [String], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc public func authorize(
+        _ shareTypes: [String],
+        readTypes: [String],
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
         if !HKHealthStore.isHealthDataAvailable() {
             reject(self.standardErrorCode(3), "Health data is not supported on this device.", nil)
             return
@@ -146,7 +156,12 @@ class RNHealthTracker: NSObject {
         }
     }
     
-    @objc public func getStatisticTotalForToday(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc public func getStatisticTotalForToday(
+        _ dataTypeIdentifier: String,
+        unit: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
         let currentDate = Date()
         let start: Date = RNFitnessUtils.startOfDay(date: currentDate)
         let end: Date = RNFitnessUtils.endOfDay(date: start)
@@ -202,7 +217,12 @@ class RNHealthTracker: NSObject {
         healthStore.execute(query)
     }
     
-    @objc public func getStatisticTotalForWeek(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc public func getStatisticTotalForWeek(
+        _ dataTypeIdentifier: String,
+        unit: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
         let currentDate = Date()
         let end: Date = RNFitnessUtils.endOfDay(date: currentDate)
         let start: Date = RNFitnessUtils.startOfXDaysAgo(date: end, numberOfDays: 6)
@@ -266,7 +286,14 @@ class RNHealthTracker: NSObject {
         healthStore.execute(query)
     }
 
-    @objc public func queryTotal(_ dataTypeIdentifier: String, unit: String, start: NSNumber, end: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc public func queryTotal(
+        _ dataTypeIdentifier: String,
+        unit: String,
+        start: NSNumber,
+        end: NSNumber,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
         
         let startDate = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
         let endDate = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
@@ -331,7 +358,12 @@ class RNHealthTracker: NSObject {
         }
     }
     
-    @objc public func getStatisticWeekDaily(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc public func getStatisticWeekDaily(
+        _ dataTypeIdentifier: String,
+        unit: String,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
         let currentDate = Date()
         let end = RNFitnessUtils.endOfDay(date: currentDate)
         let start = RNFitnessUtils.startOfXDaysAgo(date: end, numberOfDays: 6)
@@ -401,7 +433,14 @@ class RNHealthTracker: NSObject {
         }
     }
     
-    @objc public func queryDailyTotals(_ dataTypeIdentifier: String, unit: String, start: NSNumber, end: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc public func queryDailyTotals(
+        _ dataTypeIdentifier: String,
+        unit: String,
+        start: NSNumber,
+        end: NSNumber,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
         
         let startDate: Date = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
         let endDate: Date = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
@@ -550,14 +589,6 @@ class RNHealthTracker: NSObject {
         } else {
             return reject(standardErrorCode(1), "Empty array was passed.", nil)
         }
-    }
-    
-    struct DataRecord {
-        let uuid: String
-        let date: String
-        let quantity: Double
-        let metadata: Dictionary<String, Any>?
-        let source: Dictionary<String, String?>
     }
     
     @objc public func queryDataRecordsForNumberOfDays(
