@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		612328F127A2A1ED00801975 /* RNHealthTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 612328ED27A2A1ED00801975 /* RNHealthTracker.m */; };
-		612328F227A2A1ED00801975 /* RNFitnessUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 612328F027A2A1ED00801975 /* RNFitnessUtils.m */; };
 		61B85D0127B534C200769BAE /* RNHealthTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B85D0027B534C200769BAE /* RNHealthTracker.swift */; };
 		61B85D0327B53DF700769BAE /* RNFitnessUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B85D0227B53DF700769BAE /* RNFitnessUtils.swift */; };
 /* End PBXBuildFile section */
@@ -26,12 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		612328EC27A2A1ED00801975 /* RNHealthTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNHealthTracker.h; sourceTree = "<group>"; };
 		612328ED27A2A1ED00801975 /* RNHealthTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNHealthTracker.m; sourceTree = "<group>"; };
-		612328EE27A2A1ED00801975 /* RNFitnessUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNFitnessUtils.h; sourceTree = "<group>"; };
-		612328F027A2A1ED00801975 /* RNFitnessUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNFitnessUtils.m; sourceTree = "<group>"; };
-		612328FD27A542EA00801975 /* RNFitnessTracker-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNFitnessTracker-Bridging-Header.h"; sourceTree = "<group>"; };
-		61B85CFF27B533C500769BAE /* libRNFitnessTracker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libRNFitnessTracker.a; path = "/Users/matas/Documents/projects/kilo/rn-fitness-tracker/ios/build/Debug-iphoneos/libRNFitnessTracker.a"; sourceTree = "<absolute>"; };
 		61B85D0027B534C200769BAE /* RNHealthTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNHealthTracker.swift; sourceTree = "<group>"; };
 		61B85D0227B53DF700769BAE /* RNFitnessUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNFitnessUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -51,36 +45,12 @@
 			isa = PBXGroup;
 			children = (
 				61B85D0227B53DF700769BAE /* RNFitnessUtils.swift */,
-				612328EE27A2A1ED00801975 /* RNFitnessUtils.h */,
-				612328F027A2A1ED00801975 /* RNFitnessUtils.m */,
-				612328EC27A2A1ED00801975 /* RNHealthTracker.h */,
 				61B85D0027B534C200769BAE /* RNHealthTracker.swift */,
 				612328ED27A2A1ED00801975 /* RNHealthTracker.m */,
-				612328FD27A542EA00801975 /* RNFitnessTracker-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
-
-/* Begin PBXNativeTarget section */
-		58B511DA1A9E6C8500147676 /* RNFitnessTracker */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RNFitnessTracker" */;
-			buildPhases = (
-				58B511D71A9E6C8500147676 /* Sources */,
-				58B511D81A9E6C8500147676 /* Frameworks */,
-				58B511D91A9E6C8500147676 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = RNFitnessTracker;
-			productName = RCTDataManager;
-			productReference = 61B85CFF27B533C500769BAE /* libRNFitnessTracker.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-/* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		58B511D31A9E6C8500147676 /* Project object */ = {
@@ -121,7 +91,6 @@
 				61B85D0327B53DF700769BAE /* RNFitnessUtils.swift in Sources */,
 				61B85D0127B534C200769BAE /* RNHealthTracker.swift in Sources */,
 				612328F127A2A1ED00801975 /* RNHealthTracker.m in Sources */,
-				612328F227A2A1ED00801975 /* RNFitnessUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

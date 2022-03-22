@@ -8,8 +8,8 @@
 
 import Foundation
 
-@objc(RNFitnessUtilsTestttttttttt)
-class RNFitnessUtilsTestttttttttt: NSObject {
+@objc(RNFitnessUtils)
+class RNFitnessUtils: NSObject {
 
     private static func setHoursMinutesSeconds(date: Date, hours: NSInteger, minutes: NSInteger, seconds: NSInteger) -> Date {
         return NSCalendar.current.date(bySettingHour: hours, minute: minutes, second: seconds, of: date)!;
@@ -47,5 +47,13 @@ class RNFitnessUtilsTestttttttttt: NSObject {
     
     static func getDateFrom(timestamp: Int) -> Date {
         Date(timeIntervalSince1970: TimeInterval(timestamp / 1000))
+    }
+    
+    static func formatUtcIsoDateTimeString(_ date: Date) -> String {
+        let formatter: ISO8601DateFormatter = ISO8601DateFormatter.init()
+        formatter.formatOptions = [.withFullDate, .withFullTime]
+        formatter.timeZone = TimeZone.init(secondsFromGMT: 0)
+        
+        return formatter.string(from: date)
     }
 }

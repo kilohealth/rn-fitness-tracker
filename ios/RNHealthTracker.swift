@@ -6,6 +6,7 @@
 //  Copyright © 2022 Facebook. All rights reserved.
 //
 
+import React
 import Foundation
 import HealthKit
 
@@ -61,8 +62,8 @@ class RNHealthTracker: NSObject {
 
     @objc public func getReadStatus(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         let currentDate = Date()
-        let start: Date? = RNFitnessUtilsTestttttttttt.daysAgo(date: currentDate, 720)
-        let end: Date? = RNFitnessUtilsTestttttttttt.endOfDay(date: currentDate)
+        let start: Date? = RNFitnessUtils.daysAgo(date: currentDate, 720)
+        let end: Date? = RNFitnessUtils.endOfDay(date: currentDate)
 
         guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
@@ -147,8 +148,8 @@ class RNHealthTracker: NSObject {
     
     @objc public func getStatisticTotalForToday(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         let currentDate = Date()
-        let start: Date = RNFitnessUtilsTestttttttttt.startOfDay(date: currentDate)
-        let end: Date = RNFitnessUtilsTestttttttttt.endOfDay(date: start)
+        let start: Date = RNFitnessUtils.startOfDay(date: currentDate)
+        let end: Date = RNFitnessUtils.endOfDay(date: start)
         var interval: DateComponents = DateComponents()
         interval.day = 1
         
@@ -203,8 +204,8 @@ class RNHealthTracker: NSObject {
     
     @objc public func getStatisticTotalForWeek(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         let currentDate = Date()
-        let end: Date = RNFitnessUtilsTestttttttttt.endOfDay(date: currentDate)
-        let start: Date = RNFitnessUtilsTestttttttttt.startOfXDaysAgo(date: end, numberOfDays: 6)
+        let end: Date = RNFitnessUtils.endOfDay(date: currentDate)
+        let start: Date = RNFitnessUtils.startOfXDaysAgo(date: end, numberOfDays: 6)
         var interval: DateComponents = DateComponents()
         interval.day = 1
         
@@ -267,8 +268,8 @@ class RNHealthTracker: NSObject {
 
     @objc public func queryTotal(_ dataTypeIdentifier: String, unit: String, start: NSNumber, end: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         
-        let startDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
-        let endDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+        let startDate = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
+        let endDate = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
         var interval: DateComponents = DateComponents()
         interval.day = 1
 
@@ -332,8 +333,8 @@ class RNHealthTracker: NSObject {
     
     @objc public func getStatisticWeekDaily(_ dataTypeIdentifier: String, unit: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         let currentDate = Date()
-        let end = RNFitnessUtilsTestttttttttt.endOfDay(date: currentDate)
-        let start = RNFitnessUtilsTestttttttttt.startOfXDaysAgo(date: end, numberOfDays: 6)
+        let end = RNFitnessUtils.endOfDay(date: currentDate)
+        let start = RNFitnessUtils.startOfXDaysAgo(date: end, numberOfDays: 6)
         var interval: DateComponents = DateComponents()
         interval.day = 1
         
@@ -378,7 +379,7 @@ class RNHealthTracker: NSObject {
             
             statsCollection.enumerateStatistics(from: start, to: end) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
                 if let quantity: HKQuantity = result.sumQuantity() {
-                    let dateString = RNFitnessUtilsTestttttttttt.formatIsoDateString(result.startDate)
+                    let dateString = RNFitnessUtils.formatIsoDateString(result.startDate)
                     
                     var value: Any = quantity.doubleValue(for: HKUnit.init(from: unit))
                     
@@ -402,8 +403,8 @@ class RNHealthTracker: NSObject {
     
     @objc public func queryDailyTotals(_ dataTypeIdentifier: String, unit: String, start: NSNumber, end: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         
-        let startDate: Date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
-        let endDate: Date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+        let startDate: Date = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
+        let endDate: Date = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
         var interval: DateComponents = DateComponents()
         interval.day = 1
 
@@ -446,7 +447,7 @@ class RNHealthTracker: NSObject {
             
             statsCollection.enumerateStatistics(from: startDate, to: endDate) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
                 if let quantity: HKQuantity = result.sumQuantity() {
-                    let dateString = RNFitnessUtilsTestttttttttt.formatIsoDateString(result.startDate)
+                    let dateString = RNFitnessUtils.formatIsoDateString(result.startDate)
                     
                     var value: Any = quantity.doubleValue(for: HKUnit.init(from: unit))
                     
@@ -485,7 +486,7 @@ class RNHealthTracker: NSObject {
         let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: amount.doubleValue)
         var date: Date = Date()
         if timestamp.intValue != -1 {
-            date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: timestamp.intValue)
+            date = RNFitnessUtils.getDateFrom(timestamp: timestamp.intValue)
         }
         
         let dataObject: HKQuantitySample = HKQuantitySample.init(type: quantityType, quantity: quantity, start: date, end: date, metadata: metadata)
@@ -525,7 +526,7 @@ class RNHealthTracker: NSObject {
                 
                 var date: Date = Date()
                 if timestamp.intValue != -1 {
-                    date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: timestamp.intValue)
+                    date = RNFitnessUtils.getDateFrom(timestamp: timestamp.intValue)
                 }
                 
                 guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
@@ -568,8 +569,8 @@ class RNHealthTracker: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
         let currentDate = Date()
-        let start: Date = RNFitnessUtilsTestttttttttt.startOfXDaysAgo(date: currentDate, numberOfDays: numberOfDays.intValue)
-        let end: Date = RNFitnessUtilsTestttttttttt.endOfDay(date: currentDate)
+        let start: Date = RNFitnessUtils.startOfXDaysAgo(date: currentDate, numberOfDays: numberOfDays.intValue)
+        let end: Date = RNFitnessUtils.endOfDay(date: currentDate)
             
         guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
@@ -592,7 +593,7 @@ class RNHealthTracker: NSObject {
             }
             
             for sample in samples {
-                let isoDate = RNFitnessUtilsTestttttttttt.formatIsoDateString(sample.endDate)
+                let isoDate = RNFitnessUtils.formatUtcIsoDateTimeString(sample.endDate)
                 
                 let sourceDevice: String = sample.sourceRevision.productType ?? "unknown"
                 
@@ -628,8 +629,8 @@ class RNHealthTracker: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        let startDate: Date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
-        let endDate: Date = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+        let startDate: Date = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
+        let endDate: Date = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
         let totalEnergyBurned: HKQuantity = HKQuantity.init(unit: .kilocalorie(), doubleValue: energyBurned.doubleValue)
 
         let totalDistance: HKQuantity = HKQuantity.init(unit: .meter(), doubleValue: distance.doubleValue)
@@ -664,8 +665,8 @@ class RNHealthTracker: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        let startDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
-        let endDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+        let startDate = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
+        let endDate = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
         
         var predicate: NSPredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.init(rawValue: 0))
         
@@ -705,8 +706,8 @@ class RNHealthTracker: NSObject {
 
                 let distance: Double? = workout.totalDistance?.doubleValue(for: .meter())
                 let energyBurned: Double? = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie())
-                let isoStartDate = RNFitnessUtilsTestttttttttt.formatIsoDateString(workout.startDate)
-                let isoEndDate = RNFitnessUtilsTestttttttttt.formatIsoDateString(workout.endDate)
+                let isoStartDate = RNFitnessUtils.formatUtcIsoDateTimeString(workout.startDate)
+                let isoEndDate = RNFitnessUtils.formatUtcIsoDateTimeString(workout.endDate)
 
                 dataRecords.append([
                     "uuid": workout.uuid.uuidString,
@@ -744,8 +745,8 @@ class RNHealthTracker: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) {
-        let startDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
-        let endDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+        let startDate = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
+        let endDate = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
         let systolicQuantity: HKQuantity = HKQuantity.init(unit: HKUnit.millimeterOfMercury(), doubleValue: systolicPressure.doubleValue)
         let diastolicQuantity: HKQuantity = HKQuantity.init(unit: HKUnit.millimeterOfMercury(), doubleValue: diastolicPressure.doubleValue)
 
@@ -806,8 +807,8 @@ class RNHealthTracker: NSObject {
             }
         } else {
             if start.intValue > 0 && end.intValue > 0 {
-                let startDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: start.intValue)
-                let endDate = RNFitnessUtilsTestttttttttt.getDateFrom(timestamp: end.intValue)
+                let startDate = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
+                let endDate = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
                 let predicateForDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.init(rawValue: 0))
                 predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [predicate, predicateForDate])
             } else {
