@@ -1,22 +1,6 @@
-export enum AndroidPermissions {
-    Activity = 'Activity',
-    BasalMetabolicRate = 'BasalMetabolicRate',
-    BodyFat = 'BodyFat',
-    Calories = 'Calories',
-    Cycling = 'Cycling',
-    Distance = 'Distance',
-    HeartRate = 'HeartRate',
-    Height = 'Height',
-    Hydration = 'Hydration',
-    Location = 'Location',
-    MoveMinutes = 'MoveMinutes',
-    Nutrition = 'Nutrition',
-    Power = 'Power',
-    Sleep = 'Sleep',
-    Speed = 'Speed',
-    Steps = 'Steps',
-    Weight = 'Weight',
-    Workout = 'Workout',
-}
+import { HealthDataTypes } from './healthKitDataTypes';
+import { GoogleFitDataTypes } from './googleFitDataTypes';
 
-export type AndroidPermissionValues = `${AndroidPermissions}`
+export type AndroidPermissionValues = `${GoogleFitDataTypes}`;
+
+export type HealthKitValues = `${HealthDataTypes}`;

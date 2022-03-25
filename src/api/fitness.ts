@@ -3,8 +3,11 @@ import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import { NativeModules } from 'react-native';
 import { ResultMap } from 'react-native-permissions/dist/typescript/results';
 
-import { AndroidPermissionValues } from '../types/permissions';
-import { HealthDataTypes, HKDataType, UnitTypes } from '../types/dataTypes';
+import {
+  HealthDataTypes,
+  HKDataType,
+  UnitTypes,
+} from '../types/healthKitDataTypes';
 import { HealthTrackerAPI } from './health';
 import {
   DailyData,
@@ -12,6 +15,8 @@ import {
   TodayAndDailyData,
 } from '../types/fitnessTypes';
 import { isIOS, isObject, ValueOf } from '../utils/helpers';
+import { AndroidPermissionValues } from '../types/permissions';
+import { GoogleFitDataTypes } from '../types/googleFitDataTypes';
 
 const { RNFitnessTracker } = NativeModules;
 
@@ -44,23 +49,10 @@ const handleAndroidMotionTrackingPermissions = async (
  * @param permissions {Array<AndroidPermissionValues>} - list of permissions to check if tracking is available
  * @return {Promise<FitnessTrackerStatus>}
  */
-const isTrackingAvailable = async (
+const isTrackingAvailableAndroid = async (
   permissions: AndroidPermissionValues[],
 ): Promise<FitnessTrackerStatus> => {
-  if (isIOS) {
-    const status: number = await HealthTrackerAPI.getReadStatusForTypeIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
-    });
-
-    if (status === 2) {
-      return { authorized: true, shouldOpenAppSettings: false };
-    } else if (status === 0) {
-      return { authorized: false, shouldOpenAppSettings: false };
-    } else {
-      return { authorized: false, shouldOpenAppSettings: true };
-    }
-  } else {
+  if (!isIOS) {
     const motionAuthResult = await handleAndroidMotionTrackingPermissions(
       false,
     );
@@ -79,51 +71,26 @@ const isTrackingAvailable = async (
  * @param permissions {Array<AndroidPermissionValues>} - list of permissions to track
  * @return {Promise<FitnessTrackerStatus>}
  */
-const setupTracking = async (
-  permissions: AndroidPermissionValues[],
-): Promise<FitnessTrackerStatus> => {
+const authorize = async (permissions: {
+  googleFitReadPermissions?: GoogleFitDataTypes[];
+  googleFitWritePermissions?: GoogleFitDataTypes[];
+  healthReadPermissions?: HealthDataTypes[];
+  healthWritePermissions?: HealthDataTypes[];
+}): Promise<boolean> => {
   if (isIOS) {
-    const { authorized, shouldOpenAppSettings } = await isTrackingAvailable(
-      permissions,
-    );
-    if (!authorized && shouldOpenAppSettings) {
-      return {
-        authorized: authorized,
-        shouldOpenAppSettings: shouldOpenAppSettings,
-      };
-    } else {
-      const readTypes: HKDataType[] = [HealthDataTypes.StepCount];
+    const readTypes: HKDataType[] = permissions.healthReadPermissions || [];
+    const shareTypes: HKDataType[] = permissions.healthWritePermissions || [];
 
-      // Todo: update with new permission array
-      // if (shouldTrackDistance) {
-      //   readTypes.push(HealthDataTypes.DistanceWalkingRunning);
-      // }
-
-      const shareTypes: HKDataType[] = [
-        HealthDataTypes.Workout,
-        HealthDataTypes.BloodPressureSystolic,
-        HealthDataTypes.BloodPressureDiastolic,
-      ];
-      await HealthTrackerAPI.setupTrackingIOS(shareTypes, readTypes);
-
-      const { authorized, shouldOpenAppSettings } = await isTrackingAvailable(
-        permissions,
-      );
-
-      return {
-        authorized: authorized,
-        shouldOpenAppSettings: shouldOpenAppSettings,
-      };
-    }
+    return await HealthTrackerAPI.authorize(shareTypes, readTypes);
   } else {
     const motionAuthResult = await handleAndroidMotionTrackingPermissions(true);
     if (motionAuthResult.authorized) {
-      motionAuthResult.authorized = await RNFitnessTracker.authorize(
-        permissions,
-      );
+      const readTypes: GoogleFitDataTypes[] =
+        permissions.googleFitReadPermissions || [];
+      motionAuthResult.authorized = await RNFitnessTracker.authorize(readTypes);
     }
 
-    return motionAuthResult;
+    return motionAuthResult.authorized;
   }
 };
 
@@ -264,12 +231,12 @@ const getStatisticWeekDaily = async (
 };
 
 export const FitnessTrackerAPI = {
+  authorize,
   getData,
   getStatisticTodayTotal,
   getStatisticWeekDaily,
   getStatisticWeekTotal,
-  isTrackingAvailable,
+  isTrackingAvailableAndroid,
   queryDailyTotals,
   queryTotal,
-  setupTracking,
 };

@@ -76,7 +76,12 @@ class RNHealthTracker: NSObject {
         let predicate: NSPredicate = HKQuery.predicateForSamples(withStart: start, end: end, options: HKQueryOptions(rawValue: 0))
         let sortDescriptor: NSSortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 
-        let sampleQuery: HKSampleQuery = HKSampleQuery.init(sampleType: sampleType, predicate: predicate, limit: 1, sortDescriptors: [sortDescriptor]) { (query: HKSampleQuery, samples: [HKSample]?, error: Error?) in
+        let sampleQuery: HKSampleQuery = HKSampleQuery.init(
+            sampleType: sampleType,
+            predicate: predicate,
+            limit: 1,
+            sortDescriptors: [sortDescriptor]
+        ) { (query: HKSampleQuery, samples: [HKSample]?, error: Error?) in
             
             if let error = error {
                 if error.localizedDescription == "Authorization not determined" {
@@ -205,16 +210,20 @@ class RNHealthTracker: NSObject {
             
             statsCollection.enumerateStatistics(from: start, to: end) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
                 guard let quantity: HKQuantity = result.sumQuantity() else {
-                    reject(self.standardErrorCode(nil), "cumulativeSum option was not set.", error)
+                    resolve(0)
                     return
                 }
                 
                 let value: Double = quantity.doubleValue(for: HKUnit.init(from: unit))
-                resolve("\(value)")
+                resolve(value)
             }
         }
         
         healthStore.execute(query)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.healthStore.stop(query)
+        }
     }
     
     @objc public func getStatisticTotalForWeek(
@@ -267,23 +276,24 @@ class RNHealthTracker: NSObject {
             var total: Double = 0;
             
             statsCollection.enumerateStatistics(from: start, to: end) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
-                guard let quantity: HKQuantity = result.sumQuantity() else {
-                    reject(self.standardErrorCode(nil), "cumulativeSum option was not set.", error)
-                    return
+                if let quantity: HKQuantity = result.sumQuantity() {
+                    let value: Double = quantity.doubleValue(for: HKUnit.init(from: unit))
+                    total += value;
                 }
-                
-                let value: Double = quantity.doubleValue(for: HKUnit.init(from: unit))
-                total += value;
             }
             
             if unit == HKUnit.count().unitString {
-                resolve("\(Int(total))")
+                resolve(Int(total))
             } else {
-                resolve("\(total)")
+                resolve(total)
             }
         }
         
         healthStore.execute(query)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.healthStore.stop(query)
+        }
     }
 
     @objc public func queryTotal(

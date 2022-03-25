@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { HKDataType, HKUnit, HKWorkout } from '../types/dataTypes';
+import { HKDataType, HKUnit, HKWorkout } from '../types/healthKitDataTypes';
 import { HealthDataRecordQuery, WorkoutQueryData } from '../types/fitnessTypes';
 import { isIOS } from '../utils/helpers';
 
@@ -27,7 +27,7 @@ const isTrackingSupportedIOS = async (): Promise<boolean> => {
  * @param readTypes {HealthDataType[]} e.g. `[HealthDataTypes.Fiber]`
  * @return {Promise<boolean>}
  */
-const setupTrackingIOS = async (
+const authorize = async (
   shareTypes: HKDataType[],
   readTypes: HKDataType[],
 ): Promise<boolean> => {
@@ -395,21 +395,21 @@ const deleteRecordIOS = async ({
 };
 
 export const HealthTrackerAPI = {
+  authorize,
   deleteRecordIOS,
+  getAbsoluteTotalForTodayIOS,
   getAuthStatusForTypeIOS,
   getReadStatusForTypeIOS,
-  getAbsoluteTotalForTodayIOS,
   getStatisticTotalForTodayIOS,
   getStatisticTotalForWeekIOS,
   getStatisticWeekDailyIOS,
   isTrackingSupportedIOS,
-  writeBloodPressureIOS,
-  recordWorkoutIOS,
-  queryDataRecordsIOS,
   queryDailyTotalsIOS,
+  queryDataRecordsIOS,
   queryTotalIOS,
   queryWorkoutsIOS,
-  setupTrackingIOS,
-  writeDataIOS,
+  recordWorkoutIOS,
+  writeBloodPressureIOS,
   writeDataArrayIOS,
+  writeDataIOS,
 };
