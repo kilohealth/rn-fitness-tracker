@@ -799,8 +799,8 @@ class RNHealthTracker: NSObject {
             return reject(standardErrorCode(0), "Error getting quantity type.", nil)
         }
         
-        let systolicSample = HKQuantitySample.init(type: systolicType, quantity: systolicQuantity, start: startDate, end: endDate)
-        let diastolicSample = HKQuantitySample.init(type: diastolicType, quantity: diastolicQuantity, start: startDate, end: endDate)
+        let systolicSample = HKQuantitySample.init(type: systolicType, quantity: systolicQuantity, start: startDate, end: endDate, metadata: metadata)
+        let diastolicSample = HKQuantitySample.init(type: diastolicType, quantity: diastolicQuantity, start: startDate, end: endDate, metadata: metadata)
         
         let bloodPressureSet: Set<HKSample> = Set([systolicSample, diastolicSample])
         
