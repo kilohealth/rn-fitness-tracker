@@ -4,19 +4,20 @@ import { NativeModules } from 'react-native';
 import { ResultMap } from 'react-native-permissions/dist/typescript/results';
 
 import {
-  HealthDataTypes,
-  HKDataType,
-  UnitTypes,
-} from '../types/healthKitDataTypes';
-import { HealthTrackerAPI } from './health';
-import {
   DailyData,
+  FitnessDataType,
   FitnessTrackerStatus,
   TodayAndDailyData,
 } from '../types/fitnessTypes';
-import { isIOS, isObject, ValueOf } from '../utils/helpers';
-import { AndroidPermissionValues } from '../types/permissions';
+import {
+  getDataTypeForHealthKit,
+  isIOS,
+  isObject,
+  ValueOf,
+} from '../utils/helpers';
 import { GoogleFitDataTypes } from '../types/googleFitDataTypes';
+import { HealthDataType } from '../types/healthKitDataTypes';
+import { HealthTrackerAPI } from './health';
 
 const { RNFitnessTracker } = NativeModules;
 
@@ -46,11 +47,11 @@ const handleAndroidMotionTrackingPermissions = async (
 
 /**
  * Returns if step tracking is authorized and available on both platforms
- * @param permissions {Array<AndroidPermissionValues>} - list of permissions to check if tracking is available
+ * @param permissions {Array<GoogleFitDataTypes>} - list of permissions to check if tracking is available
  * @return {Promise<FitnessTrackerStatus>}
  */
 const isTrackingAvailableAndroid = async (
-  permissions: AndroidPermissionValues[],
+  permissions: GoogleFitDataTypes[],
 ): Promise<FitnessTrackerStatus> => {
   if (!isIOS) {
     const motionAuthResult = await handleAndroidMotionTrackingPermissions(
@@ -68,18 +69,19 @@ const isTrackingAvailableAndroid = async (
 
 /**
  * Sets up step tracking for walking & running steps and distance
- * @param permissions {Array<AndroidPermissionValues>} - list of permissions to track
+ * @param permissions {Array<GoogleFitDataTypes>} - list of permissions to track
  * @return {Promise<FitnessTrackerStatus>}
  */
 const authorize = async (permissions: {
   googleFitReadPermissions?: GoogleFitDataTypes[];
   googleFitWritePermissions?: GoogleFitDataTypes[];
-  healthReadPermissions?: HealthDataTypes[];
-  healthWritePermissions?: HealthDataTypes[];
+  healthReadPermissions?: HealthDataType[];
+  healthWritePermissions?: HealthDataType[];
 }): Promise<boolean> => {
   if (isIOS) {
-    const readTypes: HKDataType[] = permissions.healthReadPermissions || [];
-    const shareTypes: HKDataType[] = permissions.healthWritePermissions || [];
+    const readTypes: HealthDataType[] = permissions.healthReadPermissions || [];
+    const shareTypes: HealthDataType[] =
+      permissions.healthWritePermissions || [];
 
     return await HealthTrackerAPI.authorize(shareTypes, readTypes);
   } else {
@@ -99,14 +101,14 @@ const authorize = async (permissions: {
  * @return {Promise<number>}
  */
 const getStatisticTodayTotal = async (
-  dataType: AndroidPermissionValues,
+  dataType: FitnessDataType,
 ): Promise<number> => {
   if (isIOS) {
-    // todo use datatype for ios
-    const total = await HealthTrackerAPI.getStatisticTotalForTodayIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
-    });
+    const healthKitDataType = getDataTypeForHealthKit(dataType);
+
+    const total = await HealthTrackerAPI.getStatisticTotalForTodayIOS(
+      healthKitDataType,
+    );
     return Number(total);
   } else {
     return RNFitnessTracker.getStatisticTodayTotal(dataType);
@@ -118,15 +120,13 @@ const getStatisticTodayTotal = async (
  * @return {Promise<TodayAndDailyData>}
  */
 const getData = async (
-  dataType: AndroidPermissionValues,
+  dataType: FitnessDataType,
 ): Promise<TodayAndDailyData> => {
   let daily: DailyData;
   if (isIOS) {
-    // todo change data type
-    daily = await HealthTrackerAPI.getStatisticWeekDailyIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
-    });
+    const healthKitDataType = getDataTypeForHealthKit(dataType);
+
+    daily = await HealthTrackerAPI.getStatisticWeekDailyIOS(healthKitDataType);
   } else {
     daily = await RNFitnessTracker.getStatisticWeekDaily(dataType);
   }
@@ -142,21 +142,21 @@ const getData = async (
 
 /**
  * Returns total distance in meters for given time range
- * @param dataType {AndroidPermissionValues}
+ * @param dataType {GoogleFitDataTypes}
  * @param startDate {Date | number}
  * @param endDate {Date | number}
  * @return {Promise<Number>}
  */
 const queryTotal = async (
-  dataType: AndroidPermissionValues,
+  dataType: FitnessDataType,
   startDate: Date | number,
   endDate: Date | number,
 ): Promise<number> => {
   if (isIOS) {
-    // Todo: make ios use DataType
+    const healthKitDataType = getDataTypeForHealthKit(dataType);
+
     const total = await HealthTrackerAPI.queryTotalIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
+      ...healthKitDataType,
       startDate,
       endDate,
     });
@@ -172,14 +172,14 @@ const queryTotal = async (
  * @return {Promise<Number>} number of meters
  */
 const getStatisticWeekTotal = async (
-  dataType: AndroidPermissionValues,
+  dataType: FitnessDataType,
 ): Promise<number> => {
   if (isIOS) {
-    // todo use data types for ios
-    const total = await HealthTrackerAPI.getStatisticTotalForWeekIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
-    });
+    const healthKitDataType = getDataTypeForHealthKit(dataType);
+
+    const total = await HealthTrackerAPI.getStatisticTotalForWeekIOS(
+      healthKitDataType,
+    );
 
     return Number(total);
   } else {
@@ -189,21 +189,21 @@ const getStatisticWeekTotal = async (
 
 /**
  * Returns total distance in meters for given time range
- * @param dataType {AndroidPermissionValues}
+ * @param dataType {GoogleFitDataTypes}
  * @param startDate {Date | number}
  * @param endDate {Date | number}
  * @return {Promise<Number>}
  */
 const queryDailyTotals = async (
-  dataType: AndroidPermissionValues,
+  dataType: FitnessDataType,
   startDate: Date | number,
   endDate: Date | number,
 ): Promise<DailyData> => {
   if (isIOS) {
-    // todo create method for ios
+    const healthKitDataType = getDataTypeForHealthKit(dataType);
+
     return HealthTrackerAPI.queryDailyTotalsIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
+      ...healthKitDataType,
       startDate,
       endDate,
     });
@@ -217,14 +217,12 @@ const queryDailyTotals = async (
  * @return {Promise<DailyData>}
  */
 const getStatisticWeekDaily = async (
-  dataType: AndroidPermissionValues,
+  dataType: FitnessDataType,
 ): Promise<DailyData> => {
   if (isIOS) {
-    // todo do types for ios
-    return HealthTrackerAPI.getStatisticWeekDailyIOS({
-      key: HealthDataTypes.StepCount,
-      unit: UnitTypes.count,
-    });
+    const healthKitDataType = getDataTypeForHealthKit(dataType);
+
+    return HealthTrackerAPI.getStatisticWeekDailyIOS(healthKitDataType);
   } else {
     return RNFitnessTracker.getStatisticWeekDaily(dataType);
   }
