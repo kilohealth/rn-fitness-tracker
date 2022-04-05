@@ -205,6 +205,24 @@ const queryDataRecordsIOS = async ({
 };
 
 /**
+ * `iOS only!` Returns the latest record for specified data type and unit
+ * @param key {HealthDataType} e.g. `HealthDataType.Fiber`
+ * @param unit {UnitType} e.g. `UnitType.grams`
+ * @return {Promise<number>}
+ */
+const getLatestDataRecord = async ({
+  key,
+  unit,
+}: {
+  key: HealthDataType;
+  unit: UnitType;
+}): Promise<HealthDataRecordQuery> => {
+  if (isIOS) {
+    return RNHealthTracker.getLatestDataRecord(key, unit);
+  }
+};
+
+/**
  * `iOS only!` Returns workouts array for specified timeframe, filters by workout type if specified
  * @param startDate {Date | number}
  * @param endDate {Date | number}
@@ -406,6 +424,7 @@ export const HealthTrackerAPI = {
   deleteRecordIOS,
   getAbsoluteTotalForTodayIOS,
   getAuthStatusForTypeIOS,
+  getLatestDataRecord,
   getReadStatusForTypeIOS,
   getStatisticTotalForTodayIOS,
   getStatisticTotalForWeekIOS,

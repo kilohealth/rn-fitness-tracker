@@ -12,4 +12,8 @@ export const HealthKitKeyUnitByKey: {
     key: HealthDataType.StepCount,
     unit: UnitType.count,
   },
+  [FitnessDataType.Weight]: {
+    key: HealthDataType.BodyMass,
+    unit: UnitType.kilograms,
+  },
 };

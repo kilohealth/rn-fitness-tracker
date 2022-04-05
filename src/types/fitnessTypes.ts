@@ -69,6 +69,6 @@ export enum FitnessDataType {
   // Sleep = 'Sleep',
   // Speed = 'Speed',
   Steps = 'Steps',
-  // Weight = 'Weight',
+  Weight = 'Weight',
   // Workout = 'Workout',
 }

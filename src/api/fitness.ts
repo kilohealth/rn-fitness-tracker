@@ -228,9 +228,20 @@ const getStatisticWeekDaily = async (
   }
 };
 
+const getLatestWeightRecord = async () => {
+  if (isIOS) {
+    return HealthTrackerAPI.getLatestDataRecord(
+      getDataTypeForHealthKit(FitnessDataType.Weight),
+    );
+  } else {
+    // todo android implementation
+  }
+};
+
 export const FitnessTrackerAPI = {
   authorize,
   getData,
+  getLatestWeightRecord,
   getStatisticTodayTotal,
   getStatisticWeekDaily,
   getStatisticWeekTotal,
