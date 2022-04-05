@@ -13,19 +13,19 @@ import HealthKit
 @objc(RNHealthTracker)
 class RNHealthTracker: NSObject {
     private let healthStore: HKHealthStore = HKHealthStore()
-    
+
     @objc static func requiresMainQueueSetup() -> Bool {
         return true
     }
-    
+
     private func formatHKQuantityTypeIdentifier(_ dataKey: String) -> String {
         "HKQuantityTypeIdentifier\(dataKey)"
     }
-    
+
     private func transformDataKeyToHKQuantityType(_ dataKey: String) -> HKQuantityType? {
         HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: formatHKQuantityTypeIdentifier(dataKey)))
     }
-    
+
     private func transformDataKeyToHKSampleType(_ dataKey: String) -> HKSampleType? {
         if dataKey == "Workout" {
             return HKSampleType.workoutType()
@@ -33,7 +33,7 @@ class RNHealthTracker: NSObject {
             return HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: formatHKQuantityTypeIdentifier(dataKey)))
         }
     }
-    
+
     private func transformDataKeyToHKObject(_ dataKey: String) -> HKObjectType? {
         if dataKey == "Workout" {
             return HKObjectType.workoutType()
@@ -41,7 +41,7 @@ class RNHealthTracker: NSObject {
             return HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: formatHKQuantityTypeIdentifier(dataKey)))
         }
     }
-    
+
     private func standardErrorCode(_ code: Int?) -> String? {
         let descriptions = [
             "E_UNKNOWN",
@@ -53,22 +53,45 @@ class RNHealthTracker: NSObject {
         guard let code = code else {
             return descriptions[0]
         }
-        
+
         if code > descriptions.count - 1 {
             return descriptions[0]
         }
         return descriptions[code]
     }
-    
+
     private func isCumulative(quantityType: HKQuantityType, reject: @escaping RCTPromiseRejectBlock) -> Bool {
         let isCumulative = quantityType.aggregationStyle == .cumulative
         if !isCumulative {
             reject(standardErrorCode(1), "Invalid dataTypeIdentifier. HKQuantityType aggregation style must be cumulative", nil)
         }
-        
+
         return isCumulative
     }
-    
+
+    private func generateQuery(
+        dataTypeIdentifier: String,
+        startDate start: Date,
+        endDate end: Date,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> HKStatisticsCollectionQuery? {
+        var interval: DateComponents = DateComponents()
+        interval.day = 1
+
+        guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
+            reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+            return nil
+        }
+
+        if (!isCumulative(quantityType: quantityType, reject: reject)) { return nil }
+
+        return HKStatisticsCollectionQuery(quantityType: quantityType,
+                                                quantitySamplePredicate: nil,
+                                                options: .cumulativeSum,
+                                                anchorDate: start,
+                                                intervalComponents: interval)
+    }
+
     @objc public func getReadStatus(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -78,51 +101,51 @@ class RNHealthTracker: NSObject {
         let currentDate = Date()
         let start: Date? = RNFitnessUtils.daysAgo(date: currentDate, 720)
         let end: Date? = RNFitnessUtils.endOfDay(date: currentDate)
-        
+
         guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
         let predicate: NSPredicate = HKQuery.predicateForSamples(withStart: start, end: end, options: HKQueryOptions(rawValue: 0))
         let sortDescriptor: NSSortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
-        
+
         let sampleQuery: HKSampleQuery = HKSampleQuery.init(
             sampleType: sampleType,
             predicate: predicate,
             limit: 1,
             sortDescriptors: [sortDescriptor]
         ) { (query: HKSampleQuery, samples: [HKSample]?, error: Error?) in
-            
+
             if let error = error {
                 if error.localizedDescription == "Authorization not determined" {
                     resolve(0)
                 } else {
                     reject(self.standardErrorCode(2), error.localizedDescription, error)
                 }
-                
+
                 return
             }
-            
+
             guard let samples = samples as? [HKQuantitySample] else {
                 reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
                 return
             }
-            
+
             var quantitySum = 0.0;
             for sample in samples {
                 let value: Double = sample.quantity.doubleValue(for: HKUnit.init(from: unit))
                 quantitySum += value
             }
-            
+
             if quantitySum > 0 {
                 resolve(2)
             } else {
                 resolve(1)
             }
         }
-        
+
         healthStore.execute(sampleQuery)
     }
-    
+
     @objc public func authorize(
         _ shareTypes: [String],
         readTypes: [String],
@@ -133,13 +156,13 @@ class RNHealthTracker: NSObject {
             reject(self.standardErrorCode(3), "Health data is not supported on this device.", nil)
             return
         }
-        
+
         var read: Set<HKSampleType>? = nil
         var toShare: Set<HKSampleType>? = nil
-        
+
         if !readTypes.isEmpty {
             read = Set()
-            
+
             for dataType in readTypes {
                 guard let object: HKSampleType = transformDataKeyToHKSampleType(dataType) else {
                     reject(standardErrorCode(1), "Invalid read dataTypes.", nil)
@@ -148,10 +171,10 @@ class RNHealthTracker: NSObject {
                 read!.insert(object)
             }
         }
-        
+
         if !shareTypes.isEmpty {
             toShare = Set()
-            
+
             for dataType in shareTypes {
                 guard let object: HKSampleType = transformDataKeyToHKSampleType(dataType) else {
                     reject(standardErrorCode(1), "Invalid share dataTypes.", nil)
@@ -160,7 +183,7 @@ class RNHealthTracker: NSObject {
                 toShare!.insert(object)
             }
         }
-        
+
         healthStore.requestAuthorization(toShare: toShare, read: read) { success, error in
             if let error = error {
                 reject(self.standardErrorCode(nil), error.localizedDescription, error)
@@ -169,7 +192,7 @@ class RNHealthTracker: NSObject {
             }
         }
     }
-    
+
     @objc public func getStatisticTotalForToday(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -179,22 +202,14 @@ class RNHealthTracker: NSObject {
         let currentDate = Date()
         let start: Date = RNFitnessUtils.startOfDay(date: currentDate)
         let end: Date = RNFitnessUtils.endOfDay(date: start)
-        var interval: DateComponents = DateComponents()
-        interval.day = 1
-        
-        guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
-            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
-        }
-        
-        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
-        
-        // Create the query.
-        let query = HKStatisticsCollectionQuery(quantityType: quantityType,
-                                                quantitySamplePredicate: nil,
-                                                options: .cumulativeSum,
-                                                anchorDate: start,
-                                                intervalComponents: interval)
-        
+
+        guard let query = generateQuery(
+            dataTypeIdentifier: dataTypeIdentifier,
+            startDate: start,
+            endDate: end,
+            reject: reject
+        ) else { return }
+
         // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
             // Handle errors here.
@@ -210,32 +225,32 @@ class RNHealthTracker: NSObject {
                     return
                 }
             }
-            
+
             guard let statsCollection = results else {
                 // You should only hit this case if you have an unhandled error. Check for bugs
                 // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
-            
+
             statsCollection.enumerateStatistics(from: start, to: end) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
                 guard let quantity: HKQuantity = result.sumQuantity() else {
                     resolve(0)
                     return
                 }
-                
+
                 let value: Double = quantity.doubleValue(for: HKUnit.init(from: unit))
                 resolve(value)
             }
         }
-        
+
         healthStore.execute(query)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             self.healthStore.stop(query)
         }
     }
-    
+
     @objc public func getStatisticTotalForWeek(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -245,25 +260,17 @@ class RNHealthTracker: NSObject {
         let currentDate = Date()
         let end: Date = RNFitnessUtils.endOfDay(date: currentDate)
         let start: Date = RNFitnessUtils.startOfXDaysAgo(date: end, numberOfDays: 6)
-        var interval: DateComponents = DateComponents()
-        interval.day = 1
-        
-        guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
-            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
-        }
-        
-        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
-        
-        // Create the query.
-        let query = HKStatisticsCollectionQuery(quantityType: quantityType,
-                                                quantitySamplePredicate: nil,
-                                                options: .cumulativeSum,
-                                                anchorDate: start,
-                                                intervalComponents: interval)
-        
+
+        guard let query = generateQuery(
+            dataTypeIdentifier: dataTypeIdentifier,
+            startDate: start,
+            endDate: end,
+            reject: reject
+        ) else { return }
+
         // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
-            
+
             // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
@@ -277,37 +284,37 @@ class RNHealthTracker: NSObject {
                     return
                 }
             }
-            
+
             guard let statsCollection = results else {
                 // You should only hit this case if you have an unhandled error. Check for bugs
                 // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
-            
+
             var total: Double = 0;
-            
+
             statsCollection.enumerateStatistics(from: start, to: end) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
                 if let quantity: HKQuantity = result.sumQuantity() {
                     let value: Double = quantity.doubleValue(for: HKUnit.init(from: unit))
                     total += value;
                 }
             }
-            
+
             if unit == HKUnit.count().unitString {
                 resolve(Int(total))
             } else {
                 resolve(total)
             }
         }
-        
+
         healthStore.execute(query)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             self.healthStore.stop(query)
         }
     }
-    
+
     @objc public func queryTotal(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -316,28 +323,20 @@ class RNHealthTracker: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
-        
+
         let startDate = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
         let endDate = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
-        var interval: DateComponents = DateComponents()
-        interval.day = 1
-        
-        guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
-            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
-        }
-        
-        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
-        
-        // Create the query.
-        let query = HKStatisticsCollectionQuery(quantityType: quantityType,
-                                                quantitySamplePredicate: nil,
-                                                options: .cumulativeSum,
-                                                anchorDate: startDate,
-                                                intervalComponents: interval)
-        
+
+        guard let query = generateQuery(
+            dataTypeIdentifier: dataTypeIdentifier,
+            startDate: startDate,
+            endDate: endDate,
+            reject: reject
+        ) else { return }
+
         // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
-            
+
             // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
@@ -351,37 +350,37 @@ class RNHealthTracker: NSObject {
                     return
                 }
             }
-            
+
             guard let statsCollection = results else {
                 // You should only hit this case if you have an unhandled error. Check for bugs
                 // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
-            
+
             var total: Double = 0;
-            
+
             statsCollection.enumerateStatistics(from: startDate, to: endDate) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
                 if let quantity: HKQuantity = result.sumQuantity() {
                     let value: Double = quantity.doubleValue(for: HKUnit.init(from: unit))
                     total += value;
                 }
             }
-            
+
             if unit == HKUnit.count().unitString {
                 resolve("\(Int(total))")
             } else {
                 resolve("\(total)")
             }
         }
-        
+
         healthStore.execute(query)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             self.healthStore.stop(query)
         }
     }
-    
+
     @objc public func getStatisticWeekDaily(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -391,25 +390,17 @@ class RNHealthTracker: NSObject {
         let currentDate = Date()
         let end = RNFitnessUtils.endOfDay(date: currentDate)
         let start = RNFitnessUtils.startOfXDaysAgo(date: end, numberOfDays: 6)
-        var interval: DateComponents = DateComponents()
-        interval.day = 1
-        
-        guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
-            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
-        }
-        
-        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
-        
-        // Create the query.
-        let query = HKStatisticsCollectionQuery(quantityType: quantityType,
-                                                quantitySamplePredicate: nil,
-                                                options: .cumulativeSum,
-                                                anchorDate: start,
-                                                intervalComponents: interval)
-        
+
+        guard let query = generateQuery(
+            dataTypeIdentifier: dataTypeIdentifier,
+            startDate: start,
+            endDate: end,
+            reject: reject
+        ) else { return }
+
         // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
-            
+
             // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
@@ -423,42 +414,42 @@ class RNHealthTracker: NSObject {
                     return
                 }
             }
-            
-            
-            
+
+
+
             guard let statsCollection = results else {
                 // You should only hit this case if you have an unhandled error. Check for bugs
                 // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
-            
+
             var data: [String: Any] = [:]
-            
+
             statsCollection.enumerateStatistics(from: start, to: end) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
                 if let quantity: HKQuantity = result.sumQuantity() {
                     let dateString = RNFitnessUtils.formatIsoDateString(result.startDate)
-                    
+
                     var value: Any = quantity.doubleValue(for: HKUnit.init(from: unit))
-                    
+
                     if unit == HKUnit.count().unitString {
                         value = Int(value as! Double);
                     }
-                    
+
                     data[dateString] = value;
                 }
             }
-            
+
             resolve(data);
         }
-        
+
         healthStore.execute(query)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             self.healthStore.stop(query)
         }
     }
-    
+
     @objc public func queryDailyTotals(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -467,28 +458,19 @@ class RNHealthTracker: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
-        
         let startDate: Date = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
         let endDate: Date = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
-        var interval: DateComponents = DateComponents()
-        interval.day = 1
-        
-        guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
-            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
-        }
-        
-        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
-        
-        // Create the query.
-        let query = HKStatisticsCollectionQuery(quantityType: quantityType,
-                                                quantitySamplePredicate: nil,
-                                                options: .cumulativeSum,
-                                                anchorDate: startDate,
-                                                intervalComponents: interval)
-        
+
+        guard let query = generateQuery(
+            dataTypeIdentifier: dataTypeIdentifier,
+            startDate: startDate,
+            endDate: endDate,
+            reject: reject
+        ) else { return }
+
         // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
-            
+
             // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
@@ -502,40 +484,40 @@ class RNHealthTracker: NSObject {
                     return
                 }
             }
-            
+
             guard let statsCollection = results else {
                 // You should only hit this case if you have an unhandled error. Check for bugs
                 // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
-            
+
             var data: [String: Any] = [:]
-            
+
             statsCollection.enumerateStatistics(from: startDate, to: endDate) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
                 if let quantity: HKQuantity = result.sumQuantity() {
                     let dateString = RNFitnessUtils.formatIsoDateString(result.startDate)
-                    
+
                     var value: Any = quantity.doubleValue(for: HKUnit.init(from: unit))
-                    
+
                     if unit == HKUnit.count().unitString {
                         value = Int(value as! Double);
                     }
-                    
+
                     data[dateString] = value;
                 }
             }
-            
+
             resolve(data);
         }
-        
+
         healthStore.execute(query)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             self.healthStore.stop(query)
         }
     }
-    
+
     @objc public func writeData(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -545,19 +527,19 @@ class RNHealthTracker: NSObject {
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
-        
+
         guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
-        
+
         let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: amount.doubleValue)
         var date: Date = Date()
         if timestamp.intValue != -1 {
             date = RNFitnessUtils.getDateFrom(timestamp: timestamp.intValue)
         }
-        
+
         let dataObject: HKQuantitySample = HKQuantitySample.init(type: quantityType, quantity: quantity, start: date, end: date, metadata: metadata)
-        
+
         healthStore.save(dataObject) { success, error in
             if let error = error {
                 reject(self.standardErrorCode(nil), error.localizedDescription, error)
@@ -566,22 +548,22 @@ class RNHealthTracker: NSObject {
             }
         }
     }
-    
+
     @objc public func writeDataArray(
         _ dataArray: NSArray,
         resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
-        
+
         if dataArray.count > 0 {
             var dataArrayTransformed: [HKQuantitySample] = []
-            
+
             for (index, obj) in dataArray.enumerated() {
-                
+
                 guard let obj = obj as? NSDictionary else {
                     return reject(standardErrorCode(1), "Wrong data passed to RNHealthTracker:writeDataArray", nil)
                 }
-                
+
                 guard let dataTypeIdentifier: String = (obj["key"] as? String),
                       let unit: String = (obj["unit"] as? String),
                       let amount: NSNumber = (obj["amount"] as? NSNumber),
@@ -590,23 +572,23 @@ class RNHealthTracker: NSObject {
                 else {
                     return reject(standardErrorCode(1), "Wrong data passed to RNHealthTracker:writeDataArray, dataArray id \(index)", nil)
                 }
-                
+
                 var date: Date = Date()
                 if timestamp.intValue != -1 {
                     date = RNFitnessUtils.getDateFrom(timestamp: timestamp.intValue)
                 }
-                
+
                 guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
                     return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
                 }
-                
+
                 let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: amount.doubleValue)
-                
+
                 let dataObject: HKQuantitySample = HKQuantitySample.init(type: quantityType, quantity: quantity, start: date, end: date, metadata: metadata)
-                
+
                 dataArrayTransformed.append(dataObject)
             }
-            
+
             healthStore.save(dataArrayTransformed)  { success, error in
                 if let error = error {
                     reject(self.standardErrorCode(nil), error.localizedDescription, error)
@@ -618,7 +600,7 @@ class RNHealthTracker: NSObject {
             return reject(standardErrorCode(1), "Empty array was passed.", nil)
         }
     }
-    
+
     @objc public func queryDataRecordsForNumberOfDays(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -630,34 +612,34 @@ class RNHealthTracker: NSObject {
         let currentDate = Date()
         let start: Date = RNFitnessUtils.startOfXDaysAgo(date: currentDate, numberOfDays: numberOfDays.intValue)
         let end: Date = RNFitnessUtils.endOfDay(date: currentDate)
-        
+
         guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
         let predicate: NSPredicate = HKQuery.predicateForSamples(withStart: start, end: end, options: HKQueryOptions(rawValue: 0))
         let sortDescriptor: NSSortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
-        
+
         let limit = limit.intValue == 0 ? HKObjectQueryNoLimit : limit.intValue
         let sampleQuery: HKSampleQuery = HKSampleQuery.init(sampleType: sampleType, predicate: predicate, limit: limit, sortDescriptors: [sortDescriptor]) { (query: HKSampleQuery, samples: [HKSample]?, error: Error?) in
-            
+
             if let error = error {
                 return reject(self.standardErrorCode(2), error.localizedDescription, error)
             }
-            
+
             var dataRecords: [Dictionary<String, Any?>] = []
-            
+
             guard let samples = samples as? [HKQuantitySample] else {
                 reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
                 return
             }
-            
+
             for sample in samples {
                 let isoDate = RNFitnessUtils.formatUtcIsoDateTimeString(sample.endDate)
-                
+
                 let sourceDevice: String = sample.sourceRevision.productType ?? "unknown"
-                
+
                 let quantity: Double = sample.quantity.doubleValue(for: HKUnit.init(from: unit))
-                
+
                 dataRecords.append([
                     "uuid": sample.uuid.uuidString,
                     "date": isoDate,
@@ -671,13 +653,13 @@ class RNHealthTracker: NSObject {
                     ]
                 ])
             }
-            
+
             resolve(dataRecords);
         }
-        
+
         healthStore.execute(sampleQuery)
     }
-    
+
     @objc public func getLatestDataRecord(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -687,42 +669,42 @@ class RNHealthTracker: NSObject {
         guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
-        
+
         let sortDescriptor: NSSortDescriptor = NSSortDescriptor(
             key: HKSampleSortIdentifierStartDate,
             ascending: false
         )
-        
+
         let sampleQuery: HKSampleQuery = HKSampleQuery.init(
             sampleType: sampleType,
             predicate: nil,
             limit: 1,
             sortDescriptors: [sortDescriptor]
         ) { (query: HKSampleQuery, samples: [HKSample]?, error: Error?) in
-            
+
             if let error = error {
                 return reject(self.standardErrorCode(2), error.localizedDescription, error)
             }
-            
+
             guard let samples = samples as? [HKQuantitySample] else {
                 reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
                 return
             }
-            
+
             var dataRecords: Dictionary<String, Any?>
-            
+
             if samples.isEmpty {
                 return resolve(nil)
             }
-            
+
             let sample = samples[0]
-            
+
             let isoDate = RNFitnessUtils.formatUtcIsoDateTimeString(sample.endDate)
-            
+
             let sourceDevice: String = sample.sourceRevision.productType ?? "unknown"
-            
+
             let quantity: Double = sample.quantity.doubleValue(for: HKUnit.init(from: unit))
-            
+
             dataRecords = [
                 "uuid": sample.uuid.uuidString,
                 "date": isoDate,
@@ -735,13 +717,13 @@ class RNHealthTracker: NSObject {
                     "id": sample.sourceRevision.source.bundleIdentifier,
                 ]
             ]
-            
+
             resolve(dataRecords)
         }
-        
+
         healthStore.execute(sampleQuery)
     }
-    
+
     @objc public func recordWorkout(
         _ workoutWithActivityType: NSNumber,
         start: NSNumber,
@@ -755,12 +737,12 @@ class RNHealthTracker: NSObject {
         let startDate: Date = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
         let endDate: Date = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
         let totalEnergyBurned: HKQuantity = HKQuantity.init(unit: .kilocalorie(), doubleValue: energyBurned.doubleValue)
-        
+
         let totalDistance: HKQuantity = HKQuantity.init(unit: .meter(), doubleValue: distance.doubleValue)
         guard let activityType = HKWorkoutActivityType.init(rawValue: workoutWithActivityType.uintValue) else {
             return reject(standardErrorCode(1), "Invalid workoutWithActivityType.", nil)
         }
-        
+
         let workout: HKWorkout = HKWorkout.init(
             activityType: activityType,
             start: startDate,
@@ -770,7 +752,7 @@ class RNHealthTracker: NSObject {
             totalDistance: totalDistance,
             metadata: metadata
         )
-        
+
         healthStore.save(workout) { success, error in
             // TODO make this seperate function
             if let error = error {
@@ -780,7 +762,7 @@ class RNHealthTracker: NSObject {
             }
         }
     }
-    
+
     @objc public func queryWorkouts(
         _ workoutActivityType: NSNumber,
         start: NSNumber,
@@ -790,9 +772,9 @@ class RNHealthTracker: NSObject {
     ) {
         let startDate = RNFitnessUtils.getDateFrom(timestamp: start.intValue)
         let endDate = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
-        
+
         var predicate: NSPredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.init(rawValue: 0))
-        
+
         if workoutActivityType.uintValue > 0 {
             guard let workoutType = HKWorkoutActivityType.init(rawValue: workoutActivityType.uintValue) else {
                 return reject(standardErrorCode(1), "Invalid workoutActivityType.", nil)
@@ -800,38 +782,38 @@ class RNHealthTracker: NSObject {
             let workoutTypePredicate = HKQuery.predicateForWorkouts(with: workoutType)
             predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [predicate, workoutTypePredicate])
         }
-        
+
         let sortDescriptor = NSSortDescriptor.init(key: HKSampleSortIdentifierStartDate, ascending: false)
-        
+
         let query: HKSampleQuery = HKSampleQuery.init(
             sampleType: HKWorkoutType.workoutType(),
             predicate: predicate,
             limit: HKObjectQueryNoLimit,
             sortDescriptors: [sortDescriptor]
         ) { query, samples, error in
-            
+
             if let error = error {
                 return reject(self.standardErrorCode(2), error.localizedDescription, error)
             }
-            
+
             var dataRecords: [Dictionary<String, Any?>] = []
-            
+
             guard let samples = samples as? [HKWorkout] else {
                 reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
                 return
             }
-            
+
             for sample in samples {
-                
+
                 let workout: HKWorkout = sample
-                
+
                 let sourceDevice: String = sample.sourceRevision.productType ?? "unknown"
-                
+
                 let distance: Double? = workout.totalDistance?.doubleValue(for: .meter())
                 let energyBurned: Double? = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie())
                 let isoStartDate = RNFitnessUtils.formatUtcIsoDateTimeString(workout.startDate)
                 let isoEndDate = RNFitnessUtils.formatUtcIsoDateTimeString(workout.endDate)
-                
+
                 dataRecords.append([
                     "uuid": workout.uuid.uuidString,
                     "duration": workout.duration,
@@ -848,17 +830,17 @@ class RNHealthTracker: NSObject {
                     ]
                 ])
             }
-            
+
             resolve(dataRecords);
         }
-        
+
         healthStore.execute(query)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             self.healthStore.stop(query)
         }
     }
-    
+
     @objc public func writeBloodPressure(
         _ systolicPressure: NSNumber,
         diastolicPressure: NSNumber,
@@ -872,7 +854,7 @@ class RNHealthTracker: NSObject {
         let endDate = RNFitnessUtils.getDateFrom(timestamp: end.intValue)
         let systolicQuantity: HKQuantity = HKQuantity.init(unit: HKUnit.millimeterOfMercury(), doubleValue: systolicPressure.doubleValue)
         let diastolicQuantity: HKQuantity = HKQuantity.init(unit: HKUnit.millimeterOfMercury(), doubleValue: diastolicPressure.doubleValue)
-        
+
         guard
             let systolicType = HKObjectType.quantityType(forIdentifier: .bloodPressureSystolic),
             let diastolicType = HKObjectType.quantityType(forIdentifier: .bloodPressureDiastolic),
@@ -880,14 +862,14 @@ class RNHealthTracker: NSObject {
         else {
             return reject(standardErrorCode(0), "Error getting quantity type.", nil)
         }
-        
+
         let systolicSample = HKQuantitySample.init(type: systolicType, quantity: systolicQuantity, start: startDate, end: endDate, metadata: metadata)
         let diastolicSample = HKQuantitySample.init(type: diastolicType, quantity: diastolicQuantity, start: startDate, end: endDate, metadata: metadata)
-        
+
         let bloodPressureSet: Set<HKSample> = Set([systolicSample, diastolicSample])
-        
+
         let bloodPressureSample = HKCorrelation.init(type: bloodPressureType, start: startDate, end: endDate, objects: bloodPressureSet, metadata: metadata)
-        
+
         healthStore.save(bloodPressureSample) { success, error in
             if let error = error {
                 reject(self.standardErrorCode(nil), error.localizedDescription, error)
@@ -896,7 +878,7 @@ class RNHealthTracker: NSObject {
             }
         }
     }
-    
+
     @objc public func getAuthorizationStatusForType(
         _ dataTypeIdentifier: String,
         resolve: @escaping RCTPromiseResolveBlock,
@@ -905,12 +887,12 @@ class RNHealthTracker: NSObject {
         guard let type = transformDataKeyToHKObject(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
-        
+
         let status = healthStore.authorizationStatus(for: type)
-        
+
         resolve(status.rawValue)
     }
-    
+
     @objc public func deleteRecord(
         _ dataTypeIdentifier: String,
         uuid: String?,
@@ -920,7 +902,7 @@ class RNHealthTracker: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) {
         var predicate: NSPredicate = HKQuery.predicateForObjects(from: HKSource.default())
-        
+
         if let uuid = uuid {
             if let uuid: UUID = UUID.init(uuidString: uuid) {
                 let predicateUuid = HKQuery.predicateForObject(with: uuid)
@@ -938,56 +920,56 @@ class RNHealthTracker: NSObject {
                 return reject(standardErrorCode(1), "startDate and endDate must be defined more than 0.", nil)
             }
         }
-        
+
         guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
-        
+
         let sortDescriptor = NSSortDescriptor.init(key: HKSampleSortIdentifierStartDate, ascending: true)
-        
+
         let sampleQuery: HKSampleQuery = HKSampleQuery.init(
             sampleType: sampleType,
             predicate: predicate,
             limit: HKObjectQueryNoLimit,
             sortDescriptors: [sortDescriptor]
         ) { (query: HKSampleQuery, samples: [HKObject]?, error: Error?) in
-            
+
             if let error = error {
                 return reject(self.standardErrorCode(0), error.localizedDescription, error)
             }
-            
+
             guard let samples = samples else {
                 reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
                 return
             }
-            
+
             if samples.count == 0 {
                 resolve(0)
                 return
             }
-            
+
             var count = samples.count
             var deletedSamples = 0
-            
+
             for sample in samples {
                 self.healthStore.delete(sample) { success, error in
                     count -= 1
-                    
+
                     if let error = error {
                         print(error.localizedDescription)
                         //                        return reject(self.standardErrorCode(0), error.localizedDescription, error)
                     } else {
                         deletedSamples += 1
                     }
-                    
+
                     if count < 1 {
                         resolve(deletedSamples)
                     }
                 }
             }
         }
-        
+
         healthStore.execute(sampleQuery)
     }
-    
+
 }
