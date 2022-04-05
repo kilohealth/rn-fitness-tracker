@@ -60,6 +60,15 @@ class RNHealthTracker: NSObject {
         return descriptions[code]
     }
     
+    private func isCumulative(quantityType: HKQuantityType, reject: @escaping RCTPromiseRejectBlock) -> Bool {
+        let isCumulative = quantityType.aggregationStyle == .cumulative
+        if !isCumulative {
+            reject(standardErrorCode(1), "Invalid dataTypeIdentifier. HKQuantityType aggregation style must be cumulative", nil)
+        }
+        
+        return isCumulative
+    }
+    
     @objc public func getReadStatus(
         _ dataTypeIdentifier: String,
         unit: String,
@@ -177,6 +186,8 @@ class RNHealthTracker: NSObject {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
         
+        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
+        
         // Create the query.
         let query = HKStatisticsCollectionQuery(quantityType: quantityType,
                                                 quantitySamplePredicate: nil,
@@ -186,7 +197,6 @@ class RNHealthTracker: NSObject {
         
         // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
-            
             // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
@@ -241,6 +251,8 @@ class RNHealthTracker: NSObject {
         guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
+        
+        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
         
         // Create the query.
         let query = HKStatisticsCollectionQuery(quantityType: quantityType,
@@ -314,6 +326,8 @@ class RNHealthTracker: NSObject {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
         
+        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
+        
         // Create the query.
         let query = HKStatisticsCollectionQuery(quantityType: quantityType,
                                                 quantitySamplePredicate: nil,
@@ -383,6 +397,8 @@ class RNHealthTracker: NSObject {
         guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
+        
+        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
         
         // Create the query.
         let query = HKStatisticsCollectionQuery(quantityType: quantityType,
@@ -460,6 +476,8 @@ class RNHealthTracker: NSObject {
         guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
             return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
         }
+        
+        if (!isCumulative(quantityType: quantityType, reject: reject)) { return }
         
         // Create the query.
         let query = HKStatisticsCollectionQuery(quantityType: quantityType,
