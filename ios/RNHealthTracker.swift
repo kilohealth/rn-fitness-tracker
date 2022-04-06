@@ -242,25 +242,19 @@ class RNHealthTracker: NSObject {
             reject: reject
         ) else { return }
         
-        // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
-            // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    // HealthKit couldn't access the database because the device is locked.
                     reject(self.standardErrorCode(4), error.localizedDescription, error)
                     return
                 default:
-                    // Handle other HealthKit errors here.
                     reject(self.standardErrorCode(nil), error.localizedDescription, error)
                     return
                 }
             }
             
             guard let statsCollection = results else {
-                // You should only hit this case if you have an unhandled error. Check for bugs
-                // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
@@ -300,26 +294,20 @@ class RNHealthTracker: NSObject {
             reject: reject
         ) else { return }
         
-        // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
             
-            // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    // HealthKit couldn't access the database because the device is locked.
                     reject(self.standardErrorCode(4), error.localizedDescription, error)
                     return
                 default:
-                    // Handle other HealthKit errors here.
                     reject(self.standardErrorCode(nil), error.localizedDescription, error)
                     return
                 }
             }
             
             guard let statsCollection = results else {
-                // You should only hit this case if you have an unhandled error. Check for bugs
-                // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
@@ -366,26 +354,20 @@ class RNHealthTracker: NSObject {
             reject: reject
         ) else { return }
         
-        // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
             
-            // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    // HealthKit couldn't access the database because the device is locked.
                     reject(self.standardErrorCode(4), error.localizedDescription, error)
                     return
                 default:
-                    // Handle other HealthKit errors here.
                     reject(self.standardErrorCode(nil), error.localizedDescription, error)
                     return
                 }
             }
             
             guard let statsCollection = results else {
-                // You should only hit this case if you have an unhandled error. Check for bugs
-                // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
@@ -430,18 +412,14 @@ class RNHealthTracker: NSObject {
             reject: reject
         ) else { return }
         
-        // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
             
-            // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    // HealthKit couldn't access the database because the device is locked.
                     reject(self.standardErrorCode(4), error.localizedDescription, error)
                     return
                 default:
-                    // Handle other HealthKit errors here.
                     reject(self.standardErrorCode(nil), error.localizedDescription, error)
                     return
                 }
@@ -450,8 +428,6 @@ class RNHealthTracker: NSObject {
             
             
             guard let statsCollection = results else {
-                // You should only hit this case if you have an unhandled error. Check for bugs
-                // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
@@ -500,26 +476,20 @@ class RNHealthTracker: NSObject {
             reject: reject
         ) else { return }
         
-        // Set the results handler.
         query.initialResultsHandler = { (query: HKStatisticsCollectionQuery, results: HKStatisticsCollection?, error: Error?) in
             
-            // Handle errors here.
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    // HealthKit couldn't access the database because the device is locked.
                     reject(self.standardErrorCode(4), error.localizedDescription, error)
                     return
                 default:
-                    // Handle other HealthKit errors here.
                     reject(self.standardErrorCode(nil), error.localizedDescription, error)
                     return
                 }
             }
             
             guard let statsCollection = results else {
-                // You should only hit this case if you have an unhandled error. Check for bugs
-                // in your code that creates the query, or explicitly handle the error.
                 reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
                 return
             }
