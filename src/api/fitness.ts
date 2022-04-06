@@ -106,7 +106,7 @@ const getStatisticTodayTotal = async (
   if (isIOS) {
     const healthKitDataType = getDataTypeForHealthKit(dataType);
 
-    const total = await HealthTrackerAPI.getStatisticTotalForTodayIOS(
+    const total = await HealthTrackerAPI.getStatisticTotalForToday(
       healthKitDataType,
     );
     return Number(total);
@@ -126,7 +126,7 @@ const getData = async (
   if (isIOS) {
     const healthKitDataType = getDataTypeForHealthKit(dataType);
 
-    daily = await HealthTrackerAPI.getStatisticWeekDailyIOS(healthKitDataType);
+    daily = await HealthTrackerAPI.getStatisticWeekDaily(healthKitDataType);
   } else {
     daily = await RNFitnessTracker.getStatisticWeekDaily(dataType);
   }
@@ -155,7 +155,7 @@ const queryTotal = async (
   if (isIOS) {
     const healthKitDataType = getDataTypeForHealthKit(dataType);
 
-    const total = await HealthTrackerAPI.queryTotalIOS({
+    const total = await HealthTrackerAPI.queryTotal({
       ...healthKitDataType,
       startDate,
       endDate,
@@ -177,7 +177,7 @@ const getStatisticWeekTotal = async (
   if (isIOS) {
     const healthKitDataType = getDataTypeForHealthKit(dataType);
 
-    const total = await HealthTrackerAPI.getStatisticTotalForWeekIOS(
+    const total = await HealthTrackerAPI.getStatisticTotalForWeek(
       healthKitDataType,
     );
 
@@ -202,7 +202,7 @@ const queryDailyTotals = async (
   if (isIOS) {
     const healthKitDataType = getDataTypeForHealthKit(dataType);
 
-    return HealthTrackerAPI.queryDailyTotalsIOS({
+    return HealthTrackerAPI.queryDailyTotals({
       ...healthKitDataType,
       startDate,
       endDate,
@@ -222,7 +222,7 @@ const getStatisticWeekDaily = async (
   if (isIOS) {
     const healthKitDataType = getDataTypeForHealthKit(dataType);
 
-    return HealthTrackerAPI.getStatisticWeekDailyIOS(healthKitDataType);
+    return HealthTrackerAPI.getStatisticWeekDaily(healthKitDataType);
   } else {
     return RNFitnessTracker.getStatisticWeekDaily(dataType);
   }

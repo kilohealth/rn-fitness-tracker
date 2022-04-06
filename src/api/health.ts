@@ -19,7 +19,7 @@ const { RNHealthTracker } = NativeModules;
  * `iOS only!` returns health tracking is supported
  * @return {Promise<boolean>}
  */
-const isTrackingSupportedIOS = async (): Promise<boolean> => {
+const isTrackingSupported = async (): Promise<boolean> => {
   if (isIOS) {
     const response = await RNHealthTracker.isTrackingSupported();
     return !!response;
@@ -52,7 +52,7 @@ const authorize = async (
  * @param object.timestamp {number} optional unix timestamp for record date
  * @return {Promise<boolean>}
  */
-const writeDataIOS = async ({
+const writeData = async ({
   key,
   unit,
   amount,
@@ -86,7 +86,7 @@ const writeDataIOS = async ({
  * @param dataArray.object.metadata {object}
  * @return {Promise<boolean>}
  */
-const writeDataArrayIOS = async (
+const writeDataArray = async (
   dataArray: Array<{
     key: HealthDataType;
     unit: UnitType;
@@ -106,7 +106,7 @@ const writeDataArrayIOS = async (
  * @param unit {UnitType} e.g. `UnitType.grams`
  * @return {Promise<number>}
  */
-const getAbsoluteTotalForTodayIOS = async ({
+const getAbsoluteTotalForToday = async ({
   key,
   unit,
 }: {
@@ -125,7 +125,7 @@ const getAbsoluteTotalForTodayIOS = async ({
  * @param unit {UnitType} e.g. `UnitType.grams`
  * @return {Promise<number>}
  */
-const getStatisticTotalForTodayIOS = async ({
+const getStatisticTotalForToday = async ({
   key,
   unit,
 }: {
@@ -144,7 +144,7 @@ const getStatisticTotalForTodayIOS = async ({
  * @param unit {UnitType} e.g. `UnitType.grams`
  * @return {Promise<number>}
  */
-const getStatisticTotalForWeekIOS = async ({
+const getStatisticTotalForWeek = async ({
   key,
   unit,
 }: {
@@ -163,7 +163,7 @@ const getStatisticTotalForWeekIOS = async ({
  * @param unit {UnitType} e.g. `UnitType.grams`
  * @return {Promise<object>}
  */
-const getStatisticWeekDailyIOS = async ({
+const getStatisticWeekDaily = async ({
   key,
   unit,
 }: {
@@ -183,7 +183,7 @@ const getStatisticWeekDailyIOS = async ({
  * @param limit {number}
  * @return {Promise<number>}
  */
-const queryDataRecordsIOS = async ({
+const queryDataRecords = async ({
   key,
   unit,
   numberOfDays,
@@ -229,7 +229,7 @@ const getLatestDataRecord = async ({
  * @param key {WorkoutType} e.g. `WorkoutType.Running` (Optional)
  * @return {Promise<WorkoutQueryData>}
  */
-const queryWorkoutsIOS = async ({
+const queryWorkouts = async ({
   startDate,
   endDate,
   key = 0,
@@ -251,7 +251,7 @@ const queryWorkoutsIOS = async ({
  * @param endDate {Date | number}
  * @return {Promise<object>}
  */
-const queryDailyTotalsIOS = async ({
+const queryDailyTotals = async ({
   key,
   unit,
   startDate,
@@ -275,7 +275,7 @@ const queryDailyTotalsIOS = async ({
  * @param endDate {Date | number}
  * @return {Promise<object>}
  */
-const queryTotalIOS = async ({
+const queryTotal = async ({
   key,
   unit,
   startDate,
@@ -301,7 +301,7 @@ const queryTotalIOS = async ({
  * @param metadata {object} (Optional)
  * @return {Promise<boolean>}
  */
-const recordWorkoutIOS = async ({
+const recordWorkout = async ({
   key,
   startDate,
   endDate,
@@ -336,7 +336,7 @@ const recordWorkoutIOS = async ({
  * @param metadata {object}
  * @return {Promise<boolean>}
  */
-const writeBloodPressureIOS = async ({
+const writeBloodPressure = async ({
   systolicPressure,
   diastolicPressure,
   date,
@@ -363,9 +363,7 @@ const writeBloodPressureIOS = async ({
  * @param key {HealthDataType} e.g. `HealthDataType.Fiber`
  * @return {Promise<number>} 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized
  */
-const getAuthStatusForTypeIOS = async (
-  key: HealthDataType,
-): Promise<number> => {
+const getAuthStatusForType = async (key: HealthDataType): Promise<number> => {
   if (isIOS) {
     return await RNHealthTracker.getAuthorizationStatusForType(key);
   }
@@ -378,7 +376,7 @@ const getAuthStatusForTypeIOS = async (
  * @param unit {HealthDataType} e.g. `HealthDataType.Fiber`
  * @return {Promise<number>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
  */
-const getReadStatusForTypeIOS = async ({
+const getReadStatusForType = async ({
   key,
   unit,
 }: {
@@ -397,7 +395,7 @@ const getReadStatusForTypeIOS = async ({
  * @param date {number} optional unix timestamp for record date
  * @return {Promise<number>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
  */
-const deleteRecordIOS = async ({
+const deleteRecord = async ({
   key,
   uuid = null,
   startDate = 0,
@@ -421,21 +419,21 @@ const deleteRecordIOS = async ({
 
 export const HealthTrackerAPI = {
   authorize,
-  deleteRecordIOS,
-  getAbsoluteTotalForTodayIOS,
-  getAuthStatusForTypeIOS,
+  deleteRecord,
+  getAbsoluteTotalForToday,
+  getAuthStatusForType,
   getLatestDataRecord,
-  getReadStatusForTypeIOS,
-  getStatisticTotalForTodayIOS,
-  getStatisticTotalForWeekIOS,
-  getStatisticWeekDailyIOS,
-  isTrackingSupportedIOS,
-  queryDailyTotalsIOS,
-  queryDataRecordsIOS,
-  queryTotalIOS,
-  queryWorkoutsIOS,
-  recordWorkoutIOS,
-  writeBloodPressureIOS,
-  writeDataArrayIOS,
-  writeDataIOS,
+  getReadStatusForType,
+  getStatisticTotalForToday,
+  getStatisticTotalForWeek,
+  getStatisticWeekDaily,
+  isTrackingSupported,
+  queryDailyTotals,
+  queryDataRecords,
+  queryTotal,
+  queryWorkouts,
+  recordWorkout,
+  writeBloodPressure,
+  writeDataArray,
+  writeData,
 };
