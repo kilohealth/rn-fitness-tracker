@@ -179,28 +179,23 @@ const getStatisticWeekDaily = async ({
  * `iOS only!` Returns every record for specified data type and unit for specified number of days
  * @param key {HealthDataType} e.g. `HealthDataType.Fiber`
  * @param unit {UnitType} e.g. `UnitType.grams`
- * @param numberOfDays {number}
- * @param limit {number}
+ * @param startDate {Date | number}
+ * @param endDate {Date | number}
  * @return {Promise<number>}
  */
 const queryDataRecords = async ({
   key,
   unit,
-  numberOfDays,
-  limit = 0,
+  startDate,
+  endDate,
 }: {
   key: HealthDataType;
   unit: UnitType;
-  numberOfDays: number;
-  limit?: number;
+  startDate: Date | number;
+  endDate: Date | number;
 }): Promise<HealthDataRecordQuery> => {
   if (isIOS) {
-    return RNHealthTracker.queryDataRecordsForNumberOfDays(
-      key,
-      unit,
-      numberOfDays,
-      limit,
-    );
+    return RNHealthTracker.queryDataRecords(key, unit, +startDate, +endDate);
   }
 };
 

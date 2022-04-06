@@ -52,11 +52,11 @@ RCT_EXTERN_METHOD(writeDataArray:
                   (NSArray*)dataArray
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(queryDataRecordsForNumberOfDays:
+RCT_EXTERN_METHOD(queryDataRecords:
                   (NSString*)dataTypeIdentifier
                   unit:(NSString*)unit
-                  numberOfDays:(nonnull NSNumber*)numberOfDays
-                  limit:(nonnull NSNumber*)limit
+                  start:(nonnull NSNumber *)start
+                  end:(nonnull NSNumber *)end
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(getLatestDataRecord:
