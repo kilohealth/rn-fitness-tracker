@@ -62,7 +62,7 @@ const writeData = async ({
   key: HealthDataType;
   unit: UnitType;
   amount: number;
-  metadata: HealthKitMetadata;
+  metadata?: HealthKitMetadata;
   timestamp?: number;
 }): Promise<boolean> => {
   if (isIOS) {
@@ -231,7 +231,7 @@ const queryWorkouts = async ({
 }: {
   startDate: Date | number;
   endDate: Date | number;
-  key: WorkoutType | 0;
+  key?: WorkoutType | 0;
 }): Promise<WorkoutQueryData<WorkoutType>> => {
   if (isIOS) {
     return RNHealthTracker.queryWorkouts(key, +startDate, +endDate);
@@ -307,8 +307,8 @@ const recordWorkout = async ({
   key: WorkoutType;
   startDate: Date | number;
   endDate: Date | number;
-  energyBurned: number;
-  totalDistance: number;
+  energyBurned?: number;
+  totalDistance?: number;
   metadata?: HealthKitMetadata;
 }): Promise<boolean> => {
   if (isIOS) {
