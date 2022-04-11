@@ -60,7 +60,7 @@ export enum FitnessDataType {
   // Cycling = 'Cycling',
   Distance = 'Distance',
   // HeartRate = 'HeartRate',
-  // Height = 'Height',
+  Height = 'Height',
   // Hydration = 'Hydration',
   // Location = 'Location',
   // MoveMinutes = 'MoveMinutes',

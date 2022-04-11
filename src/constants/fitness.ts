@@ -8,6 +8,10 @@ export const HealthKitKeyUnitByKey: {
     key: HealthDataType.DistanceWalkingRunning,
     unit: UnitType.meters,
   },
+  [FitnessDataType.Height]: {
+    key: HealthDataType.Height,
+    unit: UnitType.meters,
+  },
   [FitnessDataType.Steps]: {
     key: HealthDataType.StepCount,
     unit: UnitType.count,
