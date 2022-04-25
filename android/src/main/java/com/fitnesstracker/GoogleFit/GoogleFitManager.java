@@ -40,8 +40,26 @@ public class GoogleFitManager implements ActivityEventListener {
   }
 
   public void subscribeToActivityData() {
-    Fitness.getRecordingClient(this.activity, GoogleSignIn.getLastSignedInAccount(this.activity))
+    GoogleSignInAccount googleAccount = getGoogleAccount();
+    Fitness.getRecordingClient(this.activity, googleAccount)
             .subscribe(DataType.TYPE_STEP_COUNT_DELTA);
+  }
+
+  /*
+   * Gets a Google account for use in creating the fitness client. This is
+   * achieved by either using the last signed-in account, or if necessary,
+   * prompting the user to sign in. It's better to use the
+   * getAccountForExtension() method instead of the getLastSignedInAccount()
+   * method because the latter can return null if there has been no sign in
+   * before.
+   */
+  private GoogleSignInAccount getGoogleAccount() {
+    return GoogleSignIn.getAccountForExtension(this.reactContext, fitnessOptions);
+  }
+
+  private Boolean hasPermissions() {
+    GoogleSignInAccount googleAccount = getGoogleAccount();
+    return GoogleSignIn.hasPermissions(googleAccount, this.fitnessOptions);
   }
 
   @Override
@@ -57,8 +75,8 @@ public class GoogleFitManager implements ActivityEventListener {
         this.authorisationPromise.resolve(false);
       }
     } else if (requestCode == SIGN_IN_REQUEST_CODE) {
-      GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(activity);
-      this.requestFitnessPermissions(googleSignInAccount);
+      GoogleSignInAccount googleAccount = getGoogleAccount();
+      this.requestFitnessPermissions(googleAccount);
     }
   }
 
@@ -67,10 +85,10 @@ public class GoogleFitManager implements ActivityEventListener {
       this.activity = activity;
       this.authorisationPromise = promise;
 
-      GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this.reactContext);
-      /* Check if app has google fit permissions */
-      if (!GoogleSignIn.hasPermissions(lastSignedInAccount, this.fitnessOptions)) {
-        requestFitnessPermissions(lastSignedInAccount);
+
+      GoogleSignInAccount googleAccount = getGoogleAccount();
+      if (!hasPermissions()) {
+        requestFitnessPermissions(googleAccount);
       } else {
         accessGoogleFit();
       }
@@ -85,13 +103,11 @@ public class GoogleFitManager implements ActivityEventListener {
       this.activity = activity;
       this.authorisationPromise = promise;
 
-      Boolean hasPermissions = GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this.reactContext), this.fitnessOptions);
-
-      if (hasPermissions) {
+      if (hasPermissions()) {
         accessGoogleFit();
+      } else {
+        authorisationPromise.resolve(false);
       }
-
-      authorisationPromise.resolve(hasPermissions);
     } catch (Exception e) {
       authorisationPromise.reject(e);
       e.printStackTrace();
@@ -142,7 +158,7 @@ public class GoogleFitManager implements ActivityEventListener {
 
       Calendar cal = Calendar.getInstance();
       cal.setTime(endDate);
-      cal.add(Calendar.DATE, -7);
+      cal.add(Calendar.DATE, -6);
       Date startDate = cal.getTime();
 
       this.historyClient.getDailyStepsForNumberOfDays(startDate, endDate, Arguments.createMap(), promise);

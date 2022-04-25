@@ -1,3 +1,24 @@
+#### 1.5.4 (2022-04-25)
+
+##### Chores
+
+*  fixed changelog (206e2b91)
+*  creates tag without v prefix (a38056de)
+
+##### Bug Fixes
+
+* **android:**
+  *  gets google account for context instead of last signed in account (Error: 4: The user must be signed in to make this API call.) (e2c35231)
+  *  getStepsDaily returns 7 days instead of 8 (92145406)
+
+##### Other Changes
+
+* rn-fitness-tracker/rn-fitness-tracker into fix/access-google-fit-if-tracking-is-available (857dc5b3)
+
+##### Refactors
+
+* **android:**  removed unused Log import (81ad37ca)
+
 #### 1.5.3 (2021-12-14)
 
 ##### Bug Fixes
