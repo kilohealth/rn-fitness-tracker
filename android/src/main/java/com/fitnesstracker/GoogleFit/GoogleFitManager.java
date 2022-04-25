@@ -142,7 +142,7 @@ public class GoogleFitManager implements ActivityEventListener {
 
       Calendar cal = Calendar.getInstance();
       cal.setTime(endDate);
-      cal.add(Calendar.DATE, -7);
+      cal.add(Calendar.DATE, -6);
       Date startDate = cal.getTime();
 
       this.historyClient.getDailyStepsForNumberOfDays(startDate, endDate, Arguments.createMap(), promise);
