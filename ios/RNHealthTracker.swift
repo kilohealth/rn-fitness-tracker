@@ -266,7 +266,7 @@ class RNHealthTracker: NSObject {
                 }
 
                 let value: Double = quantity.doubleValue(for: HKUnit.init(from: unit))
-                resolve(value)
+                resolve(value.rounded(toPlaces: 2))
             }
         }
 
@@ -324,7 +324,7 @@ class RNHealthTracker: NSObject {
             if unit == HKUnit.count().unitString {
                 resolve(Int(total))
             } else {
-                resolve(total)
+                resolve(total.rounded(toPlaces: 2))
             }
         }
 
@@ -382,15 +382,15 @@ class RNHealthTracker: NSObject {
             }
 
             if unit == HKUnit.count().unitString {
-                resolve("\(Int(total))")
+                resolve(Int(total))
             } else {
-                resolve("\(total)")
+                resolve(total.rounded(toPlaces: 2))
             }
         }
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 20) {
             self.healthStore.stop(query)
         }
     }
@@ -442,6 +442,8 @@ class RNHealthTracker: NSObject {
 
                     if unit == HKUnit.count().unitString {
                         value = Int(value as! Double);
+                    } else {
+                        value = (value as! Double).rounded(toPlaces: 2)
                     }
 
                     data[dateString] = value;
@@ -504,6 +506,8 @@ class RNHealthTracker: NSObject {
 
                     if unit == HKUnit.count().unitString {
                         value = Int(value as! Double);
+                    } else {
+                        value = (value as! Double).rounded(toPlaces: 2)
                     }
 
                     data[dateString] = value;
