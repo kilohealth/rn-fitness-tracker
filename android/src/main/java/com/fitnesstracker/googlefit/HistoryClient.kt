@@ -5,20 +5,19 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.WritableMap
 import com.fitnesstracker.permission.Permission
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.data.Bucket
 import com.google.android.gms.fitness.data.DataPoint
 import com.google.android.gms.fitness.data.DataSet
 import com.google.android.gms.fitness.data.DataType
-import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
-import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
 class HistoryClient(private val activity: Activity) {
     fun queryTotal(
@@ -130,6 +129,60 @@ class HistoryClient(private val activity: Activity) {
                         }
                     })
             }
+        } catch (e: Exception) {
+            promise.reject(e)
+            e.printStackTrace()
+        }
+    }
+
+    fun getLatestDataRecord(promise: Promise, permission: Permission) {
+        try {
+            val endTime = Date().time
+            val startTime: Long = 1
+
+            val dataType = permission.dataTypes.first()
+
+            if (dataType != DataType.TYPE_WEIGHT && dataType != DataType.TYPE_HEIGHT) {
+                throw IllegalArgumentException("DataType must be of type: {TYPE_WEIGHT, TYPE_HEIGHT}")
+            }
+
+            val readRequest = DataReadRequest.Builder()
+                .read(dataType)
+                .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+                .setLimit(1)
+                .build()
+
+            val onFailure = { e: Exception -> promise.reject(e) }
+            val onSuccess = { task: Task<DataReadResponse> ->
+                if (task.isSuccessful) {
+                    var data: Float? = null
+                    val response = task.result
+
+                    val dataSets: List<DataSet> = response.dataSets
+
+                    for (dataSet in dataSets) {
+                        val dataPoints: List<DataPoint> = dataSet.dataPoints
+
+                        for (dataPoint in dataPoints) {
+                            for (field in dataPoint.dataType.fields) {
+                                data = dataPoint.getValue(field).asFloat()
+                            }
+                        }
+                    }
+
+                    if (data != null) {
+                        promise.resolve((data * 100.0).roundToInt() / 100.0)
+                    } else {
+                        promise.resolve(data)
+                    }
+                }
+            }
+
+            Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
+                .readData(readRequest)
+                .addOnFailureListener(onFailure)
+                .addOnCompleteListener(onSuccess)
+
         } catch (e: Exception) {
             promise.reject(e)
             e.printStackTrace()

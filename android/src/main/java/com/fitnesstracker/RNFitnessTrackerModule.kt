@@ -72,6 +72,11 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         googleFitManager.getStatisticTodayTotal(promise, dataType)
     }
 
+    @ReactMethod
+    fun getLatestDataRecord(dataType: String, promise: Promise) {
+        googleFitManager.getLatestDataRecord(promise, dataType)
+    }
+
     private fun createPermissionsFromReactArray(readPermissions: ReadableArray, promise: Promise): ArrayList<Permission> {
         val result: ArrayList<Permission> = ArrayList()
         val size = readPermissions.size()

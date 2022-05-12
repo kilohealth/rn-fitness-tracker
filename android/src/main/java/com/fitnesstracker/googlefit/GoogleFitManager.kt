@@ -145,6 +145,14 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
+    fun getLatestDataRecord(promise: Promise, dataType: String) {
+        if (historyNotNull(promise)) {
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            historyClient!!.getLatestDataRecord(promise, permission)
+        }
+    }
+
     private fun historyNotNull(promise: Promise): Boolean {
         return if (historyClient != null) {
             true

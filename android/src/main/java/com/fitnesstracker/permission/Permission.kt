@@ -74,9 +74,8 @@ class Permission(val permissionKind: PermissionKind, val permissionAccess: Int =
                 isFloat = true
             }
             PermissionKind.HEIGHT -> {
-                dataTypes.add(DataType.AGGREGATE_HEIGHT_SUMMARY)
                 dataTypes.add(DataType.TYPE_HEIGHT)
-                isFloat = false
+                isFloat = true
             }
             PermissionKind.HYDRATION -> {
                 dataTypes.add(DataType.AGGREGATE_HYDRATION)
@@ -118,9 +117,8 @@ class Permission(val permissionKind: PermissionKind, val permissionAccess: Int =
                 isFloat = false
             }
             PermissionKind.WEIGHT -> {
-                dataTypes.add(DataType.AGGREGATE_WEIGHT_SUMMARY)
                 dataTypes.add(DataType.TYPE_WEIGHT)
-                isFloat = false
+                isFloat = true
             }
             PermissionKind.WORKOUT -> {
                 dataTypes.add(DataType.TYPE_WORKOUT_EXERCISE)
