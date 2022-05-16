@@ -64,7 +64,7 @@ RCT_EXTERN_METHOD(getLatestDataRecord:
                   unit:(NSString*)unit
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(recordWorkout:
+RCT_EXTERN_METHOD(writeWorkout:
                   (nonnull NSNumber*)workoutWithActivityType
                   start:(nonnull NSNumber*)start
                   end:(nonnull NSNumber*)end

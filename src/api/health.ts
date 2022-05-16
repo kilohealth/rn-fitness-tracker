@@ -3,6 +3,7 @@ import { NativeModules } from 'react-native';
 import { HealthDataRecordQuery, WorkoutQueryData } from '../types/fitnessTypes';
 import {
   HealthDataType,
+  HealthKitAuthStatus,
   HealthKitMetadata,
   UnitType,
   WorkoutType,
@@ -296,7 +297,7 @@ const queryTotal = async ({
  * @param metadata {object} (Optional)
  * @return {Promise<boolean>}
  */
-const recordWorkout = async ({
+const writeWorkout = async ({
   key,
   startDate,
   endDate,
@@ -312,7 +313,7 @@ const recordWorkout = async ({
   metadata?: HealthKitMetadata;
 }): Promise<boolean> => {
   if (isIOS) {
-    return await RNHealthTracker.recordWorkout(
+    return await RNHealthTracker.writeWorkout(
       key,
       +startDate,
       +endDate,
@@ -356,9 +357,9 @@ const writeBloodPressure = async ({
 /**
  * `iOS only!` Returns write (share) status for data type in Health API
  * @param key {HealthDataType} e.g. `HealthDataType.Fiber`
- * @return {Promise<number>} 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized
+ * @return {Promise<HealthKitAuthStatus>} 0 - notDetermined, 1 - sharingDenied, 2 - sharingAuthorized
  */
-const getAuthStatusForType = async (key: HealthDataType): Promise<number> => {
+const getAuthStatusForType = async (key: HealthDataType): Promise<HealthKitAuthStatus> => {
   if (isIOS) {
     return await RNHealthTracker.getAuthorizationStatusForType(key);
   }
@@ -369,7 +370,7 @@ const getAuthStatusForType = async (key: HealthDataType): Promise<number> => {
  * `WARNING`! This method is unofficial. Queries for data in time span of 2 years with limit of one, returns `readDenied` if no data is available.
  * @param dataType {HealthDataType} e.g. `HealthDataType.Fiber`
  * @param unit {HealthDataType} e.g. `HealthDataType.Fiber`
- * @return {Promise<number>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
+ * @return {Promise<HealthKitAuthStatus>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
  */
 const getReadStatusForType = async ({
   key,
@@ -377,7 +378,7 @@ const getReadStatusForType = async ({
 }: {
   key: HealthDataType;
   unit: UnitType;
-}): Promise<number> => {
+}): Promise<HealthKitAuthStatus> => {
   if (isIOS) {
     return await RNHealthTracker.getReadStatus(key, unit);
   }
@@ -388,7 +389,7 @@ const getReadStatusForType = async ({
  * @param key {HealthDataType} e.g. `HealthDataType.Fiber`
  * @param uuid {number} optional unique healthKit record id
  * @param date {number} optional unix timestamp for record date
- * @return {Promise<number>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
+ * @return {Promise<HealthKitAuthStatus>} 0 - notDetermined, 1 - readDenied, 2 - readAuthorized
  */
 const deleteRecord = async ({
   key,
@@ -400,7 +401,7 @@ const deleteRecord = async ({
   uuid?: string;
   startDate?: Date | number;
   endDate?: Date | number;
-}): Promise<number> => {
+}): Promise<HealthKitAuthStatus> => {
   if (isIOS) {
     return await RNHealthTracker.deleteRecord(
       key,
@@ -427,7 +428,7 @@ export const HealthTrackerAPI = {
   queryDataRecords,
   queryTotal,
   queryWorkouts,
-  recordWorkout,
+  writeWorkout,
   writeBloodPressure,
   writeDataArray,
   writeData,

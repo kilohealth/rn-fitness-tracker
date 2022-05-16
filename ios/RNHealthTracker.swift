@@ -724,7 +724,7 @@ class RNHealthTracker: NSObject {
         healthStore.execute(sampleQuery)
     }
 
-    @objc public func recordWorkout(
+    @objc public func writeWorkout(
         _ workoutWithActivityType: NSNumber,
         start: NSNumber,
         end: NSNumber,
