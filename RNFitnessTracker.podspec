@@ -41,12 +41,12 @@ Pod::Spec.new do |s|
                    }
 
 
-  s.platform = :ios, '10.0'
+  s.platform = :ios, '11.0'
 
   s.source = { :git => "https://github.com/doville/rn-fitness-tracker.git", :tag => s.version }
 
   s.preserve_paths = 'LICENSE'
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '11.0'
   s.source_files  = 'ios/*.{h,m,swift}'
 
   s.dependency 'React'
