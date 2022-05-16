@@ -228,3 +228,9 @@ export enum WorkoutType {
 export interface HealthKitMetadata {
   [key: string]: any;
 }
+
+export enum HealthKitAuthStatus {
+  NotDetermined = 0,
+  Denied = 1,
+  Authorized = 2,
+}
