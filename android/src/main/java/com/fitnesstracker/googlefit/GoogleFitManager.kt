@@ -9,6 +9,8 @@ import android.content.Intent
 import com.facebook.react.bridge.Arguments
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import java.util.*
 import kotlin.collections.ArrayList
@@ -16,7 +18,6 @@ import kotlin.collections.ArrayList
 class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventListener {
     private var historyClient: HistoryClient? = null
     private var authorisationPromise: Promise? = null
-    private var recordingService: RecordingService? = null
 
     init {
         reactContext.addActivityEventListener(this)
@@ -29,33 +30,29 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         resultCode: Int,
         data: Intent?
     ) {
-        if (recordingService == null) {
-            recordingService = RecordingService(activity!!)
-        }
-
         if (resultCode == Activity.RESULT_OK && requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
-            accessGoogleFit(activity)
+            accessGoogleFit()
         } else {
             authorisationPromise!!.resolve(false)
         }
     }
 
-    fun authorize(promise: Promise, activity: Activity?, permissions: ArrayList<Permission>) {
+    fun authorize(promise: Promise, activity: Activity, permissions: ArrayList<Permission>) {
         try {
             authorisationPromise = promise
 
-            recordingService = RecordingService(activity!!)
+            val recordingService = RecordingService(activity)
 
-            if (recordingService!!.hasGoogleFitPermission(permissions)) {
-                accessGoogleFit(activity)
+            if (recordingService.hasGoogleFitPermission(permissions)) {
+                accessGoogleFit()
             } else {
                 if (permissions.find { it.permissionKind == PermissionKind.STEPS } !== null) {
                     // Subscribes to tracking steps even if google fit is not installed
                     // Todo: test if this works
-                    recordingService!!.subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
+                    recordingService.subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
                 }
 
-                recordingService!!.requestFitnessPermissions(permissions)
+                recordingService.requestFitnessPermissions(permissions)
             }
         } catch (e: Exception) {
             promiseException(authorisationPromise, e)
@@ -64,20 +61,18 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
 
     fun isTrackingAvailable(
         promise: Promise,
-        activity: Activity?,
+        activity: Activity,
         permissions: ArrayList<Permission>
     ) {
         try {
             authorisationPromise = promise
 
-            if (recordingService == null) {
-                recordingService = RecordingService(activity!!)
-            }
+            val recordingService = RecordingService(activity)
 
-            val hasPermissions = recordingService!!.hasGoogleFitPermission(permissions)
+            val hasPermissions = recordingService.hasGoogleFitPermission(permissions)
 
             if (hasPermissions && historyClient == null) {
-                accessGoogleFit(activity, false)
+                accessGoogleFit(false)
             }
 
             authorisationPromise!!.resolve(hasPermissions)
@@ -86,9 +81,9 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
-    private fun accessGoogleFit(activity: Activity?, resolvePromise: Boolean = true) {
+    private fun accessGoogleFit(resolvePromise: Boolean = true) {
         try {
-            historyClient = HistoryClient(activity!!)
+            historyClient = HistoryClient()
 
             if (resolvePromise) authorisationPromise!!.resolve(true)
         } catch (e: Exception) {
@@ -96,60 +91,86 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         }
     }
 
-    fun queryTotal(promise: Promise, dataType: String, startTime: Long, endTime: Long) {
+    fun queryTotal(
+        promise: Promise,
+        activity: Activity,
+        dataType: String,
+        startTime: Long,
+        endTime: Long
+    ) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
-            historyClient!!.queryTotal(promise, startTime, endTime, permission)
+            historyClient!!.queryTotal(promise, activity, startTime, endTime, permission)
         }
     }
 
-    fun queryDailyTotals(promise: Promise, dataType: String, startDate: Date, endDate: Date) {
+    fun queryDailyTotals(
+        promise: Promise,
+        activity: Activity,
+        dataType: String,
+        startDate: Date,
+        endDate: Date
+    ) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
-            historyClient!!.queryDailyTotals(promise, startDate, endDate, permission, Arguments.createMap())
+            historyClient!!.queryDailyTotals(
+                promise,
+                activity,
+                startDate,
+                endDate,
+                permission,
+                Arguments.createMap()
+            )
         }
     }
 
-    fun getStatisticWeekDaily(promise: Promise, dataType: String) {
+    fun getStatisticWeekDaily(promise: Promise, activity: Activity, dataType: String) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
             val endDate = Date()
             val startDate = DateHelper.addDays(endDate, -7)
 
-            historyClient!!.queryDailyTotals(promise, startDate, endDate, permission, Arguments.createMap())
+            historyClient!!.queryDailyTotals(
+                promise,
+                activity,
+                startDate,
+                endDate,
+                permission,
+                Arguments.createMap()
+            )
         }
     }
 
-    fun getStatisticWeekTotal(promise: Promise, dataType: String) {
+    fun getStatisticWeekTotal(promise: Promise, activity: Activity, dataType: String) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
             val endDate = Date()
             val startDate = DateHelper.addDays(endDate, -7)
 
-            historyClient!!.queryTotal(promise, startDate.time, endDate.time, permission)
+            historyClient!!.queryTotal(promise, activity, startDate.time, endDate.time, permission)
         }
     }
 
-    fun getStatisticTodayTotal(promise: Promise, dataType: String) {
+    fun getStatisticTodayTotal(promise: Promise, activity: Activity, dataType: String) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
             val endDate = Date()
             val startDate = DateHelper.getStartOfDay(endDate)
 
-            historyClient!!.queryTotal(promise, startDate.time, endDate.time, permission)
+            historyClient!!.queryTotal(promise, activity, startDate.time, endDate.time, permission)
         }
     }
 
-    fun getLatestDataRecord(promise: Promise, dataType: String) {
+    fun getLatestDataRecord(promise: Promise, activity: Activity, dataType: String) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
-            historyClient!!.getLatestDataRecord(promise, permission)
+            historyClient!!.getLatestDataRecord(promise, activity, permission)
         }
     }
 

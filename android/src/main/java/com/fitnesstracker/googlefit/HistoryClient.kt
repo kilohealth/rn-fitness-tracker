@@ -19,9 +19,10 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-class HistoryClient(private val activity: Activity) {
+class HistoryClient {
     fun queryTotal(
         promise: Promise,
+        activity: Activity,
         startTime: Long,
         endTime: Long,
         permission: Permission
@@ -29,6 +30,7 @@ class HistoryClient(private val activity: Activity) {
         try {
             if (permission.isFloat) {
                 getFloatDataHistory(
+                    activity,
                     startTime,
                     endTime,
                     7,
@@ -43,15 +45,21 @@ class HistoryClient(private val activity: Activity) {
                         }
                     })
             } else {
-                getIntDataHistory(startTime, endTime, 7, permission.dataTypes, object : OnIntFetch {
-                    override fun onSuccess(data: Int) {
-                        promise.resolve(data)
-                    }
+                getIntDataHistory(
+                    activity,
+                    startTime,
+                    endTime,
+                    7,
+                    permission.dataTypes,
+                    object : OnIntFetch {
+                        override fun onSuccess(data: Int) {
+                            promise.resolve(data)
+                        }
 
-                    override fun onFailure(e: Exception?) {
-                        promise.reject(e)
-                    }
-                })
+                        override fun onFailure(e: Exception?) {
+                            promise.reject(e)
+                        }
+                    })
             }
         } catch (e: Exception) {
             promise.reject(e)
@@ -61,6 +69,7 @@ class HistoryClient(private val activity: Activity) {
 
     fun queryDailyTotals(
         promise: Promise,
+        activity: Activity,
         startDate: Date,
         endDate: Date,
         permission: Permission,
@@ -76,6 +85,7 @@ class HistoryClient(private val activity: Activity) {
 
             if (permission.isFloat) {
                 getFloatDataHistory(
+                    activity,
                     start.time,
                     end.time,
                     1,
@@ -87,6 +97,7 @@ class HistoryClient(private val activity: Activity) {
                                 val previousDate = DateHelper.addDays(endDate, -1)
                                 queryDailyTotals(
                                     promise,
+                                    activity,
                                     startDate,
                                     previousDate,
                                     permission,
@@ -103,6 +114,7 @@ class HistoryClient(private val activity: Activity) {
                     })
             } else {
                 getIntDataHistory(
+                    activity,
                     start.time,
                     end.time,
                     1,
@@ -114,6 +126,7 @@ class HistoryClient(private val activity: Activity) {
                                 val previousDate = DateHelper.addDays(endDate, -1)
                                 queryDailyTotals(
                                     promise,
+                                    activity,
                                     startDate,
                                     previousDate,
                                     permission,
@@ -135,7 +148,7 @@ class HistoryClient(private val activity: Activity) {
         }
     }
 
-    fun getLatestDataRecord(promise: Promise, permission: Permission) {
+    fun getLatestDataRecord(promise: Promise, activity: Activity, permission: Permission) {
         try {
             val endTime = Date().time
             val startTime: Long = 1
@@ -178,10 +191,7 @@ class HistoryClient(private val activity: Activity) {
                 }
             }
 
-            Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
-                .readData(readRequest)
-                .addOnFailureListener(onFailure)
-                .addOnCompleteListener(onSuccess)
+            getHistoryClient(activity, readRequest, onFailure, onSuccess)
 
         } catch (e: Exception) {
             promise.reject(e)
@@ -206,6 +216,7 @@ class HistoryClient(private val activity: Activity) {
     }
 
     private fun getHistoryClient(
+        activity: Activity,
         readRequest: DataReadRequest,
         onFailure: OnFailureListener,
         onSuccess: OnCompleteListener<DataReadResponse>
@@ -217,6 +228,7 @@ class HistoryClient(private val activity: Activity) {
     }
 
     private fun getIntDataHistory(
+        activity: Activity,
         startTime: Long,
         endTime: Long,
         dayCount: Int,
@@ -234,7 +246,7 @@ class HistoryClient(private val activity: Activity) {
             }
         }
 
-        getHistoryClient(readRequest, onFailure, onSuccess)
+        getHistoryClient(activity, readRequest, onFailure, onSuccess)
     }
 
     private fun parseIntDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Int {
@@ -261,6 +273,7 @@ class HistoryClient(private val activity: Activity) {
     }
 
     private fun getFloatDataHistory(
+        activity: Activity,
         startTime: Long,
         endTime: Long,
         dayCount: Int,
@@ -278,7 +291,7 @@ class HistoryClient(private val activity: Activity) {
             }
         }
 
-        getHistoryClient(readRequest, onFailure, onSuccess)
+        getHistoryClient(activity, readRequest, onFailure, onSuccess)
     }
 
     private fun parseFloatDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Float {

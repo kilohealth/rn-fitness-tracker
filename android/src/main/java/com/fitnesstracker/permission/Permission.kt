@@ -28,7 +28,10 @@ enum class PermissionKind(val kind: String) {
     }
 }
 
-class Permission(val permissionKind: PermissionKind, val permissionAccess: Int = FitnessOptions.ACCESS_READ) {
+class Permission(
+    val permissionKind: PermissionKind,
+    val permissionAccess: Int = FitnessOptions.ACCESS_READ
+) {
     val dataTypes: ArrayList<DataType> = ArrayList()
     val isFloat: Boolean
 

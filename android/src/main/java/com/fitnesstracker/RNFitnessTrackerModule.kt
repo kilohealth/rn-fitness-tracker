@@ -26,58 +26,94 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         return "RNFitnessTracker"
     }
 
+    private fun getActivity(promise: Promise): Activity? {
+        val activity: Activity? = currentActivity
+
+        if (activity == null) {
+            promise.reject(E_ACTIVITY_DOES_NOT_EXIST, "Activity doesn't exist")
+            return null
+        }
+
+        return activity
+    }
+
     @ReactMethod
     fun authorize(readPermissions: ReadableArray, promise: Promise) {
-        val activity: Activity? = currentActivity
-        val permissions: ArrayList<Permission> = createPermissionsFromReactArray(readPermissions, promise)
+        val activity: Activity = getActivity(promise) ?: return
+
+        val permissions: ArrayList<Permission> =
+            createPermissionsFromReactArray(readPermissions, promise)
         googleFitManager.authorize(promise, activity, permissions)
     }
 
 
     @ReactMethod
     fun isTrackingAvailable(readPermissions: ReadableArray, promise: Promise) {
-        val activity: Activity? = currentActivity
-        val permissions: ArrayList<Permission> = createPermissionsFromReactArray(readPermissions, promise)
+        val activity: Activity = getActivity(promise) ?: return
+
+        val permissions: ArrayList<Permission> =
+            createPermissionsFromReactArray(readPermissions, promise)
         googleFitManager.isTrackingAvailable(promise, activity, permissions)
     }
 
     @ReactMethod
     fun queryTotal(dataType: String, startDate: Double, endDate: Double, promise: Promise) {
+        val activity: Activity = getActivity(promise) ?: return
+
         val endTime: Long = endDate.toLong()
         val startTime: Long = startDate.toLong()
 
-        googleFitManager.queryTotal(promise, dataType, startTime, endTime)
+        googleFitManager.queryTotal(promise, activity, dataType, startTime, endTime)
     }
 
     @ReactMethod
     fun queryDailyTotals(dataType: String, startDate: Double, endDate: Double, promise: Promise) {
+        val activity: Activity = getActivity(promise) ?: return
+
         val endTime: Long = endDate.toLong()
         val startTime: Long = startDate.toLong()
 
-        googleFitManager.queryDailyTotals(promise, dataType, Date(startTime), Date(endTime))
+        googleFitManager.queryDailyTotals(
+            promise,
+            activity,
+            dataType,
+            Date(startTime),
+            Date(endTime)
+        )
     }
 
     @ReactMethod
     fun getStatisticWeekDaily(dataType: String, promise: Promise) {
-        googleFitManager.getStatisticWeekDaily(promise, dataType)
+        val activity: Activity = getActivity(promise) ?: return
+
+        googleFitManager.getStatisticWeekDaily(promise, activity, dataType)
     }
 
     @ReactMethod
     fun getStatisticWeekTotal(dataType: String, promise: Promise) {
-        googleFitManager.getStatisticWeekTotal(promise, dataType)
+        val activity: Activity = getActivity(promise) ?: return
+
+        googleFitManager.getStatisticWeekTotal(promise, activity, dataType)
     }
 
     @ReactMethod
     fun getStatisticTodayTotal(dataType: String, promise: Promise) {
-        googleFitManager.getStatisticTodayTotal(promise, dataType)
+        val activity: Activity = getActivity(promise) ?: return
+
+        googleFitManager.getStatisticTodayTotal(promise, activity, dataType)
     }
 
     @ReactMethod
     fun getLatestDataRecord(dataType: String, promise: Promise) {
-        googleFitManager.getLatestDataRecord(promise, dataType)
+        val activity: Activity = getActivity(promise) ?: return
+
+        googleFitManager.getLatestDataRecord(promise, activity, dataType)
     }
 
-    private fun createPermissionsFromReactArray(readPermissions: ReadableArray, promise: Promise): ArrayList<Permission> {
+    private fun createPermissionsFromReactArray(
+        readPermissions: ReadableArray,
+        promise: Promise
+    ): ArrayList<Permission> {
         val result: ArrayList<Permission> = ArrayList()
         val size = readPermissions.size()
         for (i in 0 until size) {
@@ -92,5 +128,9 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         }
 
         return result
+    }
+
+    companion object {
+        const val E_ACTIVITY_DOES_NOT_EXIST = "E_ACTIVITY_DOES_NOT_EXIST"
     }
 }
