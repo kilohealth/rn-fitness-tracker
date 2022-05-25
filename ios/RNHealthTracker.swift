@@ -48,7 +48,8 @@ class RNHealthTracker: NSObject {
             "E_DEVELOPER_ERROR",
             "E_EXECUTING_QUERY",
             "E_DEVICE_NOT_SUPPORTED",
-            "E_DATABASE_INACCESSIBLE"
+            "E_DATABASE_INACCESSIBLE",
+            "E_AUTHORIZATION_NOT_DETERMINED"
         ]
         guard let code = code else {
             return descriptions[0]
@@ -60,10 +61,23 @@ class RNHealthTracker: NSObject {
         return descriptions[code]
     }
 
+    private func handleError(
+        reject: @escaping RCTPromiseRejectBlock,
+        code errorCode: Int? = nil,
+        description errorDescription: String? = nil,
+        error: Error? = nil
+    ) {
+        let authorizationNotDetermined = error?.localizedDescription == "Authorization not determined"
+        let code = standardErrorCode(authorizationNotDetermined ? 5 : errorCode)
+        let description = errorDescription ?? error?.localizedDescription
+
+        reject(code, description, error)
+    }
+
     private func isCumulative(quantityType: HKQuantityType, reject: @escaping RCTPromiseRejectBlock) -> Bool {
         let isCumulative = quantityType.aggregationStyle == .cumulative
         if !isCumulative {
-            reject(standardErrorCode(1), "Invalid dataTypeIdentifier. HKQuantityType aggregation style must be cumulative", nil)
+            handleError(reject: reject, code: 1, description: "Invalid dataTypeIdentifier. HKQuantityType aggregation style must be cumulative")
         }
 
         return isCumulative
@@ -79,7 +93,7 @@ class RNHealthTracker: NSObject {
         interval.day = 1
 
         guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
-            reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+            handleError(reject: reject, code: 1, description: "Invalid dataTypeIdentifier.")
             return nil
         }
 
@@ -104,7 +118,7 @@ class RNHealthTracker: NSObject {
         resultsHandler: @escaping (HKSampleQuery, [HKSample]?, Error?) -> Void
     ) -> HKSampleQuery? {
         guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
-            reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+            handleError(reject: reject, code: 1, description: "Invalid dataTypeIdentifier.")
             return nil
         }
 
@@ -150,14 +164,14 @@ class RNHealthTracker: NSObject {
                     if error.localizedDescription == "Authorization not determined" {
                         resolve(0)
                     } else {
-                        reject(self.standardErrorCode(2), error.localizedDescription, error)
+                        self.handleError(reject: reject, code: 2, error: error)
                     }
 
                     return
                 }
 
                 guard let samples = samples as? [HKQuantitySample] else {
-                    reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
+                    self.handleError(reject: reject, description: "Error getting samples as HKQuantitySample")
                     return
                 }
 
@@ -185,7 +199,7 @@ class RNHealthTracker: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
         if !HKHealthStore.isHealthDataAvailable() {
-            reject(self.standardErrorCode(3), "Health data is not supported on this device.", nil)
+            self.handleError(reject: reject, code: 3, description: "Health data is not supported on this device.")
             return
         }
 
@@ -197,7 +211,7 @@ class RNHealthTracker: NSObject {
 
             for dataType in readTypes {
                 guard let object: HKSampleType = transformDataKeyToHKSampleType(dataType) else {
-                    reject(standardErrorCode(1), "Invalid read dataTypes.", nil)
+                    handleError(reject: reject, code: 1, description: "Invalid read dataTypes.")
                     return
                 }
                 read!.insert(object)
@@ -209,7 +223,7 @@ class RNHealthTracker: NSObject {
 
             for dataType in shareTypes {
                 guard let object: HKSampleType = transformDataKeyToHKSampleType(dataType) else {
-                    reject(standardErrorCode(1), "Invalid share dataTypes.", nil)
+                    handleError(reject: reject, code: 1, description: "Invalid share dataTypes.")
                     return
                 }
                 toShare!.insert(object)
@@ -218,7 +232,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.requestAuthorization(toShare: toShare, read: read) { success, error in
             if let error = error {
-                reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                self.handleError(reject: reject, error: error)
             } else {
                 resolve(true)
             }
@@ -246,16 +260,16 @@ class RNHealthTracker: NSObject {
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    reject(self.standardErrorCode(4), error.localizedDescription, error)
+                    self.handleError(reject: reject, code: 4, error: error)
                     return
                 default:
-                    reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                    self.handleError(reject: reject, error: error)
                     return
                 }
             }
 
             guard let statsCollection = results else {
-                reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
+                self.handleError(reject: reject, description: "Unhandled error getting results.", error: error)
                 return
             }
 
@@ -299,16 +313,16 @@ class RNHealthTracker: NSObject {
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    reject(self.standardErrorCode(4), error.localizedDescription, error)
+                    self.handleError(reject: reject, code: 4, error: error)
                     return
                 default:
-                    reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                    self.handleError(reject: reject, error: error)
                     return
                 }
             }
 
             guard let statsCollection = results else {
-                reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
+                self.handleError(reject: reject, description: "Unhandled error getting results.", error: error)
                 return
             }
 
@@ -359,16 +373,16 @@ class RNHealthTracker: NSObject {
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    reject(self.standardErrorCode(4), error.localizedDescription, error)
+                    self.handleError(reject: reject, code: 4, error: error)
                     return
                 default:
-                    reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                    self.handleError(reject: reject, error: error)
                     return
                 }
             }
 
             guard let statsCollection = results else {
-                reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
+                self.handleError(reject: reject, description: "Unhandled error getting results.", error: error)
                 return
             }
 
@@ -417,10 +431,10 @@ class RNHealthTracker: NSObject {
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    reject(self.standardErrorCode(4), error.localizedDescription, error)
+                    self.handleError(reject: reject, code: 4, error: error)
                     return
                 default:
-                    reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                    self.handleError(reject: reject, error: error)
                     return
                 }
             }
@@ -428,7 +442,7 @@ class RNHealthTracker: NSObject {
 
 
             guard let statsCollection = results else {
-                reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
+                self.handleError(reject: reject, description: "Unhandled error getting results.", error: error)
                 return
             }
 
@@ -483,16 +497,16 @@ class RNHealthTracker: NSObject {
             if let error = error as? HKError {
                 switch (error.code) {
                 case .errorDatabaseInaccessible:
-                    reject(self.standardErrorCode(4), error.localizedDescription, error)
+                    self.handleError(reject: reject, code: 4, error: error)
                     return
                 default:
-                    reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                    self.handleError(reject: reject, error: error)
                     return
                 }
             }
 
             guard let statsCollection = results else {
-                reject(self.standardErrorCode(nil), "unhandled error getting results.", error)
+                self.handleError(reject: reject, description: "Unhandled error getting results.", error: error)
                 return
             }
 
@@ -535,7 +549,7 @@ class RNHealthTracker: NSObject {
     ) -> Void {
 
         guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
-            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+            return handleError(reject: reject, code: 1, description: "Invalid dataTypeIdentifier.")
         }
 
         let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: amount.doubleValue)
@@ -548,7 +562,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.save(dataObject) { success, error in
             if let error = error {
-                reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                self.handleError(reject: reject, error: error)
             } else {
                 resolve(success)
             }
@@ -567,7 +581,7 @@ class RNHealthTracker: NSObject {
             for (index, obj) in dataArray.enumerated() {
 
                 guard let obj = obj as? NSDictionary else {
-                    return reject(standardErrorCode(1), "Wrong data passed to RNHealthTracker:writeDataArray", nil)
+                    return handleError(reject: reject, code: 1, description: "Wrong data passed to RNHealthTracker:writeDataArray")
                 }
 
                 guard let dataTypeIdentifier: String = (obj["key"] as? String),
@@ -576,7 +590,7 @@ class RNHealthTracker: NSObject {
                       let timestamp: NSNumber = (obj["timestamp"] as? NSNumber),
                       let metadata: Dictionary<String, Any> = (obj["metadata"] as? Dictionary<String, Any>)
                 else {
-                    return reject(standardErrorCode(1), "Wrong data passed to RNHealthTracker:writeDataArray, dataArray id \(index)", nil)
+                    return handleError(reject: reject, code: 1, description: "Wrong data passed to RNHealthTracker:writeDataArray, dataArray id \(index)")
                 }
 
                 var date: Date = Date()
@@ -585,7 +599,7 @@ class RNHealthTracker: NSObject {
                 }
 
                 guard let quantityType = transformDataKeyToHKQuantityType(dataTypeIdentifier) else {
-                    return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+                    return handleError(reject: reject, code: 1, description: "Invalid dataTypeIdentifier.")
                 }
 
                 let quantity: HKQuantity = HKQuantity.init(unit: HKUnit.init(from: unit), doubleValue: amount.doubleValue)
@@ -597,13 +611,13 @@ class RNHealthTracker: NSObject {
 
             healthStore.save(dataArrayTransformed)  { success, error in
                 if let error = error {
-                    reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                    self.handleError(reject: reject, error: error)
                 } else {
                     resolve(success)
                 }
             }
         } else {
-            return reject(standardErrorCode(1), "Empty array was passed.", nil)
+            return handleError(reject: reject, code: 1, description: "Empty array was passed.")
         }
     }
 
@@ -628,13 +642,13 @@ class RNHealthTracker: NSObject {
             resultsHandler: { (query: HKSampleQuery, samples: [HKSample]?, error: Error?) in
 
                 if let error = error {
-                    return reject(self.standardErrorCode(2), error.localizedDescription, error)
+                    return self.handleError(reject: reject, code: 2, error: error)
                 }
 
                 var dataRecords: [Dictionary<String, Any?>] = []
 
                 guard let samples = samples as? [HKQuantitySample] else {
-                    reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
+                    self.handleError(reject: reject, description: "Error getting samples as HKQuantitySample")
                     return
                 }
 
@@ -682,12 +696,11 @@ class RNHealthTracker: NSObject {
             resultsHandler: { (query: HKSampleQuery, samples: [HKSample]?, error: Error?) in
 
                 if let error = error {
-                    return reject(self.standardErrorCode(2), error.localizedDescription, error)
+                    return self.handleError(reject: reject, code: 2, error: error)
                 }
 
                 guard let samples = samples as? [HKQuantitySample] else {
-                    reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
-                    return
+                    return self.handleError(reject: reject, description: "Error getting samples as HKQuantitySample")
                 }
 
                 var dataRecords: Dictionary<String, Any?>
@@ -740,7 +753,7 @@ class RNHealthTracker: NSObject {
 
         let totalDistance: HKQuantity = HKQuantity.init(unit: .meter(), doubleValue: distance.doubleValue)
         guard let activityType = HKWorkoutActivityType.init(rawValue: workoutWithActivityType.uintValue) else {
-            return reject(standardErrorCode(1), "Invalid workoutWithActivityType.", nil)
+            return handleError(reject: reject, code: 1, description: "Invalid workoutWithActivityType.")
         }
 
         let workout: HKWorkout = HKWorkout.init(
@@ -756,7 +769,7 @@ class RNHealthTracker: NSObject {
         healthStore.save(workout) { success, error in
             // TODO make this seperate function
             if let error = error {
-                reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                self.handleError(reject: reject, error: error)
             } else {
                 resolve(success)
             }
@@ -777,7 +790,7 @@ class RNHealthTracker: NSObject {
 
         if workoutActivityType.uintValue > 0 {
             guard let workoutType = HKWorkoutActivityType.init(rawValue: workoutActivityType.uintValue) else {
-                return reject(standardErrorCode(1), "Invalid workoutActivityType.", nil)
+                return handleError(reject: reject, code: 1, description: "Invalid workoutActivityType.")
             }
             let workoutTypePredicate = HKQuery.predicateForWorkouts(with: workoutType)
             predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [predicate, workoutTypePredicate])
@@ -793,14 +806,13 @@ class RNHealthTracker: NSObject {
         ) { query, samples, error in
 
             if let error = error {
-                return reject(self.standardErrorCode(2), error.localizedDescription, error)
+                return self.handleError(reject: reject, code: 2, error: error)
             }
 
             var dataRecords: [Dictionary<String, Any?>] = []
 
             guard let samples = samples as? [HKWorkout] else {
-                reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
-                return
+                return self.handleError(reject: reject, description: "Error getting samples as HKQuantitySample")
             }
 
             for sample in samples {
@@ -860,7 +872,7 @@ class RNHealthTracker: NSObject {
             let diastolicType = HKObjectType.quantityType(forIdentifier: .bloodPressureDiastolic),
             let bloodPressureType = HKCorrelationType.correlationType(forIdentifier: .bloodPressure)
         else {
-            return reject(standardErrorCode(0), "Error getting quantity type.", nil)
+            return handleError(reject: reject, description: "Error getting quantity type.")
         }
 
         let systolicSample = HKQuantitySample.init(type: systolicType, quantity: systolicQuantity, start: startDate, end: endDate, metadata: metadata)
@@ -872,7 +884,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.save(bloodPressureSample) { success, error in
             if let error = error {
-                reject(self.standardErrorCode(nil), error.localizedDescription, error)
+                self.handleError(reject: reject, error: error)
             } else {
                 resolve(success)
             }
@@ -885,7 +897,7 @@ class RNHealthTracker: NSObject {
         reject: @escaping RCTPromiseRejectBlock
     ) {
         guard let type = transformDataKeyToHKObject(dataTypeIdentifier) else {
-            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+            return handleError(reject: reject, code: 1, description: "Invalid dataTypeIdentifier.")
         }
 
         let status = healthStore.authorizationStatus(for: type)
@@ -908,7 +920,7 @@ class RNHealthTracker: NSObject {
                 let predicateUuid = HKQuery.predicateForObject(with: uuid)
                 predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [predicate, predicateUuid])
             } else {
-                return reject(standardErrorCode(1), "Invalid uuid.", nil)
+                return handleError(reject: reject, code: 1, description: "Invalid uuid.")
             }
         } else {
             if start.intValue > 0 && end.intValue > 0 {
@@ -917,12 +929,12 @@ class RNHealthTracker: NSObject {
                 let predicateForDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.init(rawValue: 0))
                 predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [predicate, predicateForDate])
             } else {
-                return reject(standardErrorCode(1), "startDate and endDate must be defined more than 0.", nil)
+                return handleError(reject: reject, code: 1, description: "startDate and endDate must be defined more than 0.")
             }
         }
 
         guard let sampleType = transformDataKeyToHKSampleType(dataTypeIdentifier) else {
-            return reject(standardErrorCode(1), "Invalid dataTypeIdentifier.", nil)
+            return handleError(reject: reject, code: 1, description: "Invalid dataTypeIdentifier.")
         }
 
         let sortDescriptor = NSSortDescriptor.init(key: HKSampleSortIdentifierStartDate, ascending: true)
@@ -935,12 +947,11 @@ class RNHealthTracker: NSObject {
         ) { (query: HKSampleQuery, samples: [HKObject]?, error: Error?) in
 
             if let error = error {
-                return reject(self.standardErrorCode(0), error.localizedDescription, error)
+                return self.handleError(reject: reject, error: error)
             }
 
             guard let samples = samples else {
-                reject(self.standardErrorCode(0), "Error getting samples as HKQuantitySample", nil)
-                return
+                return self.handleError(reject: reject, description: "Error getting samples as HKQuantitySample")
             }
 
             if samples.count == 0 {
