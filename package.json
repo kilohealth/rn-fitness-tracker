@@ -13,7 +13,8 @@
     "major": "yarn docs && yarn changelog -M && git add CHANGELOG.md api.md && yarn version --major",
     "minor": "yarn docs && yarn changelog -m && git add CHANGELOG.md api.md && yarn version --minor",
     "patch": "yarn docs && yarn changelog -p && git add CHANGELOG.md api.md && yarn version --patch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tests:ios:pod:install": "cd example && rm -rf ios/example.xcworkspace && yarn pod-install"
   },
   "keywords": [
     "react-native",

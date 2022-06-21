@@ -1,19 +1,21 @@
 name: Testing E2E iOS
 
-on:
-  pull_request:
-    branches:
-      - '**'
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
+on: workflow_dispatch
 
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
+#on:
+#  pull_request:
+#    branches:
+#      - '**'
+#    paths-ignore:
+#      - 'docs/**'
+#      - '**/*.md'
+#
+#  push:
+#    branches:
+#      - main
+#    paths-ignore:
+#      - 'docs/**'
+#      - '**/*.md'
 
 jobs:
   ios:
