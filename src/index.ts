@@ -1,10 +1,16 @@
-import { NativeModules } from 'react-native';
+/**
+ * API
+ */
+export * from './api';
 
-export const { RNFitnessTracker, RNHealthTracker } = NativeModules;
+/**
+ * Enums
+ */
+export * from './enums/googleFitDataTypes';
+export * from './enums/healthKitDataTypes';
 
-export { FitnessDataType } from './types/fitnessTypes';
-export { GoogleFitDataTypes } from './types/googleFitDataTypes';
-export * from './types/healthKitDataTypes';
-
-export { FitnessTrackerAPI as default } from './api/fitness';
-export { HealthTrackerAPI } from './api/health';
+/**
+ * Types
+ */
+export * from './types/fitnessTypes';
+export * from './types/healthKitTypes';

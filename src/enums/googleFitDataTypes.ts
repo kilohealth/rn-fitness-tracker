@@ -1,3 +1,7 @@
+/**
+ * @module
+ * @mergeTarget
+ */
 export enum GoogleFitDataTypes {
   Activity = 'Activity',
   BasalMetabolicRate = 'BasalMetabolicRate',

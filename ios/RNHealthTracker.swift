@@ -929,7 +929,7 @@ class RNHealthTracker: NSObject {
                 let predicateForDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.init(rawValue: 0))
                 predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [predicate, predicateForDate])
             } else {
-                return handleError(reject: reject, code: 1, description: "startDate and endDate must be defined more than 0.")
+                return handleError(reject: reject, code: 1, description: "startDate and endDate must be defined more than 0. Or uuid must be provided.")
             }
         }
 

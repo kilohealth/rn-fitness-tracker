@@ -1,74 +1,52 @@
-import { HealthDataType, UnitType } from './healthKitDataTypes';
+import { GoogleFitDataTypes, HealthDataType } from '../enums';
 
-export interface FitnessTrackerStatus {
-  authorized: boolean;
-  shouldOpenAppSettings: boolean;
-  trackingNotSupported?: boolean;
+/**
+ * Authorization object for requesting permissions.
+ * Must have at least one permission key.
+ */
+export interface AuthorizationPermissions {
+  /**
+   * Read permissions for GoogleFit.
+   */
+  googleFitReadPermissions?: GoogleFitDataTypes[];
+  /**
+   * Write permissions for GoogleFit.
+   */
+  googleFitWritePermissions?: GoogleFitDataTypes[];
+  /**
+   * Read permissions for HealthKit.
+   */
+  healthReadPermissions?: HealthDataType[];
+  /**
+   * Write permissions for HealthKit.
+   */
+  healthWritePermissions?: HealthDataType[];
 }
 
+/**
+ * Returned data ordered by date for specific data type.
+ */
 export interface DailyData {
-  [key: string]: number;
+  [date: string]: number;
 }
 
+/**
+ * Returned data for today and daily values.
+ */
 export interface TodayAndDailyData {
+  /**
+   * Today value for specific data type.
+   */
   today: number;
   daily: DailyData;
 }
 
-export type WorkoutQueryData<WorkoutKey> = [
-  {
-    uuid: string;
-    duration: number;
-    distance: number;
-    energyBurned: number;
-    startDate: string;
-    endDate: string;
-    type: WorkoutKey;
-    metadata: { [name: string]: any };
-    source: {
-      name: string;
-      device: string;
-      id: string;
-    };
-  },
-];
-
-export type HealthDataRecordQuery = [
-  {
-    uuid: string;
-    date: string;
-    quantity: number;
-    metadata: { [name: string]: any };
-    source: {
-      name: string;
-      device: string;
-      id: string;
-    };
-  },
-];
-
-export interface HealthKitKeyWithUnit {
-  key: HealthDataType;
-  unit: UnitType;
-}
-
+/**
+ * General fitness data types for both platforms.
+ */
 export enum FitnessDataType {
-  // Activity = 'Activity',
-  // BasalMetabolicRate = 'BasalMetabolicRate',
-  // BodyFat = 'BodyFat',
-  // Calories = 'Calories',
-  // Cycling = 'Cycling',
   Distance = 'Distance',
-  // HeartRate = 'HeartRate',
   Height = 'Height',
-  // Hydration = 'Hydration',
-  // Location = 'Location',
-  // MoveMinutes = 'MoveMinutes',
-  // Nutrition = 'Nutrition',
-  // Power = 'Power',
-  // Sleep = 'Sleep',
-  // Speed = 'Speed',
   Steps = 'Steps',
   Weight = 'Weight',
-  // Workout = 'Workout',
 }

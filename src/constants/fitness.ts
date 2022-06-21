@@ -1,5 +1,5 @@
-import { FitnessDataType, HealthKitKeyWithUnit } from '../types/fitnessTypes';
-import { HealthDataType, UnitType } from '../types/healthKitDataTypes';
+import { FitnessDataType, HealthKitKeyWithUnit } from '../types';
+import { HealthDataType, UnitType } from '../enums';
 
 export const HealthKitKeyUnitByKey: {
   [key in FitnessDataType]: HealthKitKeyWithUnit;

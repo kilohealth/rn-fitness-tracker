@@ -59,7 +59,12 @@ This will add new line in the containing `Privacy - Motion Usage Description`. S
 2. Make sure that you have at least one permission handler [set up.](https://github.com/zoontek/react-native-permissions/blob/master/README.md#ios)
 Else you will get error ` **No permission handler detected** `
 
-<details><summary><b>React-Native < 0.60 - Manual linking for projects with older react-native version</b></summary>
+<details>
+   <summary>
+      <b>
+         React-Native {'<'} 0.60 - Manual linking for projects with older react-native version
+      </b>
+   </summary>
 <p>
 
 2. Add following line to Podfile:
@@ -253,4 +258,4 @@ import { RNHealthTracker } from '@kilohealth/rn-fitness-tracker';
 
 ## API Methods documentation
 
-[Full API Methods documentation](api.md)
+[Full API Methods documentation]()

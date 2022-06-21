@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { FitnessDataType, HealthKitKeyWithUnit } from '../types/fitnessTypes';
+import { FitnessDataType, HealthKitKeyWithUnit } from '../types';
 import { HealthKitKeyUnitByKey } from '../constants/fitness';
 
 export const isObject = function (obj: unknown): boolean {

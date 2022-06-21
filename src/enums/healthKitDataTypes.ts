@@ -148,6 +148,7 @@ export enum UnitType {
 }
 
 export enum WorkoutType {
+  Any = 0,
   AmericanFootball = 1,
   Archery = 2,
   AustralianFootball = 3,
@@ -223,14 +224,4 @@ export enum WorkoutType {
   WheelchairWalkPace = 70,
   Wrestling = 56,
   Yoga = 57,
-}
-
-export interface HealthKitMetadata {
-  [key: string]: any;
-}
-
-export enum HealthKitAuthStatus {
-  NotDetermined = 0,
-  Denied = 1,
-  Authorized = 2,
 }
