@@ -1,0 +1,89 @@
+name: Testing E2E iOS
+
+on:
+  pull_request:
+    branches:
+      - '**'
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+
+jobs:
+  ios:
+    name: iOS
+    runs-on: macos-12
+
+    timeout-minutes: 60
+
+    steps:
+
+      # Set up tool versions
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - uses: maxim-lobanov/setup-xcode@v1
+
+      # Detox is compiled during yarn install, using Xcode, set up cache first
+
+      - name: Yarn Install
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 10
+          retry_wait_seconds: 60
+          max_attempts: 3
+          command: yarn --no-audit --prefer-offline
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3
+
+      - name: Update Ruby build tools
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 2
+          retry_wait_seconds: 60
+          max_attempts: 3
+          command: gem update cocoapods xcodeproj
+
+      - name: Pod Install
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 10
+          retry_wait_seconds: 30
+          max_attempts: 3
+          command: yarn tests:ios:pod:install
+
+#       - name: Start Firestore Emulator
+#         run: yarn tests:emulator:start-ci
+
+#       - name: Install brew utilities
+#         uses: nick-invision/retry@v2
+#         with:
+#           timeout_minutes: 5
+#           retry_wait_seconds: 60
+#           max_attempts: 3
+#           command: HOMEBREW_NO_AUTO_UPDATE=1 brew tap wix/brew && HOMEBREW_NO_AUTO_UPDATE=1 brew install applesimutils xcbeautify && applesimutils --list
+
+#       - name: Build iOS App
+#         run: |
+#           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+#           export CCACHE_SLOPPINESS=clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros
+#           export CCACHE_FILECLONE=true
+#           export CCACHE_DEPEND=true
+#           export CCACHE_INODECACHE=true
+#           ccache -s
+#           export SKIP_BUNDLING=1
+#           export RCT_NO_LAUNCH_PACKAGER=1
+#           set -o pipefail
+#           yarn tests:ios:build
+#           ccache -s
+#         shell: bash
