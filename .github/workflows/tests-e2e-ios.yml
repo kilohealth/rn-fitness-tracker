@@ -46,6 +46,14 @@ jobs:
           max_attempts: 3
           command: yarn --no-audit --prefer-offline
 
+      - name: Yarn Install
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 10
+          retry_wait_seconds: 60
+          max_attempts: 3
+          command: cd example && yarn --no-audit --prefer-offline
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
