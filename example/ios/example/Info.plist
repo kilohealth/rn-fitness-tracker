@@ -2,6 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+    <!-- Fitness tracker -->
+    <key>NSMotionUsageDescription</key>
+    <string>Example app request permissions for getting data.</string>
+
+    <!-- Health tracker -->
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>Example app request permissions for getting data.</string>
+    <key>NSHealthShareUsageDescription</key>
+    <string>Example app request permissions for getting data.</string>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
