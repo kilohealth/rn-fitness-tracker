@@ -30,10 +30,12 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         resultCode: Int,
         data: Intent?
     ) {
-        if (resultCode == Activity.RESULT_OK && requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
-            accessGoogleFit()
-        } else {
-            authorisationPromise!!.resolve(false)
+        if (requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                accessGoogleFit()
+            } else {
+                authorisationPromise?.resolve(false)
+            }
         }
     }
 
