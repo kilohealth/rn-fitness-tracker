@@ -11,6 +11,7 @@ import {
 
 import {
   AuthorizationPermissions,
+  FitnessDataType,
   FitnessTracker,
   GoogleFitDataTypes,
   HealthDataType,
@@ -26,12 +27,20 @@ const permissions: AuthorizationPermissions = {
 const App = () => {
   const [authorized, setAuthorized] = useState(false);
   const isAuthorized: string = authorized ? 'Authorized' : 'Not authorized';
+  const [stepsToday, setStepsToday] = useState<number | null>(null);
 
   const authorize = useCallback(async () => {
     await FitnessTracker.authorize(permissions);
 
     setAuthorized(true);
-  }, [setAuthorized]);
+  }, []);
+
+  const getStepsToday = useCallback(async () => {
+    const steps = await FitnessTracker.getStatisticTodayTotal(
+      FitnessDataType.Steps,
+    );
+    setStepsToday(steps);
+  }, []);
 
   return (
     <SafeAreaView>
@@ -40,6 +49,8 @@ const App = () => {
         <View style={styles.container}>
           <Text>Status: {isAuthorized}</Text>
           <Button title="Authorize" onPress={authorize} />
+          <Text>Steps today: {stepsToday}</Text>
+          <Button title="Get steps today." onPress={getStepsToday} />
         </View>
       </ScrollView>
     </SafeAreaView>

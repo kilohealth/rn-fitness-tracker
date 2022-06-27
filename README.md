@@ -2,15 +2,15 @@
 
 [![npm version](https://badgen.net/npm/v/@kilohealth/rn-fitness-tracker)](https://www.npmjs.com/package/@kilohealth/rn-fitness-tracker)
 
-React Native library for step tracking based on Google Fit (Android) and CoreMotion (iOS) native API's.
+React Native library for step tracking based on Google Fit (Android) and HealthKit (iOS) native APIs.
 
 ## Recommended React Native versions
 
-| React Native version(s) | Fitness Tracker version          |
-| ----------------------- | -------------------------------- |
-| <= v0.59                | v0.1.1                           |
-| <= v0.62                | v0.1.2 (Migrated to Autolinking) |
-| >= v0.63                | v0.1.4+ (Dropped iOS 8 support)  |
+| React Native version(s) | Fitness Tracker version           |
+|-------------------------|-----------------------------------|
+| <= v0.59                | v0.1.1                            |
+| <= v0.62                | v0.1.2 (Migrated to Auto-linking) |
+| >= v0.63                | v0.1.4+ (Dropped iOS 8 support)   |
 
 ## Installation
 
@@ -22,7 +22,7 @@ React Native library for step tracking based on Google Fit (Android) and CoreMot
 
 `$ npm i @kilohealth/rn-fitness-tracker`
 
-## Installing dependencies into a bare React Native project#
+## Installing dependencies into a bare React Native project
 In your project directory, run:
 
 **yarn:**
@@ -39,7 +39,7 @@ In your project directory, run:
 
 1. Add following lines to info.plist file `<dict>` tag:
 
-```xml
+```
 <!-- Fitness tracker -->
 <key>NSMotionUsageDescription</key>
 <string>Reason string goes here</string>
@@ -56,8 +56,13 @@ In your project directory, run:
 Navigate to info.plist file in XCode ➜ Add new property list key - `NSMotionUsageDescription`.
 This will add new line in the containing `Privacy - Motion Usage Description`. Same to be done with HealthKit.
 
-2. Make sure that you have at least one permission handler [set up.](https://github.com/zoontek/react-native-permissions/blob/master/README.md#ios)
-Else you will get error ` **No permission handler detected** `
+2. Make sure to add `permission_path` and at least one permission handler in `Podfile`. [Link](https://github.com/zoontek/react-native-permissions#ios)
+
+3. Create HealthKit entitlement. 
+   - Go to your app target settings in Xcode.
+   - From there, navigate to the "Signing & Capabilities" Tab.
+   - At the top left press the `+` and search for `HealthKit`.
+   - Xcode will now add the HealthKit Entitlement to your {ProjectName}.entitlements file.
 
 <details>
    <summary>
@@ -105,12 +110,12 @@ Else you will get error ` **No permission handler detected** `
 
 9. The **Signing-certificate fingerprint** generation command must be pointed to your app release / staging keystore file.
 
-10. Save and submit everything. If you haven't got your google services config inside your app - download your `google-services.json` file from [firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
+10. Save and submit everything. If you haven't got your Google services config inside your app - download your `google-services.json` file from [firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
 
 </p>
 </details>
 
-2. React Native autolinking should handle the rest.
+2. React Native auto-linking should handle the rest.
 
 3. Add `ACTIVITY_RECOGNITION` permission to `AndroidManifest.xml`
 
