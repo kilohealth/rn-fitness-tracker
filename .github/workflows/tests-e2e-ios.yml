@@ -51,7 +51,7 @@ jobs:
         id: yarn-cache
         with:
           path: ${{ steps.workflow-variables.outputs.yarn-cache-dir }}
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/package.json') }}
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-v1
 
       - uses: actions/cache@v2
@@ -74,7 +74,7 @@ jobs:
           timeout_minutes: 10
           retry_wait_seconds: 60
           max_attempts: 3
-          command: cd example && yarn --no-audit --prefer-offline
+          command: yarn --no-audit --prefer-offline && cd example && yarn --no-audit --prefer-offline
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -147,23 +147,23 @@ jobs:
           curl --output /dev/null --silent --head --fail "http://localhost:8081/index.bundle?platform=ios&dev=true&minify=false&inlineSourceMap=true"
           echo "...javascript bundle ready"
 
-#      - name: Create Simulator Log
-#        # With a little delay so the detox test below has time to spawn it, missing the first part of boot is fine
-#        # If you boot the simulator separately from detox, some other race fails and detox testee never sends ready to proxy
-#        continue-on-error: true
-#        run: nohup sh -c "sleep 30 && xcrun simctl spawn booted log stream --level debug --style compact > simulator.log 2>&1 &"
+      - name: Create Simulator Log
+        # With a little delay so the detox test below has time to spawn it, missing the first part of boot is fine
+        # If you boot the simulator separately from detox, some other race fails and detox testee never sends ready to proxy
+        continue-on-error: true
+        run: nohup sh -c "sleep 30 && xcrun simctl spawn booted log stream --level debug --style compact > simulator.log 2>&1 &"
 
       - name: Detox Test
         timeout-minutes: 30
         run: yarn tests:ios:test
 
-#      - name: Compress Simulator Log
-#        if: always()
-#        run: gzip -9 simulator.log
-#
-#      - name: Upload Simulator Log
-#        uses: actions/upload-artifact@v2
-#        if: always()
-#        with:
-#          name: simulator_log
-#          path: simulator.log.gz
+      - name: Compress Simulator Log
+        if: always()
+        run: gzip -9 simulator.log
+
+      - name: Upload Simulator Log
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: simulator_log
+          path: simulator.log.gz
