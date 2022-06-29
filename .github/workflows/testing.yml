@@ -45,7 +45,7 @@ jobs:
         id: yarn-cache
         with:
           path: ${{ steps.workflow-variables.outputs.yarn-cache-dir }}
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/package.json') }}
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('example/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-v1
 
       - uses: actions/cache@v2
@@ -68,7 +68,7 @@ jobs:
           timeout_minutes: 10
           retry_wait_seconds: 60
           max_attempts: 3
-          command: yarn --no-audit --prefer-offline
+          command: cd example && yarn --no-audit --prefer-offline
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
