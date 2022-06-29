@@ -15,7 +15,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tests:ios:build": "cd example && yarn detox build --configuration ios",
     "tests:ios:pod:install": "cd example && rm -rf ios/example.xcworkspace && yarn pod-install",
-    "tests:ios:test": "cd example && yarn detox test --configuration ios --loglevel warn"
+    "tests:ios:test": "cd example && yarn detox test --configuration ios --loglevel warn",
+    "tests:packager:jet-ci": "cd tests && cross-env TMPDIR=$HOME/.metro REACT_DEBUGGER=\"echo nope\" node_modules/.bin/react-native start --no-interactive"
   },
   "keywords": [
     "react-native",
