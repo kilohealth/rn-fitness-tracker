@@ -75,6 +75,10 @@ jobs:
           max_attempts: 3
           command: yarn tests:ios:pod:install
 
+      - name: Detox Test
+        timeout-minutes: 30
+        run: yarn tests:ios:test
+
 #       - name: Start Firestore Emulator
 #         run: yarn tests:emulator:start-ci
 
