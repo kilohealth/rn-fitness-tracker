@@ -131,7 +131,6 @@ jobs:
 
       - name: Pre-fetch Javascript bundle
         run: |
-          printf 'Running?'
           nohup yarn tests:packager:jet-ci &
           printf 'Waiting for packager to come online'
           until curl --output /dev/null --silent --head --fail http://localhost:8081/status; do
