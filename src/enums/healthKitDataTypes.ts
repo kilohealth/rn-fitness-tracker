@@ -90,6 +90,7 @@ export enum HealthDataType {
   Workout = 'Workout',
 }
 
+// todo make enum start with capital letter
 // SI units can be prefixed as follows:
 // da   (deca-)   = 10                 d    (deci-)   = 1/10
 // h    (hecto-)  = 100                c    (centi-)  = 1/100

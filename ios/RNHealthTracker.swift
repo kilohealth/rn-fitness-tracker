@@ -586,15 +586,15 @@ class RNHealthTracker: NSObject {
 
                 guard let dataTypeIdentifier: String = (obj["key"] as? String),
                       let unit: String = (obj["unit"] as? String),
-                      let amount: NSNumber = (obj["amount"] as? NSNumber),
-                      let timestamp: NSNumber = (obj["timestamp"] as? NSNumber),
-                      let metadata: Dictionary<String, Any> = (obj["metadata"] as? Dictionary<String, Any>)
+                      let amount: NSNumber = (obj["amount"] as? NSNumber)
                 else {
                     return handleError(reject: reject, code: 1, description: "Wrong data passed to RNHealthTracker:writeDataArray, dataArray id \(index)")
                 }
+                
+                let metadata: Dictionary<String, Any> = (obj["metadata"] as? Dictionary<String, Any>) ?? [:]
 
                 var date: Date = Date()
-                if timestamp.intValue != -1 {
+                if let timestamp: NSNumber = (obj["timestamp"] as? NSNumber) {
                     date = RNFitnessUtils.getDateFrom(timestamp: timestamp.intValue)
                 }
 
