@@ -68,7 +68,7 @@ jobs:
           timeout_minutes: 10
           retry_wait_seconds: 60
           max_attempts: 3
-          command: cd example && yarn --no-audit --prefer-offline
+          command: yarn --no-audit --prefer-offline && cd example && yarn --no-audit --prefer-offline
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
