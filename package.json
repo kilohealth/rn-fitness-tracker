@@ -13,6 +13,7 @@
     "minor": "yarn changelog -m && git add CHANGELOG.md && yarn version --minor",
     "patch": "yarn changelog -p && git add CHANGELOG.md && yarn version --patch",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "tests:ios:build": "cd example && yarn detox build --configuration ios",
     "tests:ios:pod:install": "cd example && rm -rf ios/example.xcworkspace && yarn pod-install",
     "tests:ios:test": "cd example && yarn detox test --configuration ios --loglevel warn"
   },
