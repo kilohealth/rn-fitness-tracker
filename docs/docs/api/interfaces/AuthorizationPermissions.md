@@ -19,7 +19,7 @@ Read permissions for GoogleFit.
 
 #### Defined in
 
-[types/fitnessTypes.ts:11](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/types/fitnessTypes.ts#L11)
+[types/fitnessTypes.ts:11](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L11)
 
 ___
 
@@ -31,7 +31,7 @@ Write permissions for GoogleFit.
 
 #### Defined in
 
-[types/fitnessTypes.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/types/fitnessTypes.ts#L15)
+[types/fitnessTypes.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L15)
 
 ___
 
@@ -43,7 +43,7 @@ Read permissions for HealthKit.
 
 #### Defined in
 
-[types/fitnessTypes.ts:19](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/types/fitnessTypes.ts#L19)
+[types/fitnessTypes.ts:19](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L19)
 
 ___
 
@@ -55,4 +55,4 @@ Write permissions for HealthKit.
 
 #### Defined in
 
-[types/fitnessTypes.ts:23](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/types/fitnessTypes.ts#L23)
+[types/fitnessTypes.ts:23](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L23)

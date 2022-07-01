@@ -16,7 +16,7 @@ Returned data for today and daily values.
 
 #### Defined in
 
-[types/fitnessTypes.ts:41](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/types/fitnessTypes.ts#L41)
+[types/fitnessTypes.ts:41](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L41)
 
 ___
 
@@ -28,4 +28,4 @@ Today value for specific data type.
 
 #### Defined in
 
-[types/fitnessTypes.ts:40](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/types/fitnessTypes.ts#L40)
+[types/fitnessTypes.ts:40](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L40)

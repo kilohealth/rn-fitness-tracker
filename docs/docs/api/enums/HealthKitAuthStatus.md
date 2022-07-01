@@ -18,7 +18,7 @@ User has given permission.
 
 #### Defined in
 
-[types/healthKitTypes.ts:59](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/types/healthKitTypes.ts#L59)
+[types/healthKitTypes.ts:59](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/healthKitTypes.ts#L59)
 
 ___
 
@@ -32,7 +32,7 @@ User has denied permissions.
 
 #### Defined in
 
-[types/healthKitTypes.ts:54](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/types/healthKitTypes.ts#L54)
+[types/healthKitTypes.ts:54](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/healthKitTypes.ts#L54)
 
 ___
 
@@ -46,4 +46,4 @@ Authorization is not determined. Usually means permissions not requested.
 
 #### Defined in
 
-[types/healthKitTypes.ts:49](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/types/healthKitTypes.ts#L49)
+[types/healthKitTypes.ts:49](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/healthKitTypes.ts#L49)

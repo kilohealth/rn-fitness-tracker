@@ -13,6 +13,7 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
+  trailingSlash: false,
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -31,17 +32,17 @@ const config = {
     [
       '@docusaurus/preset-classic',
 
-      ({
+      {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           remarkPlugins: [
-            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
+            [require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
           ],
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
-      }),
+      },
     ],
   ],
 
@@ -52,13 +53,13 @@ const config = {
       {
         name: 'FitnessTracker',
 
-        entryPoints: ['../rn-fitness-tracker/src'],
-        tsconfig: '../rn-fitness-tracker/tsconfig.json',
+        entryPoints: ['../src'],
+        tsconfig: '../tsconfig.json',
         excludePrivate: true,
         excludeProtected: true,
         excludeExternals: true,
         excludeInternal: true,
-        readme: "none",
+        readme: 'none',
         sidebar: {
           indexLabel: 'Overview',
           categoryLabel: 'API Reference',
@@ -69,14 +70,14 @@ const config = {
   ],
 
   themeConfig:
-  /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
         title: 'Fitness Tracker',
         logo: {
           alt: 'Fitness Tracker Logo',
           src: 'img/logo.svg',
-          srcDark: 'img/logo_white.svg'
+          srcDark: 'img/logo_white.svg',
         },
         items: [
           {

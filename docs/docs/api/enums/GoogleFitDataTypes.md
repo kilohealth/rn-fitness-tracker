@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:6](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L6)
+[enums/googleFitDataTypes.ts:6](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L6)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:7](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L7)
+[enums/googleFitDataTypes.ts:7](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L7)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:8](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L8)
+[enums/googleFitDataTypes.ts:8](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L8)
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:9](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L9)
+[enums/googleFitDataTypes.ts:9](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L9)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:10](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L10)
+[enums/googleFitDataTypes.ts:10](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L10)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:11](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L11)
+[enums/googleFitDataTypes.ts:11](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L11)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:12](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L12)
+[enums/googleFitDataTypes.ts:12](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L12)
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:13](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L13)
+[enums/googleFitDataTypes.ts:13](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L13)
 
 ___
 
@@ -94,7 +94,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L14)
+[enums/googleFitDataTypes.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L14)
 
 ___
 
@@ -104,7 +104,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L15)
+[enums/googleFitDataTypes.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L15)
 
 ___
 
@@ -114,7 +114,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:16](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L16)
+[enums/googleFitDataTypes.ts:16](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L16)
 
 ___
 
@@ -124,7 +124,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L17)
+[enums/googleFitDataTypes.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L17)
 
 ___
 
@@ -134,7 +134,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:18](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L18)
+[enums/googleFitDataTypes.ts:18](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L18)
 
 ___
 
@@ -144,7 +144,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:19](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L19)
+[enums/googleFitDataTypes.ts:19](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L19)
 
 ___
 
@@ -154,7 +154,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:20](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L20)
+[enums/googleFitDataTypes.ts:20](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L20)
 
 ___
 
@@ -164,7 +164,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:21](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L21)
+[enums/googleFitDataTypes.ts:21](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L21)
 
 ___
 
@@ -174,7 +174,7 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:22](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L22)
+[enums/googleFitDataTypes.ts:22](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L22)
 
 ___
 
@@ -184,4 +184,4 @@ ___
 
 #### Defined in
 
-[enums/googleFitDataTypes.ts:23](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/a4a790c/src/enums/googleFitDataTypes.ts#L23)
+[enums/googleFitDataTypes.ts:23](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/googleFitDataTypes.ts#L23)
