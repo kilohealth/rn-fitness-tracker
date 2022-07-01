@@ -30,7 +30,7 @@ For `Android` returns true if user gave permission access.
 
 #### Defined in
 
-[api/fitnessTracker/authorize.ts:19](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/authorize.ts#L19)
+[api/fitnessTracker/authorize.ts:19](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/authorize.ts#L19)
 
 ___
 
@@ -52,7 +52,7 @@ Returns steps total for today and this week's steps daily values.
 
 #### Defined in
 
-[api/fitnessTracker/getData.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/getData.ts#L14)
+[api/fitnessTracker/getData.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/getData.ts#L14)
 
 ___
 
@@ -68,7 +68,7 @@ Returns the latest height record.
 
 #### Defined in
 
-[api/fitnessTracker/getLatestHeightRecord.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/getLatestHeightRecord.ts#L14)
+[api/fitnessTracker/getLatestHeightRecord.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/getLatestHeightRecord.ts#L14)
 
 ___
 
@@ -84,7 +84,7 @@ Returns the latest weight record.
 
 #### Defined in
 
-[api/fitnessTracker/getLatestWeightRecord.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/getLatestWeightRecord.ts#L14)
+[api/fitnessTracker/getLatestWeightRecord.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/getLatestWeightRecord.ts#L14)
 
 ___
 
@@ -106,7 +106,7 @@ Gets statistic total for given data type for current day.
 
 #### Defined in
 
-[api/fitnessTracker/getStatisticTodayTotal.ts:13](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/getStatisticTodayTotal.ts#L13)
+[api/fitnessTracker/getStatisticTodayTotal.ts:13](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/getStatisticTodayTotal.ts#L13)
 
 ___
 
@@ -128,7 +128,7 @@ Gets statistic daily total for current week of given data type.
 
 #### Defined in
 
-[api/fitnessTracker/getStatisticWeekDaily.ts:13](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/getStatisticWeekDaily.ts#L13)
+[api/fitnessTracker/getStatisticWeekDaily.ts:13](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/getStatisticWeekDaily.ts#L13)
 
 ___
 
@@ -150,7 +150,7 @@ Gets statistic accumulated total for current week of given data type.
 
 #### Defined in
 
-[api/fitnessTracker/getStatisticWeekTotal.ts:13](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/getStatisticWeekTotal.ts#L13)
+[api/fitnessTracker/getStatisticWeekTotal.ts:13](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/getStatisticWeekTotal.ts#L13)
 
 ___
 
@@ -174,7 +174,7 @@ Returns if specific permission is authorized and available on Android
 
 #### Defined in
 
-[api/fitnessTracker/isTrackingAvailableAndroid.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/isTrackingAvailableAndroid.ts#L14)
+[api/fitnessTracker/isTrackingAvailableAndroid.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/isTrackingAvailableAndroid.ts#L14)
 
 ___
 
@@ -198,7 +198,7 @@ Gets statistic daily total for specified time period.
 
 #### Defined in
 
-[api/fitnessTracker/queryDailyTotals.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/queryDailyTotals.ts#L17)
+[api/fitnessTracker/queryDailyTotals.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/queryDailyTotals.ts#L17)
 
 ___
 
@@ -222,4 +222,4 @@ Gets statistic accumulated total  for specified time period of given data type.
 
 #### Defined in
 
-[api/fitnessTracker/queryTotal.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/fitnessTracker/queryTotal.ts#L17)
+[api/fitnessTracker/queryTotal.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/fitnessTracker/queryTotal.ts#L17)

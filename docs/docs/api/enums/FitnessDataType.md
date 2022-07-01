@@ -16,7 +16,7 @@ General fitness data types for both platforms.
 
 #### Defined in
 
-[types/fitnessTypes.ts:48](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L48)
+[types/fitnessTypes.ts:48](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/types/fitnessTypes.ts#L48)
 
 ___
 
@@ -26,7 +26,7 @@ ___
 
 #### Defined in
 
-[types/fitnessTypes.ts:49](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L49)
+[types/fitnessTypes.ts:49](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/types/fitnessTypes.ts#L49)
 
 ___
 
@@ -36,7 +36,7 @@ ___
 
 #### Defined in
 
-[types/fitnessTypes.ts:50](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L50)
+[types/fitnessTypes.ts:50](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/types/fitnessTypes.ts#L50)
 
 ___
 
@@ -46,4 +46,4 @@ ___
 
 #### Defined in
 
-[types/fitnessTypes.ts:51](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/fitnessTypes.ts#L51)
+[types/fitnessTypes.ts:51](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/types/fitnessTypes.ts#L51)

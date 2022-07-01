@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:153](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L153)
+[enums/healthKitDataTypes.ts:153](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L153)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:152](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L152)
+[enums/healthKitDataTypes.ts:152](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L152)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:154](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L154)
+[enums/healthKitDataTypes.ts:154](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L154)
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:155](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L155)
+[enums/healthKitDataTypes.ts:155](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L155)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:156](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L156)
+[enums/healthKitDataTypes.ts:156](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L156)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:157](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L157)
+[enums/healthKitDataTypes.ts:157](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L157)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:158](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L158)
+[enums/healthKitDataTypes.ts:158](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L158)
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:159](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L159)
+[enums/healthKitDataTypes.ts:159](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L159)
 
 ___
 
@@ -94,7 +94,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:160](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L160)
+[enums/healthKitDataTypes.ts:160](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L160)
 
 ___
 
@@ -104,7 +104,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:161](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L161)
+[enums/healthKitDataTypes.ts:161](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L161)
 
 ___
 
@@ -114,7 +114,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:162](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L162)
+[enums/healthKitDataTypes.ts:162](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L162)
 
 ___
 
@@ -124,7 +124,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:163](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L163)
+[enums/healthKitDataTypes.ts:163](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L163)
 
 ___
 
@@ -134,7 +134,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:164](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L164)
+[enums/healthKitDataTypes.ts:164](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L164)
 
 ___
 
@@ -144,7 +144,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:165](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L165)
+[enums/healthKitDataTypes.ts:165](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L165)
 
 ___
 
@@ -154,7 +154,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:166](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L166)
+[enums/healthKitDataTypes.ts:166](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L166)
 
 ___
 
@@ -164,7 +164,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:167](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L167)
+[enums/healthKitDataTypes.ts:167](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L167)
 
 ___
 
@@ -174,7 +174,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:168](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L168)
+[enums/healthKitDataTypes.ts:168](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L168)
 
 ___
 
@@ -184,7 +184,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:169](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L169)
+[enums/healthKitDataTypes.ts:169](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L169)
 
 ___
 
@@ -194,7 +194,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:170](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L170)
+[enums/healthKitDataTypes.ts:170](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L170)
 
 ___
 
@@ -204,7 +204,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:171](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L171)
+[enums/healthKitDataTypes.ts:171](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L171)
 
 ___
 
@@ -214,7 +214,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:172](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L172)
+[enums/healthKitDataTypes.ts:172](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L172)
 
 ___
 
@@ -224,7 +224,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:173](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L173)
+[enums/healthKitDataTypes.ts:173](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L173)
 
 ___
 
@@ -234,7 +234,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:174](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L174)
+[enums/healthKitDataTypes.ts:174](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L174)
 
 ___
 
@@ -244,7 +244,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:175](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L175)
+[enums/healthKitDataTypes.ts:175](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L175)
 
 ___
 
@@ -254,7 +254,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:176](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L176)
+[enums/healthKitDataTypes.ts:176](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L176)
 
 ___
 
@@ -264,7 +264,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:177](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L177)
+[enums/healthKitDataTypes.ts:177](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L177)
 
 ___
 
@@ -274,7 +274,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:178](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L178)
+[enums/healthKitDataTypes.ts:178](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L178)
 
 ___
 
@@ -284,7 +284,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:179](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L179)
+[enums/healthKitDataTypes.ts:179](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L179)
 
 ___
 
@@ -294,7 +294,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:180](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L180)
+[enums/healthKitDataTypes.ts:180](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L180)
 
 ___
 
@@ -304,7 +304,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:181](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L181)
+[enums/healthKitDataTypes.ts:181](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L181)
 
 ___
 
@@ -314,7 +314,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:182](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L182)
+[enums/healthKitDataTypes.ts:182](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L182)
 
 ___
 
@@ -324,7 +324,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:183](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L183)
+[enums/healthKitDataTypes.ts:183](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L183)
 
 ___
 
@@ -334,7 +334,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:184](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L184)
+[enums/healthKitDataTypes.ts:184](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L184)
 
 ___
 
@@ -344,7 +344,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:185](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L185)
+[enums/healthKitDataTypes.ts:185](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L185)
 
 ___
 
@@ -354,7 +354,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:186](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L186)
+[enums/healthKitDataTypes.ts:186](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L186)
 
 ___
 
@@ -364,7 +364,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:187](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L187)
+[enums/healthKitDataTypes.ts:187](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L187)
 
 ___
 
@@ -374,7 +374,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:188](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L188)
+[enums/healthKitDataTypes.ts:188](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L188)
 
 ___
 
@@ -384,7 +384,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:189](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L189)
+[enums/healthKitDataTypes.ts:189](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L189)
 
 ___
 
@@ -394,7 +394,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:190](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L190)
+[enums/healthKitDataTypes.ts:190](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L190)
 
 ___
 
@@ -404,7 +404,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:191](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L191)
+[enums/healthKitDataTypes.ts:191](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L191)
 
 ___
 
@@ -414,7 +414,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:192](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L192)
+[enums/healthKitDataTypes.ts:192](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L192)
 
 ___
 
@@ -424,7 +424,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:193](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L193)
+[enums/healthKitDataTypes.ts:193](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L193)
 
 ___
 
@@ -434,7 +434,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:194](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L194)
+[enums/healthKitDataTypes.ts:194](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L194)
 
 ___
 
@@ -444,7 +444,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:195](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L195)
+[enums/healthKitDataTypes.ts:195](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L195)
 
 ___
 
@@ -454,7 +454,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:196](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L196)
+[enums/healthKitDataTypes.ts:196](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L196)
 
 ___
 
@@ -464,7 +464,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:197](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L197)
+[enums/healthKitDataTypes.ts:197](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L197)
 
 ___
 
@@ -474,7 +474,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:198](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L198)
+[enums/healthKitDataTypes.ts:198](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L198)
 
 ___
 
@@ -484,7 +484,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:199](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L199)
+[enums/healthKitDataTypes.ts:199](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L199)
 
 ___
 
@@ -494,7 +494,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:200](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L200)
+[enums/healthKitDataTypes.ts:200](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L200)
 
 ___
 
@@ -504,7 +504,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:201](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L201)
+[enums/healthKitDataTypes.ts:201](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L201)
 
 ___
 
@@ -514,7 +514,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:202](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L202)
+[enums/healthKitDataTypes.ts:202](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L202)
 
 ___
 
@@ -524,7 +524,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:203](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L203)
+[enums/healthKitDataTypes.ts:203](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L203)
 
 ___
 
@@ -534,7 +534,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:204](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L204)
+[enums/healthKitDataTypes.ts:204](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L204)
 
 ___
 
@@ -544,7 +544,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:205](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L205)
+[enums/healthKitDataTypes.ts:205](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L205)
 
 ___
 
@@ -554,7 +554,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:206](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L206)
+[enums/healthKitDataTypes.ts:206](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L206)
 
 ___
 
@@ -564,7 +564,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:207](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L207)
+[enums/healthKitDataTypes.ts:207](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L207)
 
 ___
 
@@ -574,7 +574,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:208](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L208)
+[enums/healthKitDataTypes.ts:208](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L208)
 
 ___
 
@@ -584,7 +584,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:209](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L209)
+[enums/healthKitDataTypes.ts:209](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L209)
 
 ___
 
@@ -594,7 +594,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:210](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L210)
+[enums/healthKitDataTypes.ts:210](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L210)
 
 ___
 
@@ -604,7 +604,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:211](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L211)
+[enums/healthKitDataTypes.ts:211](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L211)
 
 ___
 
@@ -614,7 +614,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:212](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L212)
+[enums/healthKitDataTypes.ts:212](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L212)
 
 ___
 
@@ -624,7 +624,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:213](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L213)
+[enums/healthKitDataTypes.ts:213](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L213)
 
 ___
 
@@ -634,7 +634,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:214](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L214)
+[enums/healthKitDataTypes.ts:214](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L214)
 
 ___
 
@@ -644,7 +644,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:215](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L215)
+[enums/healthKitDataTypes.ts:215](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L215)
 
 ___
 
@@ -654,7 +654,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:216](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L216)
+[enums/healthKitDataTypes.ts:216](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L216)
 
 ___
 
@@ -664,7 +664,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:217](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L217)
+[enums/healthKitDataTypes.ts:217](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L217)
 
 ___
 
@@ -674,7 +674,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:218](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L218)
+[enums/healthKitDataTypes.ts:218](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L218)
 
 ___
 
@@ -684,7 +684,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:219](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L219)
+[enums/healthKitDataTypes.ts:219](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L219)
 
 ___
 
@@ -694,7 +694,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:220](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L220)
+[enums/healthKitDataTypes.ts:220](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L220)
 
 ___
 
@@ -704,7 +704,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:221](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L221)
+[enums/healthKitDataTypes.ts:221](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L221)
 
 ___
 
@@ -714,7 +714,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:222](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L222)
+[enums/healthKitDataTypes.ts:222](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L222)
 
 ___
 
@@ -724,7 +724,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:223](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L223)
+[enums/healthKitDataTypes.ts:223](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L223)
 
 ___
 
@@ -734,7 +734,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:224](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L224)
+[enums/healthKitDataTypes.ts:224](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L224)
 
 ___
 
@@ -744,7 +744,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:225](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L225)
+[enums/healthKitDataTypes.ts:225](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L225)
 
 ___
 
@@ -754,7 +754,7 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:226](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L226)
+[enums/healthKitDataTypes.ts:226](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L226)
 
 ___
 
@@ -764,4 +764,4 @@ ___
 
 #### Defined in
 
-[enums/healthKitDataTypes.ts:227](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/enums/healthKitDataTypes.ts#L227)
+[enums/healthKitDataTypes.ts:227](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/enums/healthKitDataTypes.ts#L227)

@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[types/healthKitTypes.ts:23](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/healthKitTypes.ts#L23)
+[types/healthKitTypes.ts:23](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/types/healthKitTypes.ts#L23)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[types/healthKitTypes.ts:25](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/healthKitTypes.ts#L25)
+[types/healthKitTypes.ts:25](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/types/healthKitTypes.ts#L25)
 
 ___
 
@@ -38,7 +38,7 @@ ___
 
 #### Defined in
 
-[types/healthKitTypes.ts:24](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/healthKitTypes.ts#L24)
+[types/healthKitTypes.ts:24](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/types/healthKitTypes.ts#L24)
 
 ___
 
@@ -56,7 +56,7 @@ ___
 
 #### Defined in
 
-[types/healthKitTypes.ts:26](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/healthKitTypes.ts#L26)
+[types/healthKitTypes.ts:26](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/types/healthKitTypes.ts#L26)
 
 ___
 
@@ -66,4 +66,4 @@ ___
 
 #### Defined in
 
-[types/healthKitTypes.ts:22](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/types/healthKitTypes.ts#L22)
+[types/healthKitTypes.ts:22](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/types/healthKitTypes.ts#L22)

@@ -4,6 +4,9 @@
 
 React Native library for step tracking based on Google Fit (Android) and HealthKit (iOS) native APIs.
 
+## Documentation
+You can find the documentation [here.](https://kilohealth.github.io/rn-fitness-tracker/docs/fundamentals/getting-started)
+
 ## Recommended React Native versions
 
 | React Native version(s) | Fitness Tracker version           |

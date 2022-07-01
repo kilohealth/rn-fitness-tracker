@@ -29,7 +29,7 @@ Returns status if no errors occurred.
 
 #### Defined in
 
-[api/healthKit/authorize.ts:16](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/authorize.ts#L16)
+[api/healthKit/authorize.ts:16](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/authorize.ts#L16)
 
 ___
 
@@ -59,7 +59,7 @@ The number of deleted records.
 
 #### Defined in
 
-[api/healthKit/deleteRecord.ts:21](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/deleteRecord.ts#L21)
+[api/healthKit/deleteRecord.ts:21](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/deleteRecord.ts#L21)
 
 ___
 
@@ -83,7 +83,7 @@ Gets absolute total for given health data type and unit for current day
 
 #### Defined in
 
-[api/healthKit/getAbsoluteTotalForToday.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/getAbsoluteTotalForToday.ts#L14)
+[api/healthKit/getAbsoluteTotalForToday.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/getAbsoluteTotalForToday.ts#L14)
 
 ___
 
@@ -107,7 +107,7 @@ Returns write (share) status for data type in Health API.
 
 #### Defined in
 
-[api/healthKit/getAuthStatusForType.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/getAuthStatusForType.ts#L15)
+[api/healthKit/getAuthStatusForType.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/getAuthStatusForType.ts#L15)
 
 ___
 
@@ -131,7 +131,7 @@ Returns the latest record for specified data type and unit.
 
 #### Defined in
 
-[api/healthKit/getLatestDataRecord.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/getLatestDataRecord.ts#L15)
+[api/healthKit/getLatestDataRecord.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/getLatestDataRecord.ts#L15)
 
 ___
 
@@ -167,7 +167,7 @@ Returns read status for data type in Health API.
 
 #### Defined in
 
-[api/healthKit/getReadStatusForType.ts:28](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/getReadStatusForType.ts#L28)
+[api/healthKit/getReadStatusForType.ts:28](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/getReadStatusForType.ts#L28)
 
 ___
 
@@ -191,7 +191,7 @@ Gets statistic total for given health data type and unit for current day, same n
 
 #### Defined in
 
-[api/healthKit/getStatisticTotalForToday.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/getStatisticTotalForToday.ts#L14)
+[api/healthKit/getStatisticTotalForToday.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/getStatisticTotalForToday.ts#L14)
 
 ___
 
@@ -215,7 +215,7 @@ Gets statistic total for given health data type and unit for current week, same 
 
 #### Defined in
 
-[api/healthKit/getStatisticTotalForWeek.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/getStatisticTotalForWeek.ts#L14)
+[api/healthKit/getStatisticTotalForWeek.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/getStatisticTotalForWeek.ts#L14)
 
 ___
 
@@ -239,7 +239,7 @@ Gets statistic daily total for given health data type and unit for current week,
 
 #### Defined in
 
-[api/healthKit/getStatisticWeekDaily.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/getStatisticWeekDaily.ts#L15)
+[api/healthKit/getStatisticWeekDaily.ts:15](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/getStatisticWeekDaily.ts#L15)
 
 ___
 
@@ -265,7 +265,7 @@ Returns daily totals for specified data type and unit for specified time frame
 
 #### Defined in
 
-[api/healthKit/queryDailyTotals.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/queryDailyTotals.ts#L17)
+[api/healthKit/queryDailyTotals.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/queryDailyTotals.ts#L17)
 
 ___
 
@@ -291,7 +291,7 @@ Returns every record for specified data type and unit for specified time frame
 
 #### Defined in
 
-[api/healthKit/queryDataRecords.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/queryDataRecords.ts#L17)
+[api/healthKit/queryDataRecords.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/queryDataRecords.ts#L17)
 
 ___
 
@@ -317,7 +317,7 @@ Returns total for specified data type and unit for specified time frame
 
 #### Defined in
 
-[api/healthKit/queryTotal.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/queryTotal.ts#L17)
+[api/healthKit/queryTotal.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/queryTotal.ts#L17)
 
 ___
 
@@ -342,7 +342,7 @@ Returns workouts array for specified timeframe, filters by workout type if speci
 
 #### Defined in
 
-[api/healthKit/queryWorkouts.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/queryWorkouts.ts#L17)
+[api/healthKit/queryWorkouts.ts:17](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/queryWorkouts.ts#L17)
 
 ___
 
@@ -371,7 +371,7 @@ Returns status if no errors occurred.
 
 #### Defined in
 
-[api/healthKit/writeBloodPressure.ts:19](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/writeBloodPressure.ts#L19)
+[api/healthKit/writeBloodPressure.ts:19](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/writeBloodPressure.ts#L19)
 
 ___
 
@@ -400,7 +400,7 @@ Returns status if no errors occurred.
 
 #### Defined in
 
-[api/healthKit/writeData.ts:20](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/writeData.ts#L20)
+[api/healthKit/writeData.ts:20](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/writeData.ts#L20)
 
 ___
 
@@ -424,7 +424,7 @@ Returns status if no errors occurred.
 
 #### Defined in
 
-[api/healthKit/writeDataArray.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/writeDataArray.ts#L14)
+[api/healthKit/writeDataArray.ts:14](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/writeDataArray.ts#L14)
 
 ___
 
@@ -454,4 +454,4 @@ Returns status if no errors occurred.
 
 #### Defined in
 
-[api/healthKit/writeWorkout.ts:22](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/909937e4/src/api/healthKit/writeWorkout.ts#L22)
+[api/healthKit/writeWorkout.ts:22](https://github.com/rn-fitness-tracker/rn-fitness-tracker/blob/f2b314b9/src/api/healthKit/writeWorkout.ts#L22)
