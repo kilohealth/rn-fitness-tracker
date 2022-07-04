@@ -17,24 +17,18 @@ import {
   GoogleFitDataTypes,
   HealthDataType,
   HealthKit,
-  HealthKitMetadata,
+  HealthKitWriteData,
   UnitType,
 } from '@kilohealth/rn-fitness-tracker';
 
 const permissions: AuthorizationPermissions = {
-  healthReadPermissions: [HealthDataType.StepCount],
-  healthWritePermissions: [HealthDataType.StepCount],
+  healthReadPermissions: [HealthDataType.StepCount, HealthDataType.Workout],
+  healthWritePermissions: [HealthDataType.StepCount, HealthDataType.Workout],
   googleFitReadPermissions: [GoogleFitDataTypes.Steps],
   googleFitWritePermissions: [GoogleFitDataTypes.Steps],
 };
 
-export type HealthKitWriteData = {
-  key: HealthDataType;
-  unit: UnitType;
-  amount: number;
-  metadata?: HealthKitMetadata;
-  timestamp?: number;
-};
+const startOfToday = +startOfDay(new Date());
 
 const mockData: Array<HealthKitWriteData> = [
   {
@@ -54,13 +48,13 @@ const mockData: Array<HealthKitWriteData> = [
     key: HealthDataType.StepCount,
     unit: UnitType.count,
     amount: 100,
-    timestamp: +startOfDay(new Date()),
+    timestamp: startOfToday,
   },
   {
     key: HealthDataType.StepCount,
     unit: UnitType.count,
     amount: 100,
-    timestamp: +startOfDay(new Date()),
+    timestamp: startOfToday,
     metadata: {
       HKMetadataKeyWasUserEntered: true,
     },
@@ -72,7 +66,7 @@ const App = () => {
   const isAuthorized: string = authorized ? 'Authorized' : 'Not authorized';
   const [stepsToday, setStepsToday] = useState<number | null>(null);
   const [stepsTodayWritten, setStepsTodayWritten] = useState(false);
-  const [stpesDeleted, setStpesDeleted] = useState(false);
+  const [stepsDeleted, setStepsDeleted] = useState(false);
 
   const authorize = useCallback(async () => {
     await FitnessTracker.authorize(permissions);
@@ -108,9 +102,22 @@ const App = () => {
       });
 
       if (numberOfRecordsDeleted) {
-        setStpesDeleted(true);
+        setStepsDeleted(true);
         console.log('Deleted', numberOfRecordsDeleted);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  const getWorkoutToday = useCallback(async () => {
+    try {
+      const workouts = await HealthKit.queryWorkouts({
+        startDate: startOfToday,
+        endDate: +new Date(),
+      });
+
+      console.log(workouts);
     } catch (error) {
       console.log(error);
     }
@@ -141,7 +148,7 @@ const App = () => {
             onPress={writeMockData}
             testID="write_steps_button"
           />
-          {stpesDeleted && (
+          {stepsDeleted && (
             <Text testID="data_was_deleted">Data deleted successfully.</Text>
           )}
           <Button
@@ -149,6 +156,8 @@ const App = () => {
             onPress={deleteStepsData}
             testID="delete_steps_button"
           />
+
+          <Button title="Get latest workout." onPress={getWorkoutToday} />
         </View>
       </ScrollView>
     </SafeAreaView>
