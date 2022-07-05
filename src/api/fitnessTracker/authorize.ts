@@ -1,12 +1,7 @@
-import { NativeModules } from 'react-native';
-
 import { AuthorizationPermissions } from '../../types';
+import { GoogleFit, HealthKit } from '../..';
 import { GoogleFitDataTypes, HealthDataType } from '../../enums';
-import { handleAndroidMotionTrackingPermissions, isIOS } from '../../utils';
-import { HealthKit } from '../..';
-
-/** @internal */
-const { RNFitnessTracker } = NativeModules;
+import { isIOS } from '../../utils';
 
 /**
  * Authorize tracking for provided permissions.
@@ -26,13 +21,11 @@ export const authorize = async (
 
     return await HealthKit.authorize(shareTypes, readTypes);
   } else {
-    let motionAuthResult = await handleAndroidMotionTrackingPermissions(true);
-    if (motionAuthResult) {
-      const readTypes: GoogleFitDataTypes[] =
-        permissions.googleFitReadPermissions || [];
-      motionAuthResult = await RNFitnessTracker.authorize(readTypes);
-    }
+    const readTypes: GoogleFitDataTypes[] =
+      permissions.googleFitReadPermissions || [];
+    const shareTypes: GoogleFitDataTypes[] =
+      permissions.googleFitWritePermissions || [];
 
-    return motionAuthResult;
+    return await GoogleFit.authorize(shareTypes, readTypes);
   }
 };

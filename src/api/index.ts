@@ -11,5 +11,12 @@ import * as FitnessTracker from './fitnessTracker';
  * You can find api methods for both platforms [FitnessTracker](./FitnessTracker.md)
  */
 import * as HealthKit from './healthKit';
+/**
+ * Api methods for GoogleFit.
+ * These methods only work for `Android`.
+ *
+ * You can find api methods for both platforms [FitnessTracker](./FitnessTracker.md)
+ */
+import * as GoogleFit from './googleFit';
 
-export { FitnessTracker, HealthKit };
+export { FitnessTracker, GoogleFit, HealthKit };
