@@ -1,11 +1,6 @@
-import { NativeModules } from 'react-native';
-
 import { FitnessDataType } from '../../types';
 import { getDataTypeForHealthKit, isIOS } from '../../utils';
-import { HealthKit } from '../..';
-
-/** @internal */
-const { RNFitnessTracker } = NativeModules;
+import { GoogleFit, HealthKit } from '../..';
 
 /**
  * Gets statistic accumulated total  for specified time period of given data type.
@@ -30,6 +25,6 @@ export const queryTotal = async (
 
     return Number(total);
   } else {
-    return RNFitnessTracker.queryTotal(dataType, +startDate, +endDate);
+    return await GoogleFit.queryTotal(dataType, startDate, endDate);
   }
 };
