@@ -17,7 +17,7 @@ export const authorize = async (
   shareTypes: GoogleFitDataTypes[],
   readTypes: GoogleFitDataTypes[],
 ): Promise<boolean> => {
-  if (isIOS) {
+  if (!isIOS) {
     let motionAuthResult = await handleAndroidMotionTrackingPermissions(true);
     if (motionAuthResult) {
       motionAuthResult = await RNFitnessTracker.authorize(readTypes);

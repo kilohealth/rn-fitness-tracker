@@ -13,7 +13,7 @@ const { RNFitnessTracker } = NativeModules;
 export const getLatestDataRecord = async (
   dataType: FitnessDataType,
 ): Promise<HealthDataRecordQuery> => {
-  if (isIOS) {
+  if (!isIOS) {
     return RNFitnessTracker.getLatestDataRecord(dataType);
   }
 };
