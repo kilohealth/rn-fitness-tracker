@@ -219,17 +219,17 @@ const App = () => {
           <Button
             title="Get Height and Weight."
             onPress={getHeightAndWeight}
-            testID="getHeightAndWeightButton"
+            testID="get_height_and_weight_Button"
           />
           <Button
             title="Write Height and Weight."
             onPress={writeHeightAndWeight}
-            testID="writeHeightAndWeightButton"
+            testID="write_height_and_weight_Button"
           />
           <Button
             title="Delete Height and Weight."
             onPress={deleteHeightAndWeight}
-            testID="deleteHeightAndWeightButton"
+            testID="delete_height_and_weight_Button"
           />
         </View>
       </ScrollView>
