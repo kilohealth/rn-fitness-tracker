@@ -19,15 +19,16 @@ export interface HealthWorkoutRecord {
 export type HealthWorkoutRecordQuery = Array<HealthWorkoutRecord>;
 
 export interface HealthDataRecord {
-  uuid: string;
   date: string;
   quantity: number;
-  metadata: { [name: string]: any };
+  metadata: { [name: string]: any } | null;
   source: {
-    name: string;
     device: string;
     id: string;
+    name: string;
+    version: string;
   };
+  uuid: string;
 }
 
 export type HealthDataRecordQuery = Array<HealthDataRecord>;

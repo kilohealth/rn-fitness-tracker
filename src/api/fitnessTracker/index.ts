@@ -3,8 +3,8 @@
  */
 export * from './authorize';
 export * from './getData';
-export * from './getLatestHeightRecord';
-export * from './getLatestWeightRecord';
+export * from './getLatestHeight';
+export * from './getLatestWeight';
 export * from './getStatisticTodayTotal';
 export * from './getStatisticWeekDaily';
 export * from './getStatisticWeekTotal';

@@ -2,15 +2,20 @@ import { FitnessDataType } from '../../types';
 import { getDataTypeForHealthKit, isIOS } from '../../utils';
 import { GoogleFit, HealthKit } from '../..';
 
-// todo create return type
 /**
  * Returns the latest weight record.
  */
-export const getLatestWeightRecord = async () => {
+export const getLatestWeight = async (): Promise<number | null> => {
   if (isIOS) {
     const healthKitDataType = getDataTypeForHealthKit(FitnessDataType.Weight);
 
-    return HealthKit.getLatestDataRecord(healthKitDataType);
+    const records = await HealthKit.getLatestDataRecord(healthKitDataType);
+
+    if (records.length === 0) {
+      return null;
+    } else {
+      return records[0].quantity;
+    }
   } else {
     return GoogleFit.getLatestDataRecord(FitnessDataType.Weight);
   }
