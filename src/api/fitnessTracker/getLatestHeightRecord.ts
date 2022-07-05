@@ -1,11 +1,6 @@
-import { NativeModules } from 'react-native';
-
 import { FitnessDataType } from '../../types';
 import { getDataTypeForHealthKit, isIOS } from '../../utils';
-import { HealthKit } from '../..';
-
-/** @internal */
-const { RNFitnessTracker } = NativeModules;
+import { GoogleFit, HealthKit } from '../..';
 
 // todo create return type
 /**
@@ -17,6 +12,6 @@ export const getLatestHeightRecord = async () => {
 
     return HealthKit.getLatestDataRecord(healthKitDataType);
   } else {
-    return RNFitnessTracker.getLatestDataRecord(FitnessDataType.Height);
+    return GoogleFit.getLatestDataRecord(FitnessDataType.Height);
   }
 };
