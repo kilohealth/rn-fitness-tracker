@@ -1,6 +1,10 @@
+import { NativeModules } from 'react-native';
+
 import { DailyData, FitnessDataType } from '../../types';
-import { getDataTypeForHealthKit, isIOS } from '../../utils';
-import { GoogleFit, HealthKit } from '../..';
+import { isIOS } from '../../utils';
+
+/** @internal */
+const { RNFitnessTracker } = NativeModules;
 
 /**
  * Gets statistic daily total for specified time period.
@@ -14,15 +18,7 @@ export const queryDailyTotals = async (
   startDate: Date | number,
   endDate: Date | number,
 ): Promise<DailyData> => {
-  if (isIOS) {
-    const healthKitDataType = getDataTypeForHealthKit(dataType);
-
-    return HealthKit.queryDailyTotals({
-      ...healthKitDataType,
-      startDate,
-      endDate,
-    });
-  } else {
-    return GoogleFit.queryDailyTotals(dataType, startDate, endDate);
+  if (!isIOS) {
+    return RNFitnessTracker.queryDailyTotals(dataType, +startDate, +endDate);
   }
 };
