@@ -1,11 +1,6 @@
-import { NativeModules } from 'react-native';
-
 import { FitnessDataType } from '../../types';
 import { getDataTypeForHealthKit, isIOS } from '../../utils';
-import { HealthKit } from '../..';
-
-/** @internal */
-const { RNFitnessTracker } = NativeModules;
+import { GoogleFit, HealthKit } from '../..';
 
 /**
  * Gets statistic accumulated total for current week of given data type.
@@ -20,6 +15,6 @@ export const getStatisticWeekTotal = async (
 
     return Number(total);
   } else {
-    return RNFitnessTracker.getStatisticWeekTotal(dataType);
+    return GoogleFit.getStatisticWeekTotal(dataType);
   }
 };
