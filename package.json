@@ -1,6 +1,6 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "GoogleFit & Health tracking package for React Native for Android & iOS",
   "homepage": "https://github.com/kilohealth/rn-fitness-tracker",
   "repository": "https://github.com/kilohealth/rn-fitness-tracker",

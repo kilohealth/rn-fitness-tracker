@@ -833,7 +833,7 @@ class RNHealthTracker: NSObject {
                     "endDate": isoEndDate,
                     "energyBurned": energyBurned,
                     "distance": distance,
-                    "type": workout.workoutActivityType,
+                    "type": workout.workoutActivityType.rawValue,
                     "metadata": workout.metadata,
                     "source": [
                         "name": workout.sourceRevision.source.name,
