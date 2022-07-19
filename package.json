@@ -56,6 +56,7 @@
     "generate-changelog": "^1.8.0",
     "lint-staged": "^12.5.0",
     "prettier": "^2.7.1",
+    "react-native": "0.67.0",
     "react-native-device-info": "^8.7.1",
     "react-native-permissions": "^3.4.0",
     "typescript": "^4.7.4"

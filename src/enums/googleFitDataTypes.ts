@@ -1,6 +1,5 @@
 /**
- * @module
- * @mergeTarget
+ * Google fit data types.
  */
 export enum GoogleFitDataTypes {
   Activity = 'Activity',
@@ -21,4 +20,155 @@ export enum GoogleFitDataTypes {
   Steps = 'Steps',
   Weight = 'Weight',
   Workout = 'Workout',
+}
+
+/**
+ * Google fit workout types.
+ * You can find all the types defined here:
+ * https://developers.google.com/android/reference/com/google/android/gms/fitness/FitnessActivities#constant-summary
+ */
+export enum GoogleFitWorkoutType {
+  Aerobics = 'aerobics',
+  Archery = 'archery',
+  Badminton = 'badminton',
+  Baseball = 'baseball',
+  Basketball = 'basketball',
+  Biathlon = 'biathlon',
+  Biking = 'biking',
+  BikingHand = 'biking.hand',
+  BikingMountain = 'biking.mountain',
+  BikingRoad = 'biking.road',
+  BikingSpinning = 'biking.spinning',
+  BikingStationary = 'biking.stationary',
+  BikingUtility = 'biking.utility',
+  Boxing = 'boxing',
+  Calisthenics = 'calisthenics',
+  CircuitTraining = 'circuit_training',
+  Cricket = 'cricket',
+  Crossfit = 'crossfit',
+  Curling = 'curling',
+  Dancing = 'dancing',
+  Diving = 'diving',
+  Elevator = 'elevator',
+  Elliptical = 'elliptical',
+  Ergometer = 'ergometer',
+  Escalator = 'escalator',
+  ExtraStatus = 'actionStatus',
+  Fencing = 'fencing',
+  FootballAmerican = 'football.american',
+  FootballAustralian = 'football.australian',
+  FootballSoccer = 'football.soccer',
+  FrisbeeDisc = 'frisbee_disc',
+  Gardening = 'gardening',
+  Golf = 'golf',
+  GuidedBreathing = 'guided_breathing',
+  Gymnastics = 'gymnastics',
+  Handball = 'handball',
+  HighIntensityIntervalTraining = 'interval_training.high_intensity',
+  Hiking = 'hiking',
+  Hockey = 'hockey',
+  HorsebackRiding = 'horseback_riding',
+  Housework = 'housework',
+  IceSkating = 'ice_skating',
+  IntervalTraining = 'interval_training',
+  InVehicle = 'in_vehicle',
+  JumpRope = 'jump_rope',
+  Kayaking = 'kayaking',
+  KettlebellTraining = 'kettlebell_training',
+  Kickboxing = 'kickboxing',
+  KickScooter = 'kick_scooter',
+  Kitesurfing = 'kitesurfing',
+  MartialArts = 'martial_arts',
+  Meditation = 'meditation',
+  MimeTypePrefix = 'vnd.google.fitness.activity/',
+  MixedMartialArts = 'martial_arts.mixed',
+  /**
+   * @deprecated
+   */
+  OnFoot = 'on_foot',
+  Other = 'other',
+  P90X = 'p90x',
+  Paragliding = 'paragliding',
+  Pilates = 'pilates',
+  Polo = 'polo',
+  Racquetball = 'racquetball',
+  RockClimbing = 'rock_climbing',
+  Rowing = 'rowing',
+  RowingMachine = 'rowing.machine',
+  Rugby = 'rugby',
+  Running = 'running',
+  RunningJogging = 'running.jogging',
+  RunningSand = 'running.sand',
+  RunningTreadmill = 'running.treadmill',
+  Sailing = 'sailing',
+  ScubaDiving = 'scuba_diving',
+  Skateboarding = 'skateboarding',
+  Skating = 'skating',
+  SkatingCross = 'skating.cross',
+  SkatingIndoor = 'skating.indoor',
+  SkatingInline = 'skating.inline',
+  Skiing = 'skiing',
+  SkiingBackCountry = 'skiing.back_country',
+  SkiingCrossCountry = 'skiing.cross_country',
+  SkiingDownhill = 'skiing.downhill',
+  SkiingKite = 'skiing.kite',
+  SkiingRoller = 'skiing.roller',
+  Sledding = 'sledding',
+  Sleep = 'sleep',
+  /**
+   * @deprecated
+   */
+  SleepAwake = 'sleep.awake',
+  /**
+   * @deprecated
+   */
+  SleepDeep = 'sleep.deep',
+  /**
+   * @deprecated
+   */
+  SleepLight = 'sleep.light',
+  /**
+   * @deprecated
+   */
+  SleepRem = 'sleep.rem',
+  Snowboarding = 'snowboarding',
+  Snowmobile = 'snowmobile',
+  Snowshoeing = 'snowshoeing',
+  Softball = 'softball',
+  Squash = 'squash',
+  StairClimbing = 'stair_climbing',
+  StairClimbingMachine = 'stair_climbing.machine',
+  StandupPaddleboarding = 'standup_paddleboarding',
+  StatusActive = 'ActiveActionStatus',
+  StatusCompleted = 'CompletedActionStatus',
+  Still = 'still',
+  StrengthTraining = 'strength_training',
+  Surfing = 'surfing',
+  Swimming = 'swimming',
+  SwimmingOpenWater = 'swimming.open_water',
+  SwimmingPool = 'swimming.pool',
+  TableTennis = 'table_tennis',
+  TeamSports = 'team_sports',
+  Tennis = 'tennis',
+  Tilting = 'tilting',
+  /**
+   * @deprecated
+   */
+  Treadmill = 'treadmill',
+  Unknown = 'unknown',
+  Volleyball = 'volleyball',
+  VolleyballBeach = 'volleyball.beach',
+  VolleyballIndoor = 'volleyball.indoor',
+  Wakeboarding = 'wakeboarding',
+  Walking = 'walking',
+  WalkingFitness = 'walking.fitness',
+  WalkingNordic = 'walking.nordic',
+  WalkingStroller = 'walking.stroller',
+  WalkingTreadmill = 'walking.treadmill',
+  WaterPolo = 'water_polo',
+  Weightlifting = 'weightlifting',
+  Wheelchair = 'wheelchair',
+  Windsurfing = 'windsurfing',
+  Yoga = 'yoga',
+  Zumba = 'zumba',
 }

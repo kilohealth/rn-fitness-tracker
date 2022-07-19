@@ -1,12 +1,8 @@
 package com.fitnesstracker
 
 import android.app.Activity
+import com.facebook.react.bridge.*
 
-import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
 import com.fitnesstracker.googlefit.GoogleFitManager
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
@@ -38,21 +34,25 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun authorize(readPermissions: ReadableArray, promise: Promise) {
+    fun authorize(readPermissions: ReadableArray, writePermission: ReadableArray, promise: Promise) {
         val activity: Activity = getActivity(promise) ?: return
 
         val permissions: ArrayList<Permission> =
-            createPermissionsFromReactArray(readPermissions, promise)
+            createPermissionsFromReactArray(readPermissions, FitnessOptions.ACCESS_READ, promise)
+        permissions.addAll(createPermissionsFromReactArray(writePermission, FitnessOptions.ACCESS_WRITE, promise))
+
         googleFitManager.authorize(promise, activity, permissions)
     }
 
 
     @ReactMethod
-    fun isTrackingAvailable(readPermissions: ReadableArray, promise: Promise) {
+    fun isTrackingAvailable(readPermissions: ReadableArray, writePermission: ReadableArray, promise: Promise) {
         val activity: Activity = getActivity(promise) ?: return
 
         val permissions: ArrayList<Permission> =
-            createPermissionsFromReactArray(readPermissions, promise)
+            createPermissionsFromReactArray(readPermissions, FitnessOptions.ACCESS_READ, promise)
+        permissions.addAll(createPermissionsFromReactArray(writePermission, FitnessOptions.ACCESS_WRITE, promise))
+
         googleFitManager.isTrackingAvailable(promise, activity, permissions)
     }
 
@@ -110,17 +110,43 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         googleFitManager.getLatestDataRecord(promise, activity, dataType)
     }
 
+    @ReactMethod
+    fun writeWorkout(startTime: Double, endTime: Double, options: ReadableMap, promise: Promise) {
+        val activity: Activity = getActivity(promise) ?: return
+
+        googleFitManager.writeWorkout(
+            promise,
+            activity,
+            startTime.toLong(),
+            endTime.toLong(),
+            options
+        )
+    }
+
+    @ReactMethod
+    fun deleteWorkouts(startTime: Double, endTime: Double, promise: Promise) {
+        val activity: Activity = getActivity(promise) ?: return
+
+        googleFitManager.deleteWorkouts(
+            promise,
+            activity,
+            startTime.toLong(),
+            endTime.toLong(),
+        )
+    }
+
     private fun createPermissionsFromReactArray(
-        readPermissions: ReadableArray,
+        permissions: ReadableArray,
+        access: Int,
         promise: Promise
     ): ArrayList<Permission> {
         val result: ArrayList<Permission> = ArrayList()
-        val size = readPermissions.size()
+        val size = permissions.size()
         for (i in 0 until size) {
             try {
-                val permissionKind = readPermissions.getString(i)
+                val permissionKind = permissions.getString(i)
 
-                result.add(Permission(PermissionKind.getByValue(permissionKind)))
+                result.add(Permission(PermissionKind.getByValue(permissionKind), access))
             } catch (e: NullPointerException) {
                 promise.reject(e)
                 e.printStackTrace()

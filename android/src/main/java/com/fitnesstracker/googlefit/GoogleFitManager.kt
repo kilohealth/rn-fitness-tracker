@@ -1,12 +1,9 @@
 package com.fitnesstracker.googlefit
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ActivityEventListener
 import android.app.Activity
-import com.facebook.react.bridge.Promise
 import java.lang.Exception
 import android.content.Intent
-import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.*
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -173,6 +170,29 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
             val permission = Permission(PermissionKind.getByValue(dataType))
 
             historyClient!!.getLatestDataRecord(promise, activity, permission)
+        }
+    }
+
+    fun writeWorkout(
+        promise: Promise,
+        activity: Activity,
+        startTime: Long,
+        endTime: Long,
+        options: ReadableMap
+    ) {
+        if (historyNotNull(promise)) {
+            historyClient!!.writeWorkout(promise, activity, startTime, endTime, options)
+        }
+    }
+
+    fun deleteWorkouts(
+        promise: Promise,
+        activity: Activity,
+        startTime: Long,
+        endTime: Long,
+    ) {
+        if (historyNotNull(promise)) {
+            historyClient!!.deleteAllWorkout(promise, activity, startTime, endTime)
         }
     }
 

@@ -1,6 +1,6 @@
 import { AuthorizationPermissions } from '../../types';
 import { GoogleFit, HealthKit } from '../..';
-import { GoogleFitDataTypes, HealthDataType } from '../../enums';
+import { GoogleFitDataTypes, HealthKitDataType } from '../../enums';
 import { isIOS } from '../../utils';
 
 /**
@@ -15,8 +15,9 @@ export const authorize = async (
   permissions: AuthorizationPermissions,
 ): Promise<boolean> => {
   if (isIOS) {
-    const readTypes: HealthDataType[] = permissions.healthReadPermissions || [];
-    const shareTypes: HealthDataType[] =
+    const readTypes: HealthKitDataType[] =
+      permissions.healthReadPermissions || [];
+    const shareTypes: HealthKitDataType[] =
       permissions.healthWritePermissions || [];
 
     return await HealthKit.authorize(shareTypes, readTypes);

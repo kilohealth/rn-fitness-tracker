@@ -38,7 +38,6 @@ class Permission(
     init {
         when (permissionKind) {
             PermissionKind.ACTIVITY -> {
-//                dataTypes.add(DataType.AGGREGATE_ACTIVITY_SUMMARY)
                 dataTypes.add(DataType.TYPE_ACTIVITY_SEGMENT)
                 isFloat = false
             }
@@ -70,9 +69,6 @@ class Permission(
                 isFloat = true
             }
             PermissionKind.HEART_RATE -> {
-//                dataTypes.add(DataType.AGGREGATE_HEART_POINTS)
-//                dataTypes.add(DataType.AGGREGATE_HEART_RATE_SUMMARY)
-//                dataTypes.add(DataType.TYPE_HEART_POINTS)
                 dataTypes.add(DataType.TYPE_HEART_RATE_BPM)
                 isFloat = true
             }

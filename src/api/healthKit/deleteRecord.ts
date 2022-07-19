@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { HealthDataType } from '../../enums';
+import { HealthKitDataType } from '../../enums';
 import { isIOS } from '../../utils';
 
 /** @internal */
@@ -11,7 +11,7 @@ const { RNHealthTracker } = NativeModules;
  *
  * Must provide uuid of the record or startDate and endDate of records you wish to delete.
  *
- * @param options.key e.g. `HealthDataType.Fiber`
+ * @param options.key e.g. `HealthKitDataType.Fiber`
  * @param options.uuid Unique healthKit record id.
  * @param options.startDate Unix timestamp or Date for record start date.
  * @param options.endDate Unix timestamp or Date for record end date.
@@ -19,7 +19,7 @@ const { RNHealthTracker } = NativeModules;
  * @return The number of deleted records.
  */
 export const deleteRecord = async (options: {
-  key: HealthDataType;
+  key: HealthKitDataType;
   uuid?: string;
   startDate?: Date | number;
   endDate?: Date | number;

@@ -2,22 +2,25 @@ package com.fitnesstracker.googlefit
 
 import android.app.Activity
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.fitnesstracker.permission.Permission
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
-import com.google.android.gms.fitness.data.Bucket
-import com.google.android.gms.fitness.data.DataPoint
-import com.google.android.gms.fitness.data.DataSet
-import com.google.android.gms.fitness.data.DataType
+import com.google.android.gms.fitness.FitnessOptions
+import com.google.android.gms.fitness.data.*
+import com.google.android.gms.fitness.request.DataDeleteRequest
 import com.google.android.gms.fitness.request.DataReadRequest
+import com.google.android.gms.fitness.request.SessionInsertRequest
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
+
 
 class HistoryClient {
     fun queryTotal(
@@ -199,6 +202,136 @@ class HistoryClient {
         }
     }
 
+    fun writeWorkout(
+        promise: Promise,
+        activity: Activity,
+        startTime: Long,
+        endTime: Long,
+        options: ReadableMap
+    ) {
+        try {
+            val activityKey =
+                options.getString("key") ?: throw IllegalArgumentException("key expected")
+            val sessionName =
+                options.getString("name") ?: throw IllegalArgumentException("name expected")
+            val identifier = options.getString("identifier")
+                ?: throw IllegalArgumentException("identifier expected")
+
+            val description =
+                if (options.hasKey("description")) options.getString("description")!! else ""
+
+            // Create a session with metadata about the activity.
+            val session = Session.Builder()
+                .setName(sessionName)
+                .setIdentifier(identifier)
+                .setDescription(description)
+                .setActivity(activityKey)
+                .setStartTime(startTime, TimeUnit.MILLISECONDS)
+                .setEndTime(endTime, TimeUnit.MILLISECONDS)
+                .build()
+
+            val sessionInsertBuilder = SessionInsertRequest.Builder()
+                .setSession(session)
+
+            val fitnessOptionsBuilder = FitnessOptions.builder()
+
+            if (options.hasKey("calories")) {
+                val calories = options.getDouble("calories").toFloat()
+                val calDataSource: DataSource = DataSource.Builder()
+                    .setDataType(DataType.TYPE_CALORIES_EXPENDED)
+                    .setType(DataSource.TYPE_RAW)
+                    .build()
+                val calDataPoint = DataPoint.builder(calDataSource)
+                    .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS)
+                    .setField(Field.FIELD_CALORIES, calories)
+                    .build()
+                val calDataSet = DataSet.builder(calDataSource)
+                    .add(calDataPoint)
+                    .build()
+                sessionInsertBuilder.addDataSet(calDataSet)
+            }
+
+            if (options.hasKey("steps")) {
+                val steps = options.getInt("steps")
+                val stepsDataSource: DataSource = DataSource.Builder()
+                    .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
+                    .setType(DataSource.TYPE_RAW)
+                    .build()
+                val stepsDataPoint = DataPoint.builder(stepsDataSource)
+                    .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS)
+                    .setField(Field.FIELD_STEPS, steps)
+                    .build()
+                val stepsDataSet = DataSet.builder(stepsDataSource)
+                    .add(stepsDataPoint)
+                    .build()
+                sessionInsertBuilder.addDataSet(stepsDataSet)
+                fitnessOptionsBuilder.addDataType(
+                    DataType.TYPE_STEP_COUNT_DELTA,
+                    FitnessOptions.ACCESS_WRITE
+                );
+            }
+
+            // Build a session insert request
+            val insertRequest = sessionInsertBuilder.build()
+
+            fitnessOptionsBuilder.addDataType(
+                DataType.TYPE_ACTIVITY_SEGMENT,
+                FitnessOptions.ACCESS_WRITE
+            )
+
+            val fitnessOptions = fitnessOptionsBuilder.build()
+
+            val account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
+
+            Fitness.getSessionsClient(activity, account)
+                .insertSession(insertRequest)
+                .addOnSuccessListener { unused: Void? -> promise.resolve(true) }
+                .addOnFailureListener { e: java.lang.Exception? -> promise.reject(e) }
+
+        } catch (e: Exception) {
+            promise.reject(e)
+            e.printStackTrace()
+        }
+    }
+
+    fun deleteAllWorkout(
+        promise: Promise,
+        activity: Activity,
+        startTime: Long,
+        endTime: Long,
+    ) {
+        val requestBuilder = DataDeleteRequest.Builder()
+            .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS)
+
+        val request = requestBuilder
+            .addDataType(DataType.TYPE_ACTIVITY_SEGMENT)
+            .deleteAllSessions()
+            .build()
+
+
+        val fitnessOptionsBuilder = FitnessOptions.builder()
+        fitnessOptionsBuilder.addDataType(
+            DataType.TYPE_ACTIVITY_SEGMENT,
+            FitnessOptions.ACCESS_WRITE
+        )
+
+        val fitnessOptions = fitnessOptionsBuilder.build()
+
+        val account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
+
+        Fitness.getHistoryClient(
+            activity,
+            account
+        )
+            .deleteData(request)
+            .addOnSuccessListener { unused: Void? ->
+                promise.resolve(true)
+            }
+            .addOnFailureListener { e: java.lang.Exception? ->
+                promise.reject(e)
+            }
+    }
+
     private fun createReadRequest(
         startTime: Long,
         endTime: Long,
@@ -221,10 +354,26 @@ class HistoryClient {
         onFailure: OnFailureListener,
         onSuccess: OnCompleteListener<DataReadResponse>
     ) {
+        if (GoogleSignIn.getLastSignedInAccount(activity) === null) {
+            throw IllegalAccessException("No google account. Use authorize method with at least one dataType.")
+        }
+
         Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
             .readData(readRequest)
             .addOnFailureListener(onFailure)
             .addOnCompleteListener(onSuccess)
+    }
+
+    private fun getSessionClient(
+        activity: Activity,
+        insertSession: SessionInsertRequest,
+        onFailure: OnFailureListener,
+        onSuccess: OnSuccessListener<Void>,
+    ) {
+        Fitness.getSessionsClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
+            .insertSession(insertSession)
+            .addOnSuccessListener(onSuccess)
+            .addOnFailureListener(onFailure)
     }
 
     private fun getIntDataHistory(

@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { HealthDataType, UnitType } from '../../enums';
+import { HealthKitDataType, HealthKitUnitType } from '../../enums';
 import { isIOS } from '../../utils';
 
 /** @internal */
@@ -8,12 +8,12 @@ const { RNHealthTracker } = NativeModules;
 
 /**
  * Gets absolute total for given health data type and unit for current day
- * @param options.key {HealthDataType} e.g. `HealthDataType.Fiber`
- * @param options.unit {UnitType} e.g. `UnitType.grams`
+ * @param options.key {HealthKitDataType} e.g. `HealthKitDataType.Fiber`
+ * @param options.unit {HealthKitUnitType} e.g. `HealthKitUnitType.grams`
  */
 export const getAbsoluteTotalForToday = async (options: {
-  key: HealthDataType;
-  unit: UnitType;
+  key: HealthKitDataType;
+  unit: HealthKitUnitType;
 }): Promise<number> => {
   if (isIOS) {
     const { key, unit } = options;

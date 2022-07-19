@@ -1,8 +1,8 @@
 import { NativeModules } from 'react-native';
 
-import { WorkoutType } from '../../enums';
-import { isIOS } from '../../utils';
 import { HealthKitMetadata } from '../../types';
+import { HealthKitWorkoutType } from '../../enums';
+import { isIOS } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -10,7 +10,7 @@ const { RNHealthTracker } = NativeModules;
 /**
  * Records given workout data to Health API
  *
- * @param options.key e.g. `WorkoutType.Running`
+ * @param options.key e.g. `HealthKitWorkoutType.Running`
  * @param options.startDate Unix timestamp or Date for record start date.
  * @param options.endDate Unix timestamp or Date for record end date.
  * @param options.energyBurned Number of calories in kcalHealthKit. default 0
@@ -20,7 +20,7 @@ const { RNHealthTracker } = NativeModules;
  * @return Returns status if no errors occurred.
  */
 export const writeWorkout = async (options: {
-  key: WorkoutType;
+  key: HealthKitWorkoutType;
   startDate: Date | number;
   endDate: Date | number;
   energyBurned?: number;

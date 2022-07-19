@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { HealthDataType, UnitType } from '../../enums';
+import { HealthKitDataType, HealthKitUnitType } from '../../enums';
 import { isIOS } from '../../utils';
 import { HealthKitAuthStatus } from '../../types';
 
@@ -16,8 +16,8 @@ const { RNHealthTracker } = NativeModules;
  *
  * **`note`** Try to avoid using this method and try to track user permission status in internal state.
  *
- * @param options.key e.g. `HealthDataType.Fiber`
- * @param options.unit e.g. `HealthDataType.Fiber`
+ * @param options.key e.g. `HealthKitDataType.Fiber`
+ * @param options.unit e.g. `HealthKitDataType.Fiber`
  * @return {Promise<HealthKitAuthStatus>}
  * 0 - if permissions was never requested.
  *
@@ -26,8 +26,8 @@ const { RNHealthTracker } = NativeModules;
  * 2 - if records were found.
  */
 export const getReadStatusForType = async (options: {
-  key: HealthDataType;
-  unit: UnitType;
+  key: HealthKitDataType;
+  unit: HealthKitUnitType;
 }): Promise<HealthKitAuthStatus> => {
   if (isIOS) {
     const { key, unit } = options;

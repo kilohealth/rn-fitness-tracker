@@ -1,8 +1,8 @@
 import { NativeModules } from 'react-native';
 
-import { WorkoutType } from '../../enums';
-import { isIOS } from '../../utils';
+import { HealthKitWorkoutType } from '../../enums';
 import { HealthWorkoutRecordQuery } from '../../types';
+import { isIOS } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -17,7 +17,7 @@ const { RNHealthTracker } = NativeModules;
 export const queryWorkouts = async (options: {
   startDate: Date | number;
   endDate: Date | number;
-  key?: WorkoutType;
+  key?: HealthKitWorkoutType;
 }): Promise<HealthWorkoutRecordQuery> => {
   if (isIOS) {
     // todo test if 0 is set

@@ -1,4 +1,4 @@
-export enum HealthDataType {
+export enum HealthKitDataType {
   // Dietary
   Biotin = 'DietaryBiotin',
   Caffeine = 'DietaryCaffeine',
@@ -97,7 +97,7 @@ export enum HealthDataType {
 // M    (mega-)   = 10^6               mc   (micro-)  = 10^-6
 // G    (giga-)   = 10^9               n    (nano-)   = 10^-9
 // T    (tera-)   = 10^12              p    (pico-)   = 10^-12
-export enum UnitType {
+export enum HealthKitUnitType {
   BeatsPerMinute = 'count/min',
   Calories = 'cal',
   Celsius = 'degC',
@@ -147,7 +147,7 @@ export enum UnitType {
   Stones = 'st',
 }
 
-export enum WorkoutType {
+export enum HealthKitWorkoutType {
   Any = 0,
   AmericanFootball = 1,
   Archery = 2,

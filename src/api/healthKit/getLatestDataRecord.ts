@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { HealthDataType, UnitType } from '../../enums';
+import { HealthKitDataType, HealthKitUnitType } from '../../enums';
 import { isIOS } from '../../utils';
 import { HealthDataRecordQuery } from '../../types';
 
@@ -9,12 +9,12 @@ const { RNHealthTracker } = NativeModules;
 
 /**
  * Returns the latest record for specified data type and unit.
- * @param options.key e.g. `HealthDataType.Fiber`
- * @param options.unit e.g. `UnitType.grams`
+ * @param options.key e.g. `HealthKitDataType.Fiber`
+ * @param options.unit e.g. `HealthKitUnitType.grams`
  */
 export const getLatestDataRecord = async (options: {
-  key: HealthDataType;
-  unit: UnitType;
+  key: HealthKitDataType;
+  unit: HealthKitUnitType;
 }): Promise<HealthDataRecordQuery> => {
   if (isIOS) {
     const { key, unit } = options;
