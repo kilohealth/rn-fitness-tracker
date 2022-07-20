@@ -12,7 +12,7 @@ const { RNHealthTracker } = NativeModules;
  *
  * @param options.startDate Unix timestamp or Date for record start date.
  * @param options.endDate Unix timestamp or Date for record end date.
- * @param options.key e.g. `WorkoutType.Running`HealthKit
+ * @param options.key e.g. `HealthKitWorkoutType.Running`HealthKit
  */
 export const queryWorkouts = async (options: {
   startDate: Date | number;

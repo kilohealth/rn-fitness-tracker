@@ -1,4 +1,4 @@
-import { GoogleFitDataTypes, HealthDataType } from '../enums';
+import { GoogleFitDataTypes, HealthKitDataType } from '../enums';
 
 /**
  * Authorization object for requesting permissions.
@@ -16,11 +16,11 @@ export interface AuthorizationPermissions {
   /**
    * Read permissions for HealthKit.
    */
-  healthReadPermissions?: HealthDataType[];
+  healthReadPermissions?: HealthKitDataType[];
   /**
    * Write permissions for HealthKit.
    */
-  healthWritePermissions?: HealthDataType[];
+  healthWritePermissions?: HealthKitDataType[];
 }
 
 /**

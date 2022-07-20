@@ -15,15 +15,21 @@ import {
   FitnessDataType,
   FitnessTracker,
   GoogleFitDataTypes,
-  HealthDataType,
+  HealthKitDataType,
   HealthKit,
   HealthKitWriteData,
-  UnitType,
+  HealthKitUnitType,
 } from '@kilohealth/rn-fitness-tracker';
 
 const permissions: AuthorizationPermissions = {
-  healthReadPermissions: [HealthDataType.StepCount, HealthDataType.Workout],
-  healthWritePermissions: [HealthDataType.StepCount, HealthDataType.Workout],
+  healthReadPermissions: [
+    HealthKitDataType.StepCount,
+    HealthKitDataType.Workout,
+  ],
+  healthWritePermissions: [
+    HealthKitDataType.StepCount,
+    HealthKitDataType.Workout,
+  ],
   googleFitReadPermissions: [GoogleFitDataTypes.Steps],
   googleFitWritePermissions: [GoogleFitDataTypes.Steps],
 };
@@ -32,27 +38,27 @@ const startOfToday = +startOfDay(new Date());
 
 const mockData: Array<HealthKitWriteData> = [
   {
-    key: HealthDataType.StepCount,
-    unit: UnitType.Count,
+    key: HealthKitDataType.StepCount,
+    unit: HealthKitUnitType.Count,
     amount: 100,
   },
   {
-    key: HealthDataType.StepCount,
-    unit: UnitType.Count,
+    key: HealthKitDataType.StepCount,
+    unit: HealthKitUnitType.Count,
     amount: 100,
     metadata: {
       HKMetadataKeyWasUserEntered: true,
     },
   },
   {
-    key: HealthDataType.StepCount,
-    unit: UnitType.Count,
+    key: HealthKitDataType.StepCount,
+    unit: HealthKitUnitType.Count,
     amount: 100,
     timestamp: startOfToday,
   },
   {
-    key: HealthDataType.StepCount,
-    unit: UnitType.Count,
+    key: HealthKitDataType.StepCount,
+    unit: HealthKitUnitType.Count,
     amount: 100,
     timestamp: startOfToday,
     metadata: {
@@ -98,7 +104,7 @@ const App = () => {
   const deleteStepsData = useCallback(async () => {
     try {
       const numberOfRecordsDeleted = await HealthKit.deleteRecord({
-        key: HealthDataType.StepCount,
+        key: HealthKitDataType.StepCount,
         startDate: +startOfDay(new Date()),
         endDate: +new Date(),
       });
@@ -142,13 +148,13 @@ const App = () => {
   const writeHeightAndWeight = useCallback(async () => {
     try {
       await HealthKit.writeData({
-        key: HealthDataType.Height,
-        unit: UnitType.Meters,
+        key: HealthKitDataType.Height,
+        unit: HealthKitUnitType.Meters,
         amount: 1.52,
       });
       await HealthKit.writeData({
-        key: HealthDataType.BodyMass,
-        unit: UnitType.Kilograms,
+        key: HealthKitDataType.BodyMass,
+        unit: HealthKitUnitType.Kilograms,
         amount: 99.9,
       });
 
@@ -161,12 +167,12 @@ const App = () => {
   const deleteHeightAndWeight = useCallback(async () => {
     try {
       await HealthKit.deleteRecord({
-        key: HealthDataType.Height,
+        key: HealthKitDataType.Height,
         startDate: startOfToday,
         endDate: +new Date(),
       });
       await HealthKit.deleteRecord({
-        key: HealthDataType.BodyMass,
+        key: HealthKitDataType.BodyMass,
         startDate: startOfToday,
         endDate: +new Date(),
       });

@@ -15,10 +15,10 @@ export type ValueOf<T> = T[keyof T];
 export const getDataTypeForHealthKit = (
   dataType: FitnessDataType,
 ): HealthKitKeyWithUnit => {
-  const healthDataType = HealthKitKeyUnitByKey?.[dataType];
-  if (!healthDataType) {
+  const HealthKitDataType = HealthKitKeyUnitByKey?.[dataType];
+  if (!HealthKitDataType) {
     throw 'Provided incorrect dataType';
   }
 
-  return healthDataType;
+  return HealthKitDataType;
 };

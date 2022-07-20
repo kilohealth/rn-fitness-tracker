@@ -1,4 +1,8 @@
-import { HealthDataType, UnitType, WorkoutType } from '../enums';
+import {
+  HealthKitDataType,
+  HealthKitUnitType,
+  HealthKitWorkoutType,
+} from '../enums';
 
 export interface HealthWorkoutRecord {
   uuid: string;
@@ -7,7 +11,7 @@ export interface HealthWorkoutRecord {
   energyBurned: number;
   startDate: string;
   endDate: string;
-  type: WorkoutType | 0;
+  type: HealthKitWorkoutType | 0;
   metadata: { [name: string]: any };
   source: {
     name: string;
@@ -34,8 +38,8 @@ export interface HealthDataRecord {
 export type HealthDataRecordQuery = Array<HealthDataRecord>;
 
 export interface HealthKitKeyWithUnit {
-  key: HealthDataType;
-  unit: UnitType;
+  key: HealthKitDataType;
+  unit: HealthKitUnitType;
 }
 
 export interface HealthKitMetadata {
@@ -61,8 +65,8 @@ export enum HealthKitAuthStatus {
 }
 
 export type HealthKitWriteData = {
-  key: HealthDataType;
-  unit: UnitType;
+  key: HealthKitDataType;
+  unit: HealthKitUnitType;
   amount: number;
   metadata?: HealthKitMetadata;
   timestamp?: number;

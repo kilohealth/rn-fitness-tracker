@@ -1,23 +1,23 @@
 import { FitnessDataType, HealthKitKeyWithUnit } from '../types';
-import { HealthDataType, UnitType } from '../enums';
+import { HealthKitDataType, HealthKitUnitType } from '../enums';
 
 export const HealthKitKeyUnitByKey: {
   [key in FitnessDataType]: HealthKitKeyWithUnit;
 } = {
   [FitnessDataType.Distance]: {
-    key: HealthDataType.DistanceWalkingRunning,
-    unit: UnitType.Meters,
+    key: HealthKitDataType.DistanceWalkingRunning,
+    unit: HealthKitUnitType.Meters,
   },
   [FitnessDataType.Height]: {
-    key: HealthDataType.Height,
-    unit: UnitType.Meters,
+    key: HealthKitDataType.Height,
+    unit: HealthKitUnitType.Meters,
   },
   [FitnessDataType.Steps]: {
-    key: HealthDataType.StepCount,
-    unit: UnitType.Count,
+    key: HealthKitDataType.StepCount,
+    unit: HealthKitUnitType.Count,
   },
   [FitnessDataType.Weight]: {
-    key: HealthDataType.BodyMass,
-    unit: UnitType.Kilograms,
+    key: HealthKitDataType.BodyMass,
+    unit: HealthKitUnitType.Kilograms,
   },
 };

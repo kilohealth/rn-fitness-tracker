@@ -190,34 +190,34 @@ import { RNFitnessTracker } from '@kilohealth/rn-fitness-tracker';
 ```js
 import {
   HealthTrackerAPI,
-  HealthDataTypes,
-  UnitTypes,
+  HealthKitDataTypes,
+  HealthKitUnitType,
   WorkoutTypes,
 } from '@kilohealth/rn-fitness-tracker';
 
 // Setup Health tracking
 const authorizationStatus = await HealthTrackerAPI.setupTracking(
-  [HealthDataTypes.Carbohydrates, HealthDataTypes.Calcium], // write types
-  [HealthDataTypes.Carbohydrates, HealthDataTypes.Fiber], // read types
+  [HealthKitDataTypes.Carbohydrates, HealthKitDataTypes.Calcium], // write types
+  [HealthKitDataTypes.Carbohydrates, HealthKitDataTypes.Fiber], // read types
 );
 
 // Get health data type total from HealthKit
 const healthTotalFiber = await HealthTrackerAPI.getStatisticTotalForToday({
-  key: HealthDataTypes.Fiber,
-  unit: UnitTypes.grams,
+  key: HealthKitDataTypes.Fiber,
+  unit: HealthKitUnitType.grams,
 });
 
 // Get absolute data type total from HealthKit
 const absoluteTotalFiber = await HealthTrackerAPI.getAbsoluteTotalForToday({
-  key: HealthDataTypes.Fiber,
-  unit: UnitTypes.grams,
+  key: HealthKitDataTypes.Fiber,
+  unit: HealthKitUnitType.grams,
 });
 
 // Write single category health data to HealthKit
 const writeStatus = await HealthTrackerAPI.writeData({
-  key: HealthDataTypes.Carbohydrates,
+  key: HealthKitDataTypes.Carbohydrates,
   quantity: 28,
-  unit: UnitTypes.grams,
+  unit: HealthKitUnitType.grams,
   metadata: {
     Meal: 'Lightly smoked salmon',
   },
@@ -226,17 +226,17 @@ const writeStatus = await HealthTrackerAPI.writeData({
 // Write health data array to HealthKit
 const writeStatus = await HealthTrackerAPI.writeDataArray([
   {
-    key: HealthDataTypes.Carbohydrates,
+    key: HealthKitDataTypes.Carbohydrates,
     quantity: 55,
-    unit: UnitTypes.grams,
+    unit: HealthKitUnitType.grams,
     metadata: {
       Meal: 'Lightly smoked salmon',
     },
   },
   {
-    key: HealthDataTypes.Calcium,
+    key: HealthKitDataTypes.Calcium,
     quantity: 35,
-    unit: UnitTypes.grams,
+    unit: HealthKitUnitType.grams,
     metadata: {
       Meal: 'Milk pint',
       'Random parameter': 'Very delicious milk',
