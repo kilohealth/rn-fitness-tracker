@@ -98,4 +98,7 @@ RCT_EXTERN_METHOD(deleteRecord:
                   end:(nonnull NSNumber*)end
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(isHealthDataAvailable:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 @end

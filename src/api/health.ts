@@ -17,12 +17,13 @@ const { RNHealthTracker } = NativeModules;
  */
 
 /**
- * `iOS only!` returns health tracking is supported
+ * `iOS only!` Returns a Boolean value that indicates whether HealthKit is available on this device.
+ * note: HealthKit is not available on iPad.
  * @return {Promise<boolean>}
  */
-const isTrackingSupported = async (): Promise<boolean> => {
+const isHealthDataAvailable = async (): Promise<boolean> => {
   if (isIOS) {
-    const response = await RNHealthTracker.isTrackingSupported();
+    const response = await RNHealthTracker.isHealthDataAvailable();
     return !!response;
   }
 };
@@ -425,7 +426,7 @@ export const HealthTrackerAPI = {
   getStatisticTotalForToday,
   getStatisticTotalForWeek,
   getStatisticWeekDaily,
-  isTrackingSupported,
+  isHealthDataAvailable,
   queryDailyTotals,
   queryDataRecords,
   queryTotal,
