@@ -1517,11 +1517,11 @@ __metadata:
 
 "@kilohealth/rn-fitness-tracker@file:./../::locator=example%40workspace%3A.":
   version: 2.0.0
-  resolution: "@kilohealth/rn-fitness-tracker@file:./../#./../::hash=7fa891&locator=example%40workspace%3A."
+  resolution: "@kilohealth/rn-fitness-tracker@file:./../#./../::hash=301f67&locator=example%40workspace%3A."
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 9b47243725055ab6e639cd58fb693bf8457b53c9225ccf01858affe285b9c0770d0ee93f3e9a6b0004181266df15b81511da066fffe281231dbe9438960da20e
+  checksum: 58e02f2039faabc3c72bac97ef4847fd822f3546ba41ecab251cbc2dc34397f3529658fc959d8225bf82fd0e12eec6ca0233072948129f84cc84f4f1a137c024
   languageName: node
   linkType: hard
 
