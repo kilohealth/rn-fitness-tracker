@@ -982,5 +982,12 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(sampleQuery)
     }
-
+    
+    @objc public func isHealthDataAvailable(
+        _ resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) -> Void {
+        resolve(HKHealthStore.isHealthDataAvailable())
+    }
+    
 }
