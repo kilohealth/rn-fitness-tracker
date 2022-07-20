@@ -73,8 +73,8 @@ const App = () => {
   const [stepsToday, setStepsToday] = useState<number | undefined>(undefined);
   const [stepsTodayWritten, setStepsTodayWritten] = useState(false);
   const [stepsDeleted, setStepsDeleted] = useState(false);
-  const [height, setHeight] = useState<number | undefined>(undefined);
-  const [weight, setWeight] = useState<number | undefined>(undefined);
+  const [height, setHeight] = useState<number | null>(null);
+  const [weight, setWeight] = useState<number | null>(null);
 
   const authorize = useCallback(async () => {
     await FitnessTracker.authorize(permissions);
@@ -133,11 +133,11 @@ const App = () => {
 
   const getHeightAndWeight = useCallback(async () => {
     try {
-      const h = await FitnessTracker.getLatestHeightRecord();
-      const w = await FitnessTracker.getLatestWeightRecord();
+      const h = await FitnessTracker.getLatestHeight();
+      const w = await FitnessTracker.getLatestWeight();
 
-      setHeight(h?.quantity);
-      setWeight(w?.quantity);
+      setHeight(h);
+      setWeight(w);
 
       console.log('Success');
     } catch (error) {

@@ -72,7 +72,7 @@ jobs:
           timeout_minutes: 10
           retry_wait_seconds: 60
           max_attempts: 3
-          command: yarn && cd example && yarn
+          command: yarn install --immutable && cd example && yarn install --immutable
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
