@@ -1,70 +1,52 @@
-export interface IFitnessTrackerStatus {
-  authorized: boolean;
-  shouldOpenAppSettings: boolean;
-  trackingNotSupported?: boolean;
+import { GoogleFitDataTypes, HealthKitDataType } from '../enums';
+
+/**
+ * Authorization object for requesting permissions.
+ * Must have at least one permission key.
+ */
+export interface AuthorizationPermissions {
+  /**
+   * Read permissions for GoogleFit.
+   */
+  googleFitReadPermissions?: GoogleFitDataTypes[];
+  /**
+   * Write permissions for GoogleFit.
+   */
+  googleFitWritePermissions?: GoogleFitDataTypes[];
+  /**
+   * Read permissions for HealthKit.
+   */
+  healthReadPermissions?: HealthKitDataType[];
+  /**
+   * Write permissions for HealthKit.
+   */
+  healthWritePermissions?: HealthKitDataType[];
 }
 
-export interface IFitnessTrackerAvailability {
-  steps: number;
-  distance: number;
-  floors: number;
+/**
+ * Returned data ordered by date for specific data type.
+ */
+export interface DailyData {
+  [date: string]: number;
 }
 
-export interface IStepsDaily {
-  [key: string]: number;
+/**
+ * Returned data for today and daily values.
+ */
+export interface TodayAndDailyData {
+  /**
+   * Today value for specific data type.
+   */
+  today: number;
+  daily: DailyData;
 }
 
-export interface IStepsData {
-  stepsToday: number;
-  stepsDaily: IStepsDaily;
+/**
+ * General fitness data types for both platforms.
+ */
+export enum FitnessDataType {
+  Distance = 'Distance',
+  Height = 'Height',
+  Steps = 'Steps',
+  Weight = 'Weight',
 }
-
-export interface IDistanceDaily {
-  [key: string]: number;
-}
-
-export interface IDistanceData {
-  distanceToday: number;
-  distanceDaily: IDistanceDaily;
-}
-
-export interface IFloorsDaily {
-  [key: string]: number;
-}
-
-export interface IFloorsData {
-  floorsToday: number;
-  floorsDaily: IDistanceDaily;
-}
-
-export type IWorkoutQueryData<WorkoutKey> = [
-  {
-    uuid: string;
-    duration: number;
-    distance: number;
-    energyBurned: number;
-    startDate: string;
-    endDate: string;
-    type: WorkoutKey;
-    metadata: { [name: string]: any };
-    source: {
-      name: string;
-      device: string;
-      id: string;
-    };
-  },
-];
-
-export type IHealthDataRecordQuery = [
-  {
-    uuid: string;
-    date: string;
-    quantity: number;
-    metadata: { [name: string]: any };
-    source: {
-      name: string;
-      device: string;
-      id: string;
-    };
-  },
-];

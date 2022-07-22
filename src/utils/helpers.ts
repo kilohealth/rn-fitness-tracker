@@ -1,6 +1,9 @@
 import { Platform } from 'react-native';
 
-export const isObject = function (obj: any): boolean {
+import { FitnessDataType, HealthKitKeyWithUnit } from '../types';
+import { HealthKitKeyUnitByKey } from '../constants/fitness';
+
+export const isObject = function (obj: unknown): boolean {
   const type = typeof obj;
   return type === 'function' || (type === 'object' && !!obj);
 };
@@ -8,3 +11,14 @@ export const isObject = function (obj: any): boolean {
 export const isIOS = Platform.OS === 'ios';
 
 export type ValueOf<T> = T[keyof T];
+
+export const getDataTypeForHealthKit = (
+  dataType: FitnessDataType,
+): HealthKitKeyWithUnit => {
+  const HealthKitDataType = HealthKitKeyUnitByKey?.[dataType];
+  if (!HealthKitDataType) {
+    throw 'Provided incorrect dataType';
+  }
+
+  return HealthKitDataType;
+};
