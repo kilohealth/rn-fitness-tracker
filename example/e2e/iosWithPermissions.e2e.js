@@ -98,4 +98,20 @@ describe('Example', () => {
     await expect(element(by.id('height'))).toHaveText('Height: ');
     await expect(element(by.id('weight'))).toHaveText('Weight: ');
   });
+
+  it('health data should be available for device', async () => {
+    await expect(element(by.id('data_is_available_for_device'))).toHaveText(
+      'Data available for device: false',
+    );
+
+    // Check button exists
+    const checkButton = element(by.id('check_health_data_available_button'));
+    await expect(checkButton).toExist();
+    await checkButton.tap();
+
+    // data available should be true
+    await expect(element(by.id('data_is_available_for_device'))).toHaveText(
+      'Data available for device: true',
+    );
+  });
 });

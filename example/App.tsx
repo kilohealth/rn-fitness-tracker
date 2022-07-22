@@ -1,5 +1,5 @@
 import startOfDay from 'date-fns/startOfDay';
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Button,
   SafeAreaView,
@@ -75,21 +75,24 @@ const App = () => {
   const [stepsDeleted, setStepsDeleted] = useState(false);
   const [height, setHeight] = useState<number | null>(null);
   const [weight, setWeight] = useState<number | null>(null);
+  const [healthDataAvailable, setHealthDataAvailable] = useState<
+    boolean | undefined
+  >(undefined);
 
-  const authorize = useCallback(async () => {
+  const authorize = async () => {
     await FitnessTracker.authorize(permissions);
 
     setAuthorized(true);
-  }, []);
+  };
 
-  const getStepsToday = useCallback(async () => {
+  const getStepsToday = async () => {
     const steps = await FitnessTracker.getStatisticTodayTotal(
       FitnessDataType.Steps,
     );
     setStepsToday(steps);
-  }, []);
+  };
 
-  const writeMockData = useCallback(async () => {
+  const writeMockData = async () => {
     try {
       const success = await HealthKit.writeDataArray(mockData);
 
@@ -99,9 +102,9 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  };
 
-  const deleteStepsData = useCallback(async () => {
+  const deleteStepsData = async () => {
     try {
       const numberOfRecordsDeleted = await HealthKit.deleteRecord({
         key: HealthKitDataType.StepCount,
@@ -116,9 +119,9 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  };
 
-  const getWorkoutToday = useCallback(async () => {
+  const getWorkoutToday = async () => {
     try {
       const workouts = await HealthKit.queryWorkouts({
         startDate: startOfToday,
@@ -129,9 +132,9 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  };
 
-  const getHeightAndWeight = useCallback(async () => {
+  const getHeightAndWeight = async () => {
     try {
       const h = await FitnessTracker.getLatestHeight();
       const w = await FitnessTracker.getLatestWeight();
@@ -143,9 +146,9 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  };
 
-  const writeHeightAndWeight = useCallback(async () => {
+  const writeHeightAndWeight = async () => {
     try {
       await HealthKit.writeData({
         key: HealthKitDataType.Height,
@@ -162,9 +165,9 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  };
 
-  const deleteHeightAndWeight = useCallback(async () => {
+  const deleteHeightAndWeight = async () => {
     try {
       await HealthKit.deleteRecord({
         key: HealthKitDataType.Height,
@@ -181,7 +184,18 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  };
+
+  const checkIfDataIsAvailableForDevice = async () => {
+    try {
+      const result = await HealthKit.isHealthDataAvailable();
+      setHealthDataAvailable(result);
+
+      console.log('Success');
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <SafeAreaView>
@@ -191,6 +205,9 @@ const App = () => {
           <Text testID="authorization_status">Status: {isAuthorized}</Text>
           <Text testID="height">Height: {height}</Text>
           <Text testID="weight">Weight: {weight}</Text>
+          <Text testID="data_is_available_for_device">
+            Data available for device: {healthDataAvailable ? 'true' : 'false'}
+          </Text>
 
           <Button
             title="Authorize"
@@ -236,6 +253,11 @@ const App = () => {
             title="Delete Height and Weight."
             onPress={deleteHeightAndWeight}
             testID="delete_height_and_weight_Button"
+          />
+          <Button
+            title="Check if data is available for device."
+            onPress={checkIfDataIsAvailableForDevice}
+            testID="check_health_data_available_button"
           />
         </View>
       </ScrollView>
