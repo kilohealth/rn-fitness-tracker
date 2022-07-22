@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 
 import { HealthKitDataType, HealthKitUnitType } from '../../enums';
 import { isIOS } from '../../utils';
-import { HealthDataRecordQuery } from '../../types';
+import { HealthDataRecord } from '../../types';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -15,7 +15,7 @@ const { RNHealthTracker } = NativeModules;
 export const getLatestDataRecord = async (options: {
   key: HealthKitDataType;
   unit: HealthKitUnitType;
-}): Promise<HealthDataRecordQuery> => {
+}): Promise<HealthDataRecord> => {
   if (isIOS) {
     const { key, unit } = options;
     return RNHealthTracker.getLatestDataRecord(key, unit);

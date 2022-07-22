@@ -25,7 +25,7 @@ export const writeData = async (options: {
   timestamp?: number;
 }): Promise<boolean> => {
   if (isIOS) {
-    const { key, unit, amount, metadata = {}, timestamp = 0 } = options;
+    const { key, unit, amount, metadata = {}, timestamp = -1 } = options;
 
     return await RNHealthTracker.writeData(
       key,

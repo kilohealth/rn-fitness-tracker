@@ -1,6 +1,7 @@
 {
   "name": "example",
   "version": "0.0.1",
+  "packageManager": "yarn@1.22.19",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
