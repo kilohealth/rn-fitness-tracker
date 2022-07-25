@@ -2,7 +2,6 @@ example/
 docs/
 .idea/
 gen/
-node_modules/
 android/react-native-iap.iml
 android/android.iml
 tsconfig.tsbuildinfo
@@ -65,9 +64,6 @@ ios/build
 *xcuserdata*
 
 # OS-specific files
-.DS_Store
-.DS_Store?
-._*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
@@ -92,7 +88,6 @@ scripts
 
 # node.js
 #
-npm-debug.log
 yarn-error.log
 
 # Yarn berry
