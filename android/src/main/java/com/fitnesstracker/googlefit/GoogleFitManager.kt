@@ -118,7 +118,7 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
     private fun accessGoogleFit(resolvePromise: Boolean = true) {
         try {
             authorized = true
-            historyClient = HistoryClient()
+            historyClient = HistoryClient(reactContext)
 
             if (resolvePromise) authorisationPromise!!.resolve(true)
         } catch (e: Exception) {
@@ -128,7 +128,6 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
 
     fun queryTotal(
         promise: Promise,
-        activity: Activity,
         dataType: String,
         startTime: Long,
         endTime: Long
@@ -136,13 +135,12 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
-            historyClient!!.queryTotal(promise, activity, startTime, endTime, permission)
+            historyClient!!.queryTotal(promise, startTime, endTime, permission)
         }
     }
 
     fun queryDailyTotals(
         promise: Promise,
-        activity: Activity,
         dataType: String,
         startDate: Date,
         endDate: Date
@@ -152,7 +150,6 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
 
             historyClient!!.queryDailyTotals(
                 promise,
-                activity,
                 startDate,
                 endDate,
                 permission,
@@ -161,7 +158,7 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
         }
     }
 
-    fun getStatisticWeekDaily(promise: Promise, activity: Activity, dataType: String) {
+    fun getStatisticWeekDaily(promise: Promise, dataType: String) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
@@ -170,7 +167,6 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
 
             historyClient!!.queryDailyTotals(
                 promise,
-                activity,
                 startDate,
                 endDate,
                 permission,
@@ -179,56 +175,54 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
         }
     }
 
-    fun getStatisticWeekTotal(promise: Promise, activity: Activity, dataType: String) {
+    fun getStatisticWeekTotal(promise: Promise, dataType: String) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
             val endDate = Date()
             val startDate = DateHelper.addDays(endDate, -7)
 
-            historyClient!!.queryTotal(promise, activity, startDate.time, endDate.time, permission)
+            historyClient!!.queryTotal(promise, startDate.time, endDate.time, permission)
         }
     }
 
-    fun getStatisticTodayTotal(promise: Promise, activity: Activity, dataType: String) {
+    fun getStatisticTodayTotal(promise: Promise, dataType: String) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
             val endDate = Date()
             val startDate = DateHelper.getStartOfDay(endDate)
 
-            historyClient!!.queryTotal(promise, activity, startDate.time, endDate.time, permission)
+            historyClient!!.queryTotal(promise, startDate.time, endDate.time, permission)
         }
     }
 
-    fun getLatestDataRecord(promise: Promise, activity: Activity, dataType: String) {
+    fun getLatestDataRecord(promise: Promise, dataType: String) {
         if (historyNotNull(promise)) {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
-            historyClient!!.getLatestDataRecord(promise, activity, permission)
+            historyClient!!.getLatestDataRecord(promise, permission)
         }
     }
 
     fun writeWorkout(
         promise: Promise,
-        activity: Activity,
         startTime: Long,
         endTime: Long,
         options: ReadableMap
     ) {
         if (historyNotNull(promise)) {
-            historyClient!!.writeWorkout(promise, activity, startTime, endTime, options)
+            historyClient!!.writeWorkout(promise, startTime, endTime, options)
         }
     }
 
     fun deleteWorkouts(
         promise: Promise,
-        activity: Activity,
         startTime: Long,
         endTime: Long,
     ) {
         if (historyNotNull(promise)) {
-            historyClient!!.deleteAllWorkout(promise, activity, startTime, endTime)
+            historyClient!!.deleteAllWorkout(promise, startTime, endTime)
         }
     }
 

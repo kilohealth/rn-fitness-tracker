@@ -55,24 +55,19 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun queryTotal(dataType: String, startDate: Double, endDate: Double, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
-
         val endTime: Long = endDate.toLong()
         val startTime: Long = startDate.toLong()
 
-        googleFitManager.queryTotal(promise, activity, dataType, startTime, endTime)
+        googleFitManager.queryTotal(promise, dataType, startTime, endTime)
     }
 
     @ReactMethod
     fun queryDailyTotals(dataType: String, startDate: Double, endDate: Double, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
-
         val endTime: Long = endDate.toLong()
         val startTime: Long = startDate.toLong()
 
         googleFitManager.queryDailyTotals(
             promise,
-            activity,
             dataType,
             Date(startTime),
             Date(endTime)
@@ -81,39 +76,28 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun getStatisticWeekDaily(dataType: String, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
-
-        googleFitManager.getStatisticWeekDaily(promise, activity, dataType)
+        googleFitManager.getStatisticWeekDaily(promise, dataType)
     }
 
     @ReactMethod
     fun getStatisticWeekTotal(dataType: String, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
-
-        googleFitManager.getStatisticWeekTotal(promise, activity, dataType)
+        googleFitManager.getStatisticWeekTotal(promise, dataType)
     }
 
     @ReactMethod
     fun getStatisticTodayTotal(dataType: String, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
-
-        googleFitManager.getStatisticTodayTotal(promise, activity, dataType)
+        googleFitManager.getStatisticTodayTotal(promise, dataType)
     }
 
     @ReactMethod
     fun getLatestDataRecord(dataType: String, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
-
-        googleFitManager.getLatestDataRecord(promise, activity, dataType)
+        googleFitManager.getLatestDataRecord(promise, dataType)
     }
 
     @ReactMethod
     fun writeWorkout(startTime: Double, endTime: Double, options: ReadableMap, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
-
         googleFitManager.writeWorkout(
             promise,
-            activity,
             startTime.toLong(),
             endTime.toLong(),
             options
@@ -122,11 +106,8 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun deleteWorkouts(startTime: Double, endTime: Double, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
-
         googleFitManager.deleteWorkouts(
             promise,
-            activity,
             startTime.toLong(),
             endTime.toLong(),
         )

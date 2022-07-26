@@ -2,6 +2,7 @@ package com.fitnesstracker.googlefit
 
 import android.app.Activity
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.fitnesstracker.permission.Permission
@@ -15,17 +16,15 @@ import com.google.android.gms.fitness.request.SessionInsertRequest
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 
-class HistoryClient {
+class HistoryClient(private val reactContext: ReactApplicationContext) {
     fun queryTotal(
         promise: Promise,
-        activity: Activity,
         startTime: Long,
         endTime: Long,
         permission: Permission
@@ -33,7 +32,6 @@ class HistoryClient {
         try {
             if (permission.isFloat) {
                 getFloatDataHistory(
-                    activity,
                     startTime,
                     endTime,
                     7,
@@ -49,7 +47,6 @@ class HistoryClient {
                     })
             } else {
                 getIntDataHistory(
-                    activity,
                     startTime,
                     endTime,
                     7,
@@ -88,7 +85,6 @@ class HistoryClient {
 
             if (permission.isFloat) {
                 getFloatDataHistory(
-                    activity,
                     start.time,
                     end.time,
                     1,
@@ -117,7 +113,6 @@ class HistoryClient {
                     })
             } else {
                 getIntDataHistory(
-                    activity,
                     start.time,
                     end.time,
                     1,
@@ -194,7 +189,7 @@ class HistoryClient {
                 }
             }
 
-            getHistoryClient(activity, readRequest, onFailure, onSuccess)
+            getHistoryClient(readRequest, onFailure, onSuccess)
 
         } catch (e: Exception) {
             promise.reject(e)
@@ -349,35 +344,21 @@ class HistoryClient {
     }
 
     private fun getHistoryClient(
-        activity: Activity,
         readRequest: DataReadRequest,
         onFailure: OnFailureListener,
         onSuccess: OnCompleteListener<DataReadResponse>
     ) {
-        if (GoogleSignIn.getLastSignedInAccount(activity) === null) {
+        if (GoogleSignIn.getLastSignedInAccount(reactContext) === null) {
             throw IllegalAccessException("No google account. Use authorize method with at least one dataType.")
         }
 
-        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
+        Fitness.getHistoryClient(reactContext, GoogleSignIn.getLastSignedInAccount(reactContext)!!)
             .readData(readRequest)
             .addOnFailureListener(onFailure)
             .addOnCompleteListener(onSuccess)
     }
 
-    private fun getSessionClient(
-        activity: Activity,
-        insertSession: SessionInsertRequest,
-        onFailure: OnFailureListener,
-        onSuccess: OnSuccessListener<Void>,
-    ) {
-        Fitness.getSessionsClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
-            .insertSession(insertSession)
-            .addOnSuccessListener(onSuccess)
-            .addOnFailureListener(onFailure)
-    }
-
     private fun getIntDataHistory(
-        activity: Activity,
         startTime: Long,
         endTime: Long,
         dayCount: Int,
@@ -395,7 +376,7 @@ class HistoryClient {
             }
         }
 
-        getHistoryClient(activity, readRequest, onFailure, onSuccess)
+        getHistoryClient(readRequest, onFailure, onSuccess)
     }
 
     private fun parseIntDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Int {
@@ -422,7 +403,6 @@ class HistoryClient {
     }
 
     private fun getFloatDataHistory(
-        activity: Activity,
         startTime: Long,
         endTime: Long,
         dayCount: Int,
@@ -440,7 +420,7 @@ class HistoryClient {
             }
         }
 
-        getHistoryClient(activity, readRequest, onFailure, onSuccess)
+        getHistoryClient(readRequest, onFailure, onSuccess)
     }
 
     private fun parseFloatDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Float {
