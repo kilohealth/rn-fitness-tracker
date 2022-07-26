@@ -8,7 +8,6 @@ import com.fitnesstracker.permission.PermissionKind
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
-import java.util.Date
 
 
 class GoogleFitManager(private val reactContext: ReactApplicationContext) : ActivityEventListener {
@@ -126,113 +125,8 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
         }
     }
 
-    fun queryTotal(
-        promise: Promise,
-        dataType: String,
-        startTime: Long,
-        endTime: Long
-    ) {
-        if (historyNotNull(promise)) {
-            val permission = Permission(PermissionKind.getByValue(dataType))
-
-            historyClient!!.queryTotal(promise, startTime, endTime, permission)
-        }
-    }
-
-    fun queryDailyTotals(
-        promise: Promise,
-        dataType: String,
-        startDate: Date,
-        endDate: Date
-    ) {
-        if (historyNotNull(promise)) {
-            val permission = Permission(PermissionKind.getByValue(dataType))
-
-            historyClient!!.queryDailyTotals(
-                promise,
-                startDate,
-                endDate,
-                permission,
-                Arguments.createMap()
-            )
-        }
-    }
-
-    fun getStatisticWeekDaily(promise: Promise, dataType: String) {
-        if (historyNotNull(promise)) {
-            val permission = Permission(PermissionKind.getByValue(dataType))
-
-            val endDate = Date()
-            val startDate = DateHelper.addDays(endDate, -7)
-
-            historyClient!!.queryDailyTotals(
-                promise,
-                startDate,
-                endDate,
-                permission,
-                Arguments.createMap()
-            )
-        }
-    }
-
-    fun getStatisticWeekTotal(promise: Promise, dataType: String) {
-        if (historyNotNull(promise)) {
-            val permission = Permission(PermissionKind.getByValue(dataType))
-
-            val endDate = Date()
-            val startDate = DateHelper.addDays(endDate, -7)
-
-            historyClient!!.queryTotal(promise, startDate.time, endDate.time, permission)
-        }
-    }
-
-    fun getStatisticTodayTotal(promise: Promise, dataType: String) {
-        if (historyNotNull(promise)) {
-            val permission = Permission(PermissionKind.getByValue(dataType))
-
-            val endDate = Date()
-            val startDate = DateHelper.getStartOfDay(endDate)
-
-            historyClient!!.queryTotal(promise, startDate.time, endDate.time, permission)
-        }
-    }
-
-    fun getLatestDataRecord(promise: Promise, dataType: String) {
-        if (historyNotNull(promise)) {
-            val permission = Permission(PermissionKind.getByValue(dataType))
-
-            historyClient!!.getLatestDataRecord(promise, permission)
-        }
-    }
-
-    fun writeWorkout(
-        promise: Promise,
-        startTime: Long,
-        endTime: Long,
-        options: ReadableMap
-    ) {
-        if (historyNotNull(promise)) {
-            historyClient!!.writeWorkout(promise, startTime, endTime, options)
-        }
-    }
-
-    fun deleteWorkouts(
-        promise: Promise,
-        startTime: Long,
-        endTime: Long,
-    ) {
-        if (historyNotNull(promise)) {
-            historyClient!!.deleteAllWorkout(promise, startTime, endTime)
-        }
-    }
-
-    private fun historyNotNull(promise: Promise): Boolean {
-        return if (historyClient != null) {
-            true
-        } else {
-            promise.reject(Exception("Unauthorized GoogleFit"))
-            false
-        }
+    fun getHistoryClient(): HistoryClient? {
+        return historyClient
     }
 
     private fun promiseException(promise: Promise?, e: Exception) {

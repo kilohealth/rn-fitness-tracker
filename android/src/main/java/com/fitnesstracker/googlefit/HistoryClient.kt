@@ -1,6 +1,5 @@
 package com.fitnesstracker.googlefit
 
-import android.app.Activity
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
@@ -69,7 +68,6 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
 
     fun queryDailyTotals(
         promise: Promise,
-        activity: Activity,
         startDate: Date,
         endDate: Date,
         permission: Permission,
@@ -96,7 +94,6 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
                                 val previousDate = DateHelper.addDays(endDate, -1)
                                 queryDailyTotals(
                                     promise,
-                                    activity,
                                     startDate,
                                     previousDate,
                                     permission,
@@ -124,7 +121,6 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
                                 val previousDate = DateHelper.addDays(endDate, -1)
                                 queryDailyTotals(
                                     promise,
-                                    activity,
                                     startDate,
                                     previousDate,
                                     permission,
@@ -146,7 +142,7 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
         }
     }
 
-    fun getLatestDataRecord(promise: Promise, activity: Activity, permission: Permission) {
+    fun getLatestDataRecord(promise: Promise, permission: Permission) {
         try {
             val endTime = Date().time
             val startTime: Long = 1
@@ -199,7 +195,6 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
 
     fun writeWorkout(
         promise: Promise,
-        activity: Activity,
         startTime: Long,
         endTime: Long,
         options: ReadableMap
@@ -276,9 +271,9 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
 
             val fitnessOptions = fitnessOptionsBuilder.build()
 
-            val account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
+            val account = GoogleSignIn.getAccountForExtension(reactContext, fitnessOptions)
 
-            Fitness.getSessionsClient(activity, account)
+            Fitness.getSessionsClient(reactContext, account)
                 .insertSession(insertRequest)
                 .addOnSuccessListener { unused: Void? -> promise.resolve(true) }
                 .addOnFailureListener { e: java.lang.Exception? -> promise.reject(e) }
@@ -289,9 +284,8 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
         }
     }
 
-    fun deleteAllWorkout(
+    fun deleteWorkouts(
         promise: Promise,
-        activity: Activity,
         startTime: Long,
         endTime: Long,
     ) {
@@ -312,10 +306,10 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
 
         val fitnessOptions = fitnessOptionsBuilder.build()
 
-        val account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
+        val account = GoogleSignIn.getAccountForExtension(reactContext, fitnessOptions)
 
         Fitness.getHistoryClient(
-            activity,
+            reactContext,
             account
         )
             .deleteData(request)

@@ -2,6 +2,7 @@ package com.fitnesstracker
 
 import android.app.Activity
 import com.facebook.react.bridge.*
+import com.fitnesstracker.googlefit.DateHelper
 import com.fitnesstracker.googlefit.GoogleFitManager
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
@@ -30,14 +31,24 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun authorize(readPermissions: ReadableArray, writePermission: ReadableArray, promise: Promise) {
+    fun authorize(
+        readPermissions: ReadableArray,
+        writePermission: ReadableArray,
+        promise: Promise
+    ) {
         if (googleFitManager.isAuthorized()) {
             return promise.resolve(true)
         }
 
         val permissions: ArrayList<Permission> =
             createPermissionsFromReactArray(readPermissions, FitnessOptions.ACCESS_READ, promise)
-        permissions.addAll(createPermissionsFromReactArray(writePermission, FitnessOptions.ACCESS_WRITE, promise))
+        permissions.addAll(
+            createPermissionsFromReactArray(
+                writePermission,
+                FitnessOptions.ACCESS_WRITE,
+                promise
+            )
+        )
 
         val activity: Activity = getActivity(promise) ?: return
         googleFitManager.authorize(promise, activity, permissions)
@@ -45,72 +56,144 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
 
 
     @ReactMethod
-    fun isTrackingAvailable(readPermissions: ReadableArray, writePermission: ReadableArray, promise: Promise) {
+    fun isTrackingAvailable(
+        readPermissions: ReadableArray,
+        writePermission: ReadableArray,
+        promise: Promise
+    ) {
         val permissions: ArrayList<Permission> =
             createPermissionsFromReactArray(readPermissions, FitnessOptions.ACCESS_READ, promise)
-        permissions.addAll(createPermissionsFromReactArray(writePermission, FitnessOptions.ACCESS_WRITE, promise))
+        permissions.addAll(
+            createPermissionsFromReactArray(
+                writePermission,
+                FitnessOptions.ACCESS_WRITE,
+                promise
+            )
+        )
 
         googleFitManager.isTrackingAvailable(promise, permissions)
     }
 
     @ReactMethod
     fun queryTotal(dataType: String, startDate: Double, endDate: Double, promise: Promise) {
-        val endTime: Long = endDate.toLong()
-        val startTime: Long = startDate.toLong()
+        try {
+            val endTime: Long = endDate.toLong()
+            val startTime: Long = startDate.toLong()
+            val permission = Permission(PermissionKind.getByValue(dataType))
 
-        googleFitManager.queryTotal(promise, dataType, startTime, endTime)
+            if (googleFitManager.getHistoryClient() == null) {
+                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            }
+
+            googleFitManager.getHistoryClient()!!
+                .queryTotal(promise, startTime, endTime, permission)
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     @ReactMethod
     fun queryDailyTotals(dataType: String, startDate: Double, endDate: Double, promise: Promise) {
-        val endTime: Long = endDate.toLong()
-        val startTime: Long = startDate.toLong()
+        try {
+            val endTime: Long = endDate.toLong()
+            val startTime: Long = startDate.toLong()
+            val permission = Permission(PermissionKind.getByValue(dataType))
 
-        googleFitManager.queryDailyTotals(
-            promise,
-            dataType,
-            Date(startTime),
-            Date(endTime)
-        )
+            if (googleFitManager.getHistoryClient() == null) {
+                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            }
+
+            googleFitManager.getHistoryClient()!!.queryDailyTotals(
+                promise,
+                Date(startTime),
+                Date(endTime),
+                permission,
+                Arguments.createMap()
+            )
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     @ReactMethod
     fun getStatisticWeekDaily(dataType: String, promise: Promise) {
-        googleFitManager.getStatisticWeekDaily(promise, dataType)
+        try {
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            val endDate = Date()
+            val startDate = DateHelper.addDays(endDate, -7)
+
+            googleFitManager.getHistoryClient()!!.queryDailyTotals(
+                promise,
+                startDate,
+                endDate,
+                permission,
+                Arguments.createMap()
+            )
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     @ReactMethod
     fun getStatisticWeekTotal(dataType: String, promise: Promise) {
-        googleFitManager.getStatisticWeekTotal(promise, dataType)
+        try {
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            val endDate = Date()
+            val startDate = DateHelper.addDays(endDate, -7)
+
+            googleFitManager.getHistoryClient()!!
+                .queryTotal(promise, startDate.time, endDate.time, permission)
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     @ReactMethod
     fun getStatisticTodayTotal(dataType: String, promise: Promise) {
-        googleFitManager.getStatisticTodayTotal(promise, dataType)
+        try {
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            val endDate = Date()
+            val startDate = DateHelper.getStartOfDay(endDate)
+
+            googleFitManager.getHistoryClient()!!
+                .queryTotal(promise, startDate.time, endDate.time, permission)
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     @ReactMethod
     fun getLatestDataRecord(dataType: String, promise: Promise) {
-        googleFitManager.getLatestDataRecord(promise, dataType)
+        try {
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            googleFitManager.getHistoryClient()!!.getLatestDataRecord(promise, permission)
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     @ReactMethod
     fun writeWorkout(startTime: Double, endTime: Double, options: ReadableMap, promise: Promise) {
-        googleFitManager.writeWorkout(
-            promise,
-            startTime.toLong(),
-            endTime.toLong(),
-            options
-        )
+        try {
+            googleFitManager.getHistoryClient()!!
+                .writeWorkout(promise, startTime.toLong(), endTime.toLong(), options)
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     @ReactMethod
     fun deleteWorkouts(startTime: Double, endTime: Double, promise: Promise) {
-        googleFitManager.deleteWorkouts(
-            promise,
-            startTime.toLong(),
-            endTime.toLong(),
-        )
+        try {
+            googleFitManager.getHistoryClient()!!
+                .deleteWorkouts(promise, startTime.toLong(), endTime.toLong())
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     private fun createPermissionsFromReactArray(
