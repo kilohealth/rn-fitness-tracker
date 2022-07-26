@@ -2,15 +2,11 @@ package com.fitnesstracker
 
 import android.app.Activity
 import com.facebook.react.bridge.*
-
 import com.fitnesstracker.googlefit.GoogleFitManager
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
-
-import java.util.Date
 import com.google.android.gms.fitness.FitnessOptions
-
-import java.lang.NullPointerException
+import java.util.Date
 
 
 class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
@@ -35,25 +31,26 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun authorize(readPermissions: ReadableArray, writePermission: ReadableArray, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
+        if (googleFitManager.isAuthorized()) {
+            return promise.resolve(true)
+        }
 
         val permissions: ArrayList<Permission> =
             createPermissionsFromReactArray(readPermissions, FitnessOptions.ACCESS_READ, promise)
         permissions.addAll(createPermissionsFromReactArray(writePermission, FitnessOptions.ACCESS_WRITE, promise))
 
+        val activity: Activity = getActivity(promise) ?: return
         googleFitManager.authorize(promise, activity, permissions)
     }
 
 
     @ReactMethod
     fun isTrackingAvailable(readPermissions: ReadableArray, writePermission: ReadableArray, promise: Promise) {
-        val activity: Activity = getActivity(promise) ?: return
-
         val permissions: ArrayList<Permission> =
             createPermissionsFromReactArray(readPermissions, FitnessOptions.ACCESS_READ, promise)
         permissions.addAll(createPermissionsFromReactArray(writePermission, FitnessOptions.ACCESS_WRITE, promise))
 
-        googleFitManager.isTrackingAvailable(promise, activity, permissions)
+        googleFitManager.isTrackingAvailable(promise, permissions)
     }
 
     @ReactMethod

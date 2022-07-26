@@ -1,7 +1,6 @@
 package com.fitnesstracker.googlefit
 
 import android.app.Activity
-import java.lang.Exception
 import android.content.Intent
 import com.facebook.react.bridge.*
 import com.fitnesstracker.permission.Permission
@@ -9,10 +8,12 @@ import com.fitnesstracker.permission.PermissionKind
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Date
 
-class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventListener {
+
+class GoogleFitManager(private val reactContext: ReactApplicationContext) : ActivityEventListener {
+    private val recordingApi: RecordingApi = RecordingApi(reactContext)
+    private var authorized = false
     private var historyClient: HistoryClient? = null
     private var authorisationPromise: Promise? = null
 
@@ -40,48 +41,83 @@ class GoogleFitManager(reactContext: ReactApplicationContext) : ActivityEventLis
         try {
             authorisationPromise = promise
 
-            val recordingService = RecordingService(activity)
-
-            if (recordingService.hasGoogleFitPermission(permissions)) {
+            if (authorized) {
                 accessGoogleFit()
             } else {
                 if (permissions.find { it.permissionKind == PermissionKind.STEPS } !== null) {
-                    // Subscribes to tracking steps even if google fit is not installed
+                    /** Subscribes to tracking steps even if google fit is not installed */
                     // Todo: test if this works
-                    recordingService.subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
+                    recordingApi.subscribe(DataType.TYPE_STEP_COUNT_DELTA)
                 }
 
-                recordingService.requestFitnessPermissions(permissions)
+                val fitnessOptionsBuilder: FitnessOptions.Builder = FitnessOptions.builder()
+
+                for (permission in permissions) {
+                    for (dataType in permission.dataTypes) {
+                        fitnessOptionsBuilder.addDataType(
+                            dataType,
+                            permission.permissionAccess
+                        )
+                    }
+                }
+
+                val fitnessOptions = fitnessOptionsBuilder.build()
+                val googleAccount =
+                    GoogleSignIn.getAccountForExtension(reactContext, fitnessOptions)
+
+                GoogleSignIn.requestPermissions(
+                    activity,
+                    GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                    googleAccount,
+                    fitnessOptions
+                )
             }
         } catch (e: Exception) {
             promiseException(authorisationPromise, e)
         }
     }
 
+    fun isAuthorized(): Boolean {
+        return authorized
+    }
+
     fun isTrackingAvailable(
         promise: Promise,
-        activity: Activity,
         permissions: ArrayList<Permission>
     ) {
         try {
-            authorisationPromise = promise
+            val fitnessOptionsBuilder: FitnessOptions.Builder = FitnessOptions.builder()
+            for (permission in permissions) {
+                for (dataType in permission.dataTypes) {
+                    fitnessOptionsBuilder.addDataType(
+                        dataType,
+                        permission.permissionAccess
+                    )
+                }
+            }
+            val fitnessOptions = fitnessOptionsBuilder.build()
 
-            val recordingService = RecordingService(activity)
+            val googleAccount =
+                GoogleSignIn.getAccountForExtension(reactContext, fitnessOptions)
 
-            val hasPermissions = recordingService.hasGoogleFitPermission(permissions)
+            val hasPermissions = GoogleSignIn.hasPermissions(
+                googleAccount,
+                fitnessOptions
+            )
 
-            if (hasPermissions && historyClient == null) {
+            if (hasPermissions && !authorized) {
                 accessGoogleFit(false)
             }
 
-            authorisationPromise!!.resolve(hasPermissions)
+            promise.resolve(hasPermissions)
         } catch (e: Exception) {
-            promiseException(authorisationPromise, e)
+            promiseException(promise, e)
         }
     }
 
     private fun accessGoogleFit(resolvePromise: Boolean = true) {
         try {
+            authorized = true
             historyClient = HistoryClient()
 
             if (resolvePromise) authorisationPromise!!.resolve(true)
