@@ -1,2 +1,2 @@
-export * from './googleFitDataTypes';
-export * from './healthKitDataTypes';
+export * from './googleFitDataType';
+export * from './healthKitDataType';

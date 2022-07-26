@@ -1,5 +1,5 @@
 import { GoogleFit } from '..';
-import { GoogleFitDataTypes } from '../../enums';
+import { GoogleFitDataType } from '../../enums';
 import { isIOS } from '../../utils';
 
 /**
@@ -8,7 +8,7 @@ import { isIOS } from '../../utils';
  * @platform Android
  */
 export const isTrackingAvailableAndroid = async (
-  permissions: GoogleFitDataTypes[],
+  permissions: GoogleFitDataType[],
 ): Promise<boolean> => {
   if (!isIOS) {
     return await GoogleFit.isTrackingAvailable(permissions);

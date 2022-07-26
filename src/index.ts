@@ -6,8 +6,8 @@ export * from './api';
 /**
  * Enums
  */
-export * from './enums/googleFitDataTypes';
-export * from './enums/healthKitDataTypes';
+export * from './enums/googleFitDataType';
+export * from './enums/healthKitDataType';
 
 /**
  * Types

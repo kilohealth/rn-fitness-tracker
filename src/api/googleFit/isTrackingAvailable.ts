@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { GoogleFitDataTypes } from '../../enums';
+import { GoogleFitDataType } from '../../enums';
 import { handleAndroidMotionTrackingPermissions, isIOS } from '../../utils';
 
 /** @internal */
@@ -11,7 +11,7 @@ const { RNFitnessTracker } = NativeModules;
  * @param permissions - List of permissions to check if tracking is available
  */
 export const isTrackingAvailable = async (
-  permissions: GoogleFitDataTypes[],
+  permissions: GoogleFitDataType[],
 ): Promise<boolean> => {
   if (!isIOS) {
     let motionAuthResult = await handleAndroidMotionTrackingPermissions(false);

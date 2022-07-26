@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { GoogleFitDataTypes } from '../../enums';
+import { GoogleFitDataType } from '../../enums';
 import { handleAndroidMotionTrackingPermissions, isIOS } from '../../utils';
 
 /** @internal */
@@ -8,14 +8,14 @@ const { RNFitnessTracker } = NativeModules;
 
 /**
  * Sets up GoogleFit tracking and returns status
- * @param shareTypes e.g. `[GoogleFitDataTypes.Steps]`
- * @param readTypes e.g. `[GoogleFitDataTypes.Steps]`
+ * @param shareTypes e.g. `[GoogleFitDataType.Steps]`
+ * @param readTypes e.g. `[GoogleFitDataType.Steps]`
  *
  * @return Returns status of authentication.
  */
 export const authorize = async (
-  shareTypes: GoogleFitDataTypes[],
-  readTypes: GoogleFitDataTypes[],
+  shareTypes: GoogleFitDataType[],
+  readTypes: GoogleFitDataType[],
 ): Promise<boolean> => {
   if (!isIOS) {
     let motionAuthResult = await handleAndroidMotionTrackingPermissions(true);
