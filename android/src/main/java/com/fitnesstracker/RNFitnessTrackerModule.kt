@@ -41,14 +41,7 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         }
 
         val permissions: ArrayList<Permission> =
-            createPermissionsFromReactArray(readPermissions, FitnessOptions.ACCESS_READ, promise)
-        permissions.addAll(
-            createPermissionsFromReactArray(
-                writePermission,
-                FitnessOptions.ACCESS_WRITE,
-                promise
-            )
-        )
+            createPermissionsFromReactArray(readPermissions, writePermission, promise)
 
         val activity: Activity = getActivity(promise) ?: return
         googleFitManager.authorize(promise, activity, permissions)
@@ -62,14 +55,7 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         promise: Promise
     ) {
         val permissions: ArrayList<Permission> =
-            createPermissionsFromReactArray(readPermissions, FitnessOptions.ACCESS_READ, promise)
-        permissions.addAll(
-            createPermissionsFromReactArray(
-                writePermission,
-                FitnessOptions.ACCESS_WRITE,
-                promise
-            )
-        )
+            createPermissionsFromReactArray(readPermissions, writePermission, promise)
 
         googleFitManager.isTrackingAvailable(promise, permissions)
     }
@@ -222,17 +208,29 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     }
 
     private fun createPermissionsFromReactArray(
-        permissions: ReadableArray,
-        access: Int,
+        readPermissions: ReadableArray,
+        writePermissions: ReadableArray,
         promise: Promise
     ): ArrayList<Permission> {
         val result: ArrayList<Permission> = ArrayList()
-        val size = permissions.size()
-        for (i in 0 until size) {
-            try {
-                val permissionKind = permissions.getString(i)
 
-                result.add(Permission(PermissionKind.getByValue(permissionKind), access))
+        val readSize = readPermissions.size()
+        for (i in 0 until readSize) {
+            try {
+                val permissionKind = readPermissions.getString(i)
+
+                result.add(Permission(PermissionKind.getByValue(permissionKind), FitnessOptions.ACCESS_READ))
+            } catch (e: NullPointerException) {
+                promise.reject(e)
+                e.printStackTrace()
+            }
+        }
+        val writeSize = writePermissions.size()
+        for (i in 0 until writeSize) {
+            try {
+                val permissionKind = writePermissions.getString(i)
+
+                result.add(Permission(PermissionKind.getByValue(permissionKind), FitnessOptions.ACCESS_WRITE))
             } catch (e: NullPointerException) {
                 promise.reject(e)
                 e.printStackTrace()
