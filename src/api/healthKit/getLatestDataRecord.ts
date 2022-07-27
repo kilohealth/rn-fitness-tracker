@@ -15,7 +15,7 @@ const { RNHealthTracker } = NativeModules;
 export const getLatestDataRecord = async (options: {
   key: HealthKitDataType;
   unit: HealthKitUnitType;
-}): Promise<HealthDataRecord> => {
+}): Promise<HealthDataRecord | undefined> => {
   if (isIOS) {
     const { key, unit } = options;
     return RNHealthTracker.getLatestDataRecord(key, unit);
