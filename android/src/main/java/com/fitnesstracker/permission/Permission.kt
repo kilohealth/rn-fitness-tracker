@@ -111,8 +111,8 @@ class Permission(
                 isFloat = false
             }
             PermissionKind.STEPS -> {
-                dataTypes.add(DataType.AGGREGATE_STEP_COUNT_DELTA)
                 dataTypes.add(DataType.TYPE_STEP_COUNT_DELTA)
+                dataTypes.add(DataType.AGGREGATE_STEP_COUNT_DELTA)
                 isFloat = false
             }
             PermissionKind.WEIGHT -> {

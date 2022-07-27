@@ -20,7 +20,6 @@ export const queryWorkouts = async (options: {
   key?: HealthKitWorkoutType;
 }): Promise<HealthWorkoutRecordQuery> => {
   if (isIOS) {
-    // todo test if 0 is set
     const { startDate, endDate, key = 0 } = options;
     return RNHealthTracker.queryWorkouts(key, +startDate, +endDate);
   }

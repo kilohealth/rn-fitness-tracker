@@ -1,11 +1,6 @@
-import { NativeModules } from 'react-native';
-
 import { DailyData, FitnessDataType, TodayAndDailyData } from '../../types';
 import { getDataTypeForHealthKit, isIOS, isObject } from '../../utils';
-import { HealthKit } from '../..';
-
-/** @internal */
-const { RNFitnessTracker } = NativeModules;
+import { GoogleFit, HealthKit } from '../..';
 
 /**
  * Returns steps total for today and this week's steps daily values.
@@ -20,7 +15,7 @@ export const getData = async (
 
     daily = await HealthKit.getStatisticWeekDaily(healthKitDataType);
   } else {
-    daily = await RNFitnessTracker.getStatisticWeekDaily(dataType);
+    daily = await GoogleFit.getStatisticWeekDaily(dataType);
   }
 
   let today = 0;

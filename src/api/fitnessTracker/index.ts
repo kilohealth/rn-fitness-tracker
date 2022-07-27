@@ -8,6 +8,6 @@ export * from './getLatestWeight';
 export * from './getStatisticTodayTotal';
 export * from './getStatisticWeekDaily';
 export * from './getStatisticWeekTotal';
-export * from './isTrackingAvailableAndroid';
+export * from './UNSAFE_isTrackingAvailable';
 export * from './queryDailyTotals';
 export * from './queryTotal';

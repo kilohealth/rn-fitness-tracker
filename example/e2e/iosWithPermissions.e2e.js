@@ -27,6 +27,20 @@ describe('Example', () => {
     await expect(element(by.id('steps_today'))).toHaveText('Steps today: 0');
   });
 
+  it('should tracking unsafe to be false', async () => {
+    await expect(element(by.id('unsafe_tracking_status'))).toHaveText(
+      'UNSAFE_isTrackingAvailable: false',
+    );
+
+    const button = element(by.id('check_tracking_unsafe_button'));
+    await expect(button).toExist();
+    await button.tap();
+
+    await expect(element(by.id('unsafe_tracking_status'))).toHaveText(
+      'UNSAFE_isTrackingAvailable: false',
+    );
+  });
+
   it('should write steps data', async () => {
     // Write button exists
     const writeStepsButton = element(by.id('write_steps_button'));
@@ -43,6 +57,20 @@ describe('Example', () => {
     await expect(getTodayStepsButton).toExist();
     await getTodayStepsButton.tap();
     await expect(element(by.id('steps_today'))).toHaveText('Steps today: 400');
+  });
+
+  it('should tracking unsafe to be true', async () => {
+    await expect(element(by.id('unsafe_tracking_status'))).toHaveText(
+      'UNSAFE_isTrackingAvailable: false',
+    );
+
+    const button = element(by.id('check_tracking_unsafe_button'));
+    await expect(button).toExist();
+    await button.tap();
+
+    await expect(element(by.id('unsafe_tracking_status'))).toHaveText(
+      'UNSAFE_isTrackingAvailable: true',
+    );
   });
 
   it('should delete steps data', async () => {

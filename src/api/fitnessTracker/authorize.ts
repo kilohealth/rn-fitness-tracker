@@ -1,6 +1,6 @@
 import { AuthorizationPermissions } from '../../types';
 import { GoogleFit, HealthKit } from '../..';
-import { GoogleFitDataTypes, HealthKitDataType } from '../../enums';
+import { GoogleFitDataType, HealthKitDataType } from '../../enums';
 import { isIOS } from '../../utils';
 
 /**
@@ -22,9 +22,9 @@ export const authorize = async (
 
     return await HealthKit.authorize(shareTypes, readTypes);
   } else {
-    const readTypes: GoogleFitDataTypes[] =
+    const readTypes: GoogleFitDataType[] =
       permissions.googleFitReadPermissions || [];
-    const shareTypes: GoogleFitDataTypes[] =
+    const shareTypes: GoogleFitDataType[] =
       permissions.googleFitWritePermissions || [];
 
     return await GoogleFit.authorize(shareTypes, readTypes);

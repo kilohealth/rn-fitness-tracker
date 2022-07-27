@@ -1,7 +1,11 @@
 import { Platform } from 'react-native';
 
 import { FitnessDataType, HealthKitKeyWithUnit } from '../types';
-import { HealthKitKeyUnitByKey } from '../constants/fitness';
+import {
+  GoogleFitDataTypeByKey,
+  HealthKitKeyUnitByKey,
+} from '../constants/fitness';
+import { GoogleFitDataType } from '../enums';
 
 export const isObject = function (obj: unknown): boolean {
   const type = typeof obj;
@@ -21,4 +25,15 @@ export const getDataTypeForHealthKit = (
   }
 
   return HealthKitDataType;
+};
+
+export const getDataTypeForGoogleFit = (
+  dataType: FitnessDataType,
+): GoogleFitDataType => {
+  const googleFitDataType = GoogleFitDataTypeByKey?.[dataType];
+  if (!googleFitDataType) {
+    throw 'Provided incorrect dataType';
+  }
+
+  return googleFitDataType;
 };

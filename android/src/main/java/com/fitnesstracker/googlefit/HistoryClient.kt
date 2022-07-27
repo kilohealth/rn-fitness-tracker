@@ -1,31 +1,27 @@
 package com.fitnesstracker.googlefit
 
-import android.app.Activity
 import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.WritableMap
 import com.fitnesstracker.permission.Permission
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.*
-import com.google.android.gms.fitness.request.DataDeleteRequest
 import com.google.android.gms.fitness.request.DataReadRequest
-import com.google.android.gms.fitness.request.SessionInsertRequest
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
-import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.Calendar
+import java.util.Date
 import kotlin.math.roundToInt
 
 
-class HistoryClient {
+class HistoryClient(private val reactContext: ReactApplicationContext) {
     fun queryTotal(
         promise: Promise,
-        activity: Activity,
         startTime: Long,
         endTime: Long,
         permission: Permission
@@ -33,11 +29,10 @@ class HistoryClient {
         try {
             if (permission.isFloat) {
                 getFloatDataHistory(
-                    activity,
                     startTime,
                     endTime,
                     7,
-                    permission.dataTypes,
+                    permission,
                     object : OnFloatFetch {
                         override fun onSuccess(data: Float) {
                             promise.resolve(data)
@@ -49,11 +44,10 @@ class HistoryClient {
                     })
             } else {
                 getIntDataHistory(
-                    activity,
                     startTime,
                     endTime,
                     7,
-                    permission.dataTypes,
+                    permission,
                     object : OnIntFetch {
                         override fun onSuccess(data: Int) {
                             promise.resolve(data)
@@ -72,7 +66,6 @@ class HistoryClient {
 
     fun queryDailyTotals(
         promise: Promise,
-        activity: Activity,
         startDate: Date,
         endDate: Date,
         permission: Permission,
@@ -88,11 +81,10 @@ class HistoryClient {
 
             if (permission.isFloat) {
                 getFloatDataHistory(
-                    activity,
                     start.time,
                     end.time,
                     1,
-                    permission.dataTypes,
+                    permission,
                     object : OnFloatFetch {
                         override fun onSuccess(data: Float) {
                             if (startDate.time < endDate.time) {
@@ -100,7 +92,6 @@ class HistoryClient {
                                 val previousDate = DateHelper.addDays(endDate, -1)
                                 queryDailyTotals(
                                     promise,
-                                    activity,
                                     startDate,
                                     previousDate,
                                     permission,
@@ -117,11 +108,10 @@ class HistoryClient {
                     })
             } else {
                 getIntDataHistory(
-                    activity,
                     start.time,
                     end.time,
                     1,
-                    permission.dataTypes,
+                    permission,
                     object : OnIntFetch {
                         override fun onSuccess(data: Int) {
                             if (startDate.time < endDate.time) {
@@ -129,7 +119,6 @@ class HistoryClient {
                                 val previousDate = DateHelper.addDays(endDate, -1)
                                 queryDailyTotals(
                                     promise,
-                                    activity,
                                     startDate,
                                     previousDate,
                                     permission,
@@ -151,7 +140,7 @@ class HistoryClient {
         }
     }
 
-    fun getLatestDataRecord(promise: Promise, activity: Activity, permission: Permission) {
+    fun getLatestDataRecord(promise: Promise, permission: Permission) {
         try {
             val endTime = Date().time
             val startTime: Long = 1
@@ -194,142 +183,12 @@ class HistoryClient {
                 }
             }
 
-            getHistoryClient(activity, readRequest, onFailure, onSuccess)
+            getHistoryClient(readRequest, permission, onFailure, onSuccess)
 
         } catch (e: Exception) {
             promise.reject(e)
             e.printStackTrace()
         }
-    }
-
-    fun writeWorkout(
-        promise: Promise,
-        activity: Activity,
-        startTime: Long,
-        endTime: Long,
-        options: ReadableMap
-    ) {
-        try {
-            val activityKey =
-                options.getString("key") ?: throw IllegalArgumentException("key expected")
-            val sessionName =
-                options.getString("name") ?: throw IllegalArgumentException("name expected")
-            val identifier = options.getString("identifier")
-                ?: throw IllegalArgumentException("identifier expected")
-
-            val description =
-                if (options.hasKey("description")) options.getString("description")!! else ""
-
-            // Create a session with metadata about the activity.
-            val session = Session.Builder()
-                .setName(sessionName)
-                .setIdentifier(identifier)
-                .setDescription(description)
-                .setActivity(activityKey)
-                .setStartTime(startTime, TimeUnit.MILLISECONDS)
-                .setEndTime(endTime, TimeUnit.MILLISECONDS)
-                .build()
-
-            val sessionInsertBuilder = SessionInsertRequest.Builder()
-                .setSession(session)
-
-            val fitnessOptionsBuilder = FitnessOptions.builder()
-
-            if (options.hasKey("calories")) {
-                val calories = options.getDouble("calories").toFloat()
-                val calDataSource: DataSource = DataSource.Builder()
-                    .setDataType(DataType.TYPE_CALORIES_EXPENDED)
-                    .setType(DataSource.TYPE_RAW)
-                    .build()
-                val calDataPoint = DataPoint.builder(calDataSource)
-                    .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS)
-                    .setField(Field.FIELD_CALORIES, calories)
-                    .build()
-                val calDataSet = DataSet.builder(calDataSource)
-                    .add(calDataPoint)
-                    .build()
-                sessionInsertBuilder.addDataSet(calDataSet)
-            }
-
-            if (options.hasKey("steps")) {
-                val steps = options.getInt("steps")
-                val stepsDataSource: DataSource = DataSource.Builder()
-                    .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
-                    .setType(DataSource.TYPE_RAW)
-                    .build()
-                val stepsDataPoint = DataPoint.builder(stepsDataSource)
-                    .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS)
-                    .setField(Field.FIELD_STEPS, steps)
-                    .build()
-                val stepsDataSet = DataSet.builder(stepsDataSource)
-                    .add(stepsDataPoint)
-                    .build()
-                sessionInsertBuilder.addDataSet(stepsDataSet)
-                fitnessOptionsBuilder.addDataType(
-                    DataType.TYPE_STEP_COUNT_DELTA,
-                    FitnessOptions.ACCESS_WRITE
-                );
-            }
-
-            // Build a session insert request
-            val insertRequest = sessionInsertBuilder.build()
-
-            fitnessOptionsBuilder.addDataType(
-                DataType.TYPE_ACTIVITY_SEGMENT,
-                FitnessOptions.ACCESS_WRITE
-            )
-
-            val fitnessOptions = fitnessOptionsBuilder.build()
-
-            val account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
-
-            Fitness.getSessionsClient(activity, account)
-                .insertSession(insertRequest)
-                .addOnSuccessListener { unused: Void? -> promise.resolve(true) }
-                .addOnFailureListener { e: java.lang.Exception? -> promise.reject(e) }
-
-        } catch (e: Exception) {
-            promise.reject(e)
-            e.printStackTrace()
-        }
-    }
-
-    fun deleteAllWorkout(
-        promise: Promise,
-        activity: Activity,
-        startTime: Long,
-        endTime: Long,
-    ) {
-        val requestBuilder = DataDeleteRequest.Builder()
-            .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS)
-
-        val request = requestBuilder
-            .addDataType(DataType.TYPE_ACTIVITY_SEGMENT)
-            .deleteAllSessions()
-            .build()
-
-
-        val fitnessOptionsBuilder = FitnessOptions.builder()
-        fitnessOptionsBuilder.addDataType(
-            DataType.TYPE_ACTIVITY_SEGMENT,
-            FitnessOptions.ACCESS_WRITE
-        )
-
-        val fitnessOptions = fitnessOptionsBuilder.build()
-
-        val account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions)
-
-        Fitness.getHistoryClient(
-            activity,
-            account
-        )
-            .deleteData(request)
-            .addOnSuccessListener { unused: Void? ->
-                promise.resolve(true)
-            }
-            .addOnFailureListener { e: java.lang.Exception? ->
-                promise.reject(e)
-            }
     }
 
     private fun createReadRequest(
@@ -349,53 +208,52 @@ class HistoryClient {
     }
 
     private fun getHistoryClient(
-        activity: Activity,
         readRequest: DataReadRequest,
+        permission: Permission,
         onFailure: OnFailureListener,
         onSuccess: OnCompleteListener<DataReadResponse>
     ) {
-        if (GoogleSignIn.getLastSignedInAccount(activity) === null) {
-            throw IllegalAccessException("No google account. Use authorize method with at least one dataType.")
+        val fitnessOptionsBuilder: FitnessOptions.Builder = FitnessOptions.builder()
+
+        for (dataType in permission.dataTypes) {
+            fitnessOptionsBuilder.addDataType(
+                dataType,
+                permission.permissionAccess
+            )
         }
 
-        Fitness.getHistoryClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
+        val fitnessOptions = fitnessOptionsBuilder.build()
+        val googleAccount = Helpers.getGoogleAccount(reactContext, fitnessOptions)
+
+        if (!GoogleSignIn.hasPermissions(googleAccount, fitnessOptions)) {
+            throw IllegalAccessException("Unauthorized GoogleFit. User must have permissions for data type: " + permission.dataTypes.joinToString { it.name })
+        }
+
+        Fitness.getHistoryClient(reactContext, googleAccount)
             .readData(readRequest)
             .addOnFailureListener(onFailure)
             .addOnCompleteListener(onSuccess)
     }
 
-    private fun getSessionClient(
-        activity: Activity,
-        insertSession: SessionInsertRequest,
-        onFailure: OnFailureListener,
-        onSuccess: OnSuccessListener<Void>,
-    ) {
-        Fitness.getSessionsClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
-            .insertSession(insertSession)
-            .addOnSuccessListener(onSuccess)
-            .addOnFailureListener(onFailure)
-    }
-
     private fun getIntDataHistory(
-        activity: Activity,
         startTime: Long,
         endTime: Long,
         dayCount: Int,
-        dataTypes: ArrayList<DataType>,
+        permission: Permission,
         fetchCompleteCallback: OnIntFetch
     ) {
         val readRequest: DataReadRequest =
-            createReadRequest(startTime, endTime, dayCount, dataTypes)
+            createReadRequest(startTime, endTime, dayCount, permission.dataTypes)
         val onFailure = { e: Exception -> fetchCompleteCallback.onFailure(e) }
         val onSuccess = { task: Task<DataReadResponse> ->
             if (task.isSuccessful) {
                 val response = task.result
-                val data = parseIntDataDelta(response, dataTypes)
+                val data = parseIntDataDelta(response, permission.dataTypes)
                 fetchCompleteCallback.onSuccess(data)
             }
         }
 
-        getHistoryClient(activity, readRequest, onFailure, onSuccess)
+        getHistoryClient(readRequest, permission, onFailure, onSuccess)
     }
 
     private fun parseIntDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Int {
@@ -422,25 +280,24 @@ class HistoryClient {
     }
 
     private fun getFloatDataHistory(
-        activity: Activity,
         startTime: Long,
         endTime: Long,
         dayCount: Int,
-        dataTypes: ArrayList<DataType>,
+        permission: Permission,
         fetchCompleteCallback: OnFloatFetch
     ) {
         val readRequest: DataReadRequest =
-            createReadRequest(startTime, endTime, dayCount, dataTypes)
+            createReadRequest(startTime, endTime, dayCount, permission.dataTypes)
         val onFailure = { e: Exception -> fetchCompleteCallback.onFailure(e) }
         val onSuccess = { task: Task<DataReadResponse> ->
             if (task.isSuccessful) {
                 val response = task.result
-                val data = parseFloatDataDelta(response, dataTypes)
+                val data = parseFloatDataDelta(response, permission.dataTypes)
                 fetchCompleteCallback.onSuccess(data)
             }
         }
 
-        getHistoryClient(activity, readRequest, onFailure, onSuccess)
+        getHistoryClient(readRequest, permission, onFailure, onSuccess)
     }
 
     private fun parseFloatDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Float {

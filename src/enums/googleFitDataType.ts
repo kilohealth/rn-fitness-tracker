@@ -1,7 +1,7 @@
 /**
  * Google fit data types.
  */
-export enum GoogleFitDataTypes {
+export enum GoogleFitDataType {
   Activity = 'Activity',
   BasalMetabolicRate = 'BasalMetabolicRate',
   BodyFat = 'BodyFat',
