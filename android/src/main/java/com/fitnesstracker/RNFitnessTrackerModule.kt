@@ -85,7 +85,8 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
                 return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
             }
 
-            googleFitManager.getHistoryClient()!!
+            googleFitManager
+                .getHistoryClient()!!
                 .queryTotal(promise, startTime, endTime, permission)
         } catch (e: Exception) {
             promise.reject(e)
@@ -103,13 +104,15 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
                 return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
             }
 
-            googleFitManager.getHistoryClient()!!.queryDailyTotals(
-                promise,
-                Date(startTime),
-                Date(endTime),
-                permission,
-                Arguments.createMap()
-            )
+            googleFitManager
+                .getHistoryClient()!!
+                .queryDailyTotals(
+                    promise,
+                    Date(startTime),
+                    Date(endTime),
+                    permission,
+                    Arguments.createMap()
+                )
         } catch (e: Exception) {
             promise.reject(e)
         }
@@ -123,13 +126,19 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             val endDate = Date()
             val startDate = DateHelper.addDays(endDate, -7)
 
-            googleFitManager.getHistoryClient()!!.queryDailyTotals(
-                promise,
-                startDate,
-                endDate,
-                permission,
-                Arguments.createMap()
-            )
+            if (googleFitManager.getHistoryClient() == null) {
+                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            }
+
+            googleFitManager
+                .getHistoryClient()!!
+                .queryDailyTotals(
+                    promise,
+                    startDate,
+                    endDate,
+                    permission,
+                    Arguments.createMap()
+                )
         } catch (e: Exception) {
             promise.reject(e)
         }
@@ -143,7 +152,12 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             val endDate = Date()
             val startDate = DateHelper.addDays(endDate, -7)
 
-            googleFitManager.getHistoryClient()!!
+            if (googleFitManager.getHistoryClient() == null) {
+                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            }
+
+            googleFitManager
+                .getHistoryClient()!!
                 .queryTotal(promise, startDate.time, endDate.time, permission)
         } catch (e: Exception) {
             promise.reject(e)
@@ -158,7 +172,12 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             val endDate = Date()
             val startDate = DateHelper.getStartOfDay(endDate)
 
-            googleFitManager.getHistoryClient()!!
+            if (googleFitManager.getHistoryClient() == null) {
+                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            }
+
+            googleFitManager
+                .getHistoryClient()!!
                 .queryTotal(promise, startDate.time, endDate.time, permission)
         } catch (e: Exception) {
             promise.reject(e)
@@ -170,6 +189,10 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         try {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
+            if (googleFitManager.getHistoryClient() == null) {
+                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            }
+
             googleFitManager.getHistoryClient()!!.getLatestDataRecord(promise, permission)
         } catch (e: Exception) {
             promise.reject(e)
@@ -179,7 +202,8 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun writeWorkout(startTime: Double, endTime: Double, options: ReadableMap, promise: Promise) {
         try {
-            googleFitManager.getHistoryClient()!!
+            googleFitManager
+                .getActivityHistory()
                 .writeWorkout(promise, startTime.toLong(), endTime.toLong(), options)
         } catch (e: Exception) {
             promise.reject(e)
@@ -189,7 +213,8 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun deleteWorkouts(startTime: Double, endTime: Double, promise: Promise) {
         try {
-            googleFitManager.getHistoryClient()!!
+            googleFitManager
+                .getActivityHistory()
                 .deleteWorkouts(promise, startTime.toLong(), endTime.toLong())
         } catch (e: Exception) {
             promise.reject(e)

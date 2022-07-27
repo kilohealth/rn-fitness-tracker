@@ -14,6 +14,7 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
     private val recordingApi: RecordingApi = RecordingApi(reactContext)
     private var authorized = false
     private var historyClient: HistoryClient? = null
+    private var activityHistory: ActivityHistory = ActivityHistory(reactContext)
     private var authorisationPromise: Promise? = null
 
     init {
@@ -114,6 +115,13 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
         }
     }
 
+    fun getHistoryClient(): HistoryClient? {
+        return historyClient
+    }
+
+    fun getActivityHistory(): ActivityHistory {
+        return activityHistory
+    }
     private fun accessGoogleFit(resolvePromise: Boolean = true) {
         try {
             authorized = true
@@ -123,10 +131,6 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
         } catch (e: Exception) {
             promiseException(authorisationPromise, e)
         }
-    }
-
-    fun getHistoryClient(): HistoryClient? {
-        return historyClient
     }
 
     private fun promiseException(promise: Promise?, e: Exception) {
