@@ -14,7 +14,7 @@ import {
   AuthorizationPermissions,
   FitnessDataType,
   FitnessTracker,
-  GoogleFitDataTypes,
+  GoogleFitDataType,
   HealthKitDataType,
   HealthKit,
   HealthKitWriteData,
@@ -30,8 +30,8 @@ const permissions: AuthorizationPermissions = {
     HealthKitDataType.StepCount,
     HealthKitDataType.Workout,
   ],
-  googleFitReadPermissions: [GoogleFitDataTypes.Steps],
-  googleFitWritePermissions: [GoogleFitDataTypes.Steps],
+  googleFitReadPermissions: [GoogleFitDataType.Steps],
+  googleFitWritePermissions: [GoogleFitDataType.Steps],
 };
 
 const startOfToday = +startOfDay(new Date());
@@ -69,6 +69,7 @@ const mockData: Array<HealthKitWriteData> = [
 
 const App = () => {
   const [authorized, setAuthorized] = useState(false);
+  const [unsafeAuthorization, setUnsafeAuthorization] = useState(false);
   const isAuthorized: string = authorized ? 'Authorized' : 'Not authorized';
   const [stepsToday, setStepsToday] = useState<number | undefined>(undefined);
   const [stepsTodayWritten, setStepsTodayWritten] = useState(false);
@@ -141,8 +142,6 @@ const App = () => {
 
       setHeight(h);
       setWeight(w);
-
-      console.log('Success');
     } catch (error) {
       console.log(error);
     }
@@ -160,8 +159,6 @@ const App = () => {
         unit: HealthKitUnitType.Kilograms,
         amount: 99.9,
       });
-
-      console.log('Success');
     } catch (error) {
       console.log(error);
     }
@@ -179,8 +176,6 @@ const App = () => {
         startDate: startOfToday,
         endDate: +new Date(),
       });
-
-      console.log('Success');
     } catch (error) {
       console.log(error);
     }
@@ -190,8 +185,17 @@ const App = () => {
     try {
       const result = await HealthKit.isHealthDataAvailable();
       setHealthDataAvailable(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-      console.log('Success');
+  const checkIfTrackingIsAvailableUnsafe = async () => {
+    try {
+      const result = await FitnessTracker.UNSAFE_isTrackingAvailable(
+        FitnessDataType.Steps,
+      );
+      setUnsafeAuthorization(result);
     } catch (error) {
       console.log(error);
     }
@@ -203,6 +207,9 @@ const App = () => {
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={styles.container}>
           <Text testID="authorization_status">Status: {isAuthorized}</Text>
+          <Text testID="unsafe_tracking_status">
+            UNSAFE_isTrackingAvailable: {unsafeAuthorization ? 'true' : 'false'}
+          </Text>
           <Text testID="height">Height: {height}</Text>
           <Text testID="weight">Weight: {weight}</Text>
           <Text testID="data_is_available_for_device">
@@ -258,6 +265,11 @@ const App = () => {
             title="Check if data is available for device."
             onPress={checkIfDataIsAvailableForDevice}
             testID="check_health_data_available_button"
+          />
+          <Button
+            title="Check is tracking available. (Unsafe)"
+            onPress={checkIfTrackingIsAvailableUnsafe}
+            testID="check_tracking_unsafe_button"
           />
         </View>
       </ScrollView>
