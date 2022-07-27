@@ -6,6 +6,7 @@ import com.facebook.react.bridge.WritableMap
 import com.fitnesstracker.permission.Permission
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
+import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.*
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.fitness.result.DataReadResponse
@@ -31,7 +32,7 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
                     startTime,
                     endTime,
                     7,
-                    permission.dataTypes,
+                    permission,
                     object : OnFloatFetch {
                         override fun onSuccess(data: Float) {
                             promise.resolve(data)
@@ -46,7 +47,7 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
                     startTime,
                     endTime,
                     7,
-                    permission.dataTypes,
+                    permission,
                     object : OnIntFetch {
                         override fun onSuccess(data: Int) {
                             promise.resolve(data)
@@ -83,7 +84,7 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
                     start.time,
                     end.time,
                     1,
-                    permission.dataTypes,
+                    permission,
                     object : OnFloatFetch {
                         override fun onSuccess(data: Float) {
                             if (startDate.time < endDate.time) {
@@ -110,7 +111,7 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
                     start.time,
                     end.time,
                     1,
-                    permission.dataTypes,
+                    permission,
                     object : OnIntFetch {
                         override fun onSuccess(data: Int) {
                             if (startDate.time < endDate.time) {
@@ -182,7 +183,7 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
                 }
             }
 
-            getHistoryClient(readRequest, onFailure, onSuccess)
+            getHistoryClient(readRequest, permission, onFailure, onSuccess)
 
         } catch (e: Exception) {
             promise.reject(e)
@@ -208,14 +209,27 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
 
     private fun getHistoryClient(
         readRequest: DataReadRequest,
+        permission: Permission,
         onFailure: OnFailureListener,
         onSuccess: OnCompleteListener<DataReadResponse>
     ) {
-        if (GoogleSignIn.getLastSignedInAccount(reactContext) === null) {
-            throw IllegalAccessException("No google account. Use authorize method with at least one dataType.")
+        val fitnessOptionsBuilder: FitnessOptions.Builder = FitnessOptions.builder()
+
+        for (dataType in permission.dataTypes) {
+            fitnessOptionsBuilder.addDataType(
+                dataType,
+                permission.permissionAccess
+            )
         }
 
-        Fitness.getHistoryClient(reactContext, GoogleSignIn.getLastSignedInAccount(reactContext)!!)
+        val fitnessOptions = fitnessOptionsBuilder.build()
+        val googleAccount = Helpers.getGoogleAccount(reactContext, fitnessOptions)
+
+        if (!GoogleSignIn.hasPermissions(googleAccount, fitnessOptions)) {
+            throw IllegalAccessException("Unauthorized GoogleFit. User must have permissions for data type: " + permission.dataTypes.joinToString { it.name })
+        }
+
+        Fitness.getHistoryClient(reactContext, googleAccount)
             .readData(readRequest)
             .addOnFailureListener(onFailure)
             .addOnCompleteListener(onSuccess)
@@ -225,21 +239,21 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
         startTime: Long,
         endTime: Long,
         dayCount: Int,
-        dataTypes: ArrayList<DataType>,
+        permission: Permission,
         fetchCompleteCallback: OnIntFetch
     ) {
         val readRequest: DataReadRequest =
-            createReadRequest(startTime, endTime, dayCount, dataTypes)
+            createReadRequest(startTime, endTime, dayCount, permission.dataTypes)
         val onFailure = { e: Exception -> fetchCompleteCallback.onFailure(e) }
         val onSuccess = { task: Task<DataReadResponse> ->
             if (task.isSuccessful) {
                 val response = task.result
-                val data = parseIntDataDelta(response, dataTypes)
+                val data = parseIntDataDelta(response, permission.dataTypes)
                 fetchCompleteCallback.onSuccess(data)
             }
         }
 
-        getHistoryClient(readRequest, onFailure, onSuccess)
+        getHistoryClient(readRequest, permission, onFailure, onSuccess)
     }
 
     private fun parseIntDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Int {
@@ -269,21 +283,21 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
         startTime: Long,
         endTime: Long,
         dayCount: Int,
-        dataTypes: ArrayList<DataType>,
+        permission: Permission,
         fetchCompleteCallback: OnFloatFetch
     ) {
         val readRequest: DataReadRequest =
-            createReadRequest(startTime, endTime, dayCount, dataTypes)
+            createReadRequest(startTime, endTime, dayCount, permission.dataTypes)
         val onFailure = { e: Exception -> fetchCompleteCallback.onFailure(e) }
         val onSuccess = { task: Task<DataReadResponse> ->
             if (task.isSuccessful) {
                 val response = task.result
-                val data = parseFloatDataDelta(response, dataTypes)
+                val data = parseFloatDataDelta(response, permission.dataTypes)
                 fetchCompleteCallback.onSuccess(data)
             }
         }
 
-        getHistoryClient(readRequest, onFailure, onSuccess)
+        getHistoryClient(readRequest, permission, onFailure, onSuccess)
     }
 
     private fun parseFloatDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Float {

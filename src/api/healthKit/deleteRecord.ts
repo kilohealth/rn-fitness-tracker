@@ -29,7 +29,6 @@ export const deleteRecord = async (options: {
       options.key,
       options.uuid,
       +options.startDate,
-      // TODO remove 1000ms
       +options.endDate + 1000,
     );
   }

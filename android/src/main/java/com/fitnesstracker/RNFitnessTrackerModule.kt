@@ -7,13 +7,13 @@ import com.fitnesstracker.googlefit.GoogleFitManager
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
 import com.google.android.gms.fitness.FitnessOptions
-import java.util.Date
+import java.util.*
 
 
-class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
+class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
 
-    private val googleFitManager: GoogleFitManager = GoogleFitManager(reactContext)
+    private var googleFitManager: GoogleFitManager = GoogleFitManager(reactContext)
 
     override fun getName(): String {
         return "RNFitnessTracker"
@@ -36,12 +36,12 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         writePermission: ReadableArray,
         promise: Promise
     ) {
-        if (googleFitManager.isAuthorized()) {
-            return promise.resolve(true)
-        }
-
         val permissions: ArrayList<Permission> =
             createPermissionsFromReactArray(readPermissions, writePermission, promise)
+
+        if (googleFitManager.isTrackingAvailable(permissions)) {
+            return promise.resolve(true)
+        }
 
         val activity: Activity = getActivity(promise) ?: return
         googleFitManager.authorize(promise, activity, permissions)
@@ -57,7 +57,14 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         val permissions: ArrayList<Permission> =
             createPermissionsFromReactArray(readPermissions, writePermission, promise)
 
-        googleFitManager.isTrackingAvailable(promise, permissions)
+        val hasPermissions = googleFitManager.isTrackingAvailable(permissions)
+
+        if (hasPermissions && !googleFitManager.isAuthorized()) {
+            val activity: Activity = getActivity(promise) ?: return
+            googleFitManager.authorize(promise, activity, permissions)
+        }
+
+        promise.resolve(hasPermissions)
     }
 
     @ReactMethod
@@ -67,12 +74,12 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             val startTime: Long = startDate.toLong()
             val permission = Permission(PermissionKind.getByValue(dataType))
 
-            if (googleFitManager.getHistoryClient() == null) {
-                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            if (!googleFitManager.isAuthorized()) {
+                return promise.reject(Exception(UNAUTHORIZED_GOOGLE_FIT))
             }
 
             googleFitManager
-                .getHistoryClient()!!
+                .getHistoryClient()
                 .queryTotal(promise, startTime, endTime, permission)
         } catch (e: Exception) {
             promise.reject(e)
@@ -86,12 +93,12 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             val startTime: Long = startDate.toLong()
             val permission = Permission(PermissionKind.getByValue(dataType))
 
-            if (googleFitManager.getHistoryClient() == null) {
-                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            if (!googleFitManager.isAuthorized()) {
+                return promise.reject(Exception(UNAUTHORIZED_GOOGLE_FIT))
             }
 
             googleFitManager
-                .getHistoryClient()!!
+                .getHistoryClient()
                 .queryDailyTotals(
                     promise,
                     Date(startTime),
@@ -112,12 +119,12 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             val endDate = Date()
             val startDate = DateHelper.addDays(endDate, -7)
 
-            if (googleFitManager.getHistoryClient() == null) {
-                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            if (!googleFitManager.isAuthorized()) {
+                return promise.reject(Exception(UNAUTHORIZED_GOOGLE_FIT))
             }
 
             googleFitManager
-                .getHistoryClient()!!
+                .getHistoryClient()
                 .queryDailyTotals(
                     promise,
                     startDate,
@@ -138,12 +145,12 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             val endDate = Date()
             val startDate = DateHelper.addDays(endDate, -7)
 
-            if (googleFitManager.getHistoryClient() == null) {
-                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            if (!googleFitManager.isAuthorized()) {
+                return promise.reject(Exception(UNAUTHORIZED_GOOGLE_FIT))
             }
 
             googleFitManager
-                .getHistoryClient()!!
+                .getHistoryClient()
                 .queryTotal(promise, startDate.time, endDate.time, permission)
         } catch (e: Exception) {
             promise.reject(e)
@@ -158,12 +165,12 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             val endDate = Date()
             val startDate = DateHelper.getStartOfDay(endDate)
 
-            if (googleFitManager.getHistoryClient() == null) {
-                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            if (!googleFitManager.isAuthorized()) {
+                return promise.reject(Exception(UNAUTHORIZED_GOOGLE_FIT))
             }
 
             googleFitManager
-                .getHistoryClient()!!
+                .getHistoryClient()
                 .queryTotal(promise, startDate.time, endDate.time, permission)
         } catch (e: Exception) {
             promise.reject(e)
@@ -175,11 +182,11 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
         try {
             val permission = Permission(PermissionKind.getByValue(dataType))
 
-            if (googleFitManager.getHistoryClient() == null) {
-                return promise.reject(Exception("Unauthorized GoogleFit. You must first run authorize method."))
+            if (!googleFitManager.isAuthorized()) {
+                return promise.reject(Exception(UNAUTHORIZED_GOOGLE_FIT))
             }
 
-            googleFitManager.getHistoryClient()!!.getLatestDataRecord(promise, permission)
+            googleFitManager.getHistoryClient().getLatestDataRecord(promise, permission)
         } catch (e: Exception) {
             promise.reject(e)
         }
@@ -188,6 +195,10 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun writeWorkout(startTime: Double, endTime: Double, options: ReadableMap, promise: Promise) {
         try {
+            if (!googleFitManager.isAuthorized()) {
+                return promise.reject(Exception(UNAUTHORIZED_GOOGLE_FIT))
+            }
+
             googleFitManager
                 .getActivityHistory()
                 .writeWorkout(promise, startTime.toLong(), endTime.toLong(), options)
@@ -199,6 +210,10 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun deleteWorkouts(startTime: Double, endTime: Double, promise: Promise) {
         try {
+            if (!googleFitManager.isAuthorized()) {
+                return promise.reject(Exception(UNAUTHORIZED_GOOGLE_FIT))
+            }
+
             googleFitManager
                 .getActivityHistory()
                 .deleteWorkouts(promise, startTime.toLong(), endTime.toLong())
@@ -219,18 +234,29 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
             try {
                 val permissionKind = readPermissions.getString(i)
 
-                result.add(Permission(PermissionKind.getByValue(permissionKind), FitnessOptions.ACCESS_READ))
+                result.add(
+                    Permission(
+                        PermissionKind.getByValue(permissionKind),
+                        FitnessOptions.ACCESS_READ
+                    )
+                )
             } catch (e: NullPointerException) {
                 promise.reject(e)
                 e.printStackTrace()
             }
         }
+
         val writeSize = writePermissions.size()
         for (i in 0 until writeSize) {
             try {
                 val permissionKind = writePermissions.getString(i)
 
-                result.add(Permission(PermissionKind.getByValue(permissionKind), FitnessOptions.ACCESS_WRITE))
+                result.add(
+                    Permission(
+                        PermissionKind.getByValue(permissionKind),
+                        FitnessOptions.ACCESS_WRITE
+                    )
+                )
             } catch (e: NullPointerException) {
                 promise.reject(e)
                 e.printStackTrace()
@@ -242,5 +268,6 @@ class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
 
     companion object {
         const val E_ACTIVITY_DOES_NOT_EXIST = "E_ACTIVITY_DOES_NOT_EXIST"
+        const val UNAUTHORIZED_GOOGLE_FIT = "Unauthorized GoogleFit. You must first run authorize method or isTrackingAvailable method."
     }
 }

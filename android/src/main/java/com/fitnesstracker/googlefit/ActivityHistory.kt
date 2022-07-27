@@ -93,10 +93,10 @@ class ActivityHistory(private val reactContext: ReactApplicationContext) {
 
             val fitnessOptions = fitnessOptionsBuilder.build()
 
-            val account = GoogleSignIn.getAccountForExtension(reactContext, fitnessOptions)
+            val account = Helpers.getGoogleAccount(reactContext, fitnessOptions)
 
             if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
-                throw IllegalAccessException("User must have permissions for data type: $errorDataTypes")
+                throw IllegalAccessException(UNAUTHORIZED_GOOGLE_FIT + errorDataTypes)
             }
 
             Fitness.getSessionsClient(reactContext, account)
@@ -131,10 +131,10 @@ class ActivityHistory(private val reactContext: ReactApplicationContext) {
 
         val fitnessOptions = fitnessOptionsBuilder.build()
 
-        val account = GoogleSignIn.getAccountForExtension(reactContext, fitnessOptions)
+        val account = Helpers.getGoogleAccount(reactContext, fitnessOptions)
 
         if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
-            throw IllegalAccessException("User must have permissions for data type: " + DataType.TYPE_ACTIVITY_SEGMENT.name)
+            throw IllegalAccessException(UNAUTHORIZED_GOOGLE_FIT + DataType.TYPE_ACTIVITY_SEGMENT.name)
         }
 
         Fitness.getHistoryClient(
@@ -148,5 +148,9 @@ class ActivityHistory(private val reactContext: ReactApplicationContext) {
             .addOnFailureListener { e: java.lang.Exception? ->
                 promise.reject(e)
             }
+    }
+
+    companion object {
+        private const val UNAUTHORIZED_GOOGLE_FIT = "Unauthorized GoogleFit. User must have permissions for data type: "
     }
 }

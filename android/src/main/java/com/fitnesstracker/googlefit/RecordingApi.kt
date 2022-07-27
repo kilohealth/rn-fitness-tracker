@@ -1,7 +1,6 @@
 package com.fitnesstracker.googlefit
 
 import com.facebook.react.bridge.ReactApplicationContext
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
@@ -14,7 +13,7 @@ class RecordingApi(private val reactContext: ReactApplicationContext) {
                 .addDataType(dataType)
                 .build()
 
-            val googleAccount = GoogleSignIn.getAccountForExtension(reactContext, fitnessOptions)
+            val googleAccount = Helpers.getGoogleAccount(reactContext, fitnessOptions)
 
             val recordingClient = Fitness.getRecordingClient(reactContext, googleAccount)
 

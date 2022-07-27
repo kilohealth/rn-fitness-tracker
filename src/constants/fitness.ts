@@ -1,5 +1,9 @@
 import { FitnessDataType, HealthKitKeyWithUnit } from '../types';
-import { HealthKitDataType, HealthKitUnitType } from '../enums';
+import {
+  GoogleFitDataType,
+  HealthKitDataType,
+  HealthKitUnitType,
+} from '../enums';
 
 export const HealthKitKeyUnitByKey: {
   [key in FitnessDataType]: HealthKitKeyWithUnit;
@@ -20,4 +24,13 @@ export const HealthKitKeyUnitByKey: {
     key: HealthKitDataType.BodyMass,
     unit: HealthKitUnitType.Kilograms,
   },
+};
+
+export const GoogleFitDataTypeByKey: {
+  [key in FitnessDataType]: GoogleFitDataType;
+} = {
+  [FitnessDataType.Distance]: GoogleFitDataType.Distance,
+  [FitnessDataType.Height]: GoogleFitDataType.Height,
+  [FitnessDataType.Steps]: GoogleFitDataType.Steps,
+  [FitnessDataType.Weight]: GoogleFitDataType.Weight,
 };

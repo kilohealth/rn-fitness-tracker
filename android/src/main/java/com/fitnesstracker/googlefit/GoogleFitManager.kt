@@ -6,19 +6,25 @@ import com.facebook.react.bridge.*
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 
 
 class GoogleFitManager(private val reactContext: ReactApplicationContext) : ActivityEventListener {
-    private val recordingApi: RecordingApi = RecordingApi(reactContext)
     private var authorized = false
-    private var historyClient: HistoryClient? = null
-    private var activityHistory: ActivityHistory = ActivityHistory(reactContext)
     private var authorisationPromise: Promise? = null
+
+    private var activityHistory: ActivityHistory
+    private var historyClient: HistoryClient
+    private val recordingApi: RecordingApi
+
+    private var shouldSubscribeToSteps = false
 
     init {
         reactContext.addActivityEventListener(this)
+
+        activityHistory = ActivityHistory(reactContext)
+        historyClient = HistoryClient(reactContext)
+        recordingApi = RecordingApi(reactContext)
     }
 
     override fun onNewIntent(intent: Intent?) {}
@@ -30,7 +36,12 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
     ) {
         if (requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                accessGoogleFit()
+                authorized = true
+
+                /** Subscribes to tracking steps even if google fit is not installed */
+                if (shouldSubscribeToSteps) recordingApi.subscribe(DataType.TYPE_STEP_COUNT_DELTA)
+
+                authorisationPromise?.resolve(true)
             } else {
                 authorisationPromise?.resolve(false)
             }
@@ -41,29 +52,15 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
         try {
             authorisationPromise = promise
 
-            if (authorized) {
-                accessGoogleFit()
+            val fitnessOptions = Helpers.buildFitnessOptionsFromPermissions(permissions)
+            val googleAccount = Helpers.getGoogleAccount(reactContext, fitnessOptions)
+
+            if (GoogleSignIn.hasPermissions(googleAccount, fitnessOptions)) {
+                authorized = true
             } else {
                 if (permissions.find { it.permissionKind == PermissionKind.STEPS } !== null) {
-                    /** Subscribes to tracking steps even if google fit is not installed */
-                    // Todo: test if this works
-                    recordingApi.subscribe(DataType.TYPE_STEP_COUNT_DELTA)
+                    shouldSubscribeToSteps = true
                 }
-
-                val fitnessOptionsBuilder: FitnessOptions.Builder = FitnessOptions.builder()
-
-                for (permission in permissions) {
-                    for (dataType in permission.dataTypes) {
-                        fitnessOptionsBuilder.addDataType(
-                            dataType,
-                            permission.permissionAccess
-                        )
-                    }
-                }
-
-                val fitnessOptions = fitnessOptionsBuilder.build()
-                val googleAccount =
-                    GoogleSignIn.getAccountForExtension(reactContext, fitnessOptions)
 
                 GoogleSignIn.requestPermissions(
                     activity,
@@ -82,55 +79,23 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
     }
 
     fun isTrackingAvailable(
-        promise: Promise,
         permissions: ArrayList<Permission>
-    ) {
-        try {
-            val fitnessOptionsBuilder: FitnessOptions.Builder = FitnessOptions.builder()
-            for (permission in permissions) {
-                for (dataType in permission.dataTypes) {
-                    fitnessOptionsBuilder.addDataType(
-                        dataType,
-                        permission.permissionAccess
-                    )
-                }
-            }
-            val fitnessOptions = fitnessOptionsBuilder.build()
+    ): Boolean {
+        val fitnessOptions = Helpers.buildFitnessOptionsFromPermissions(permissions)
+        val googleAccount = Helpers.getGoogleAccount(reactContext, fitnessOptions)
 
-            val googleAccount =
-                GoogleSignIn.getAccountForExtension(reactContext, fitnessOptions)
-
-            val hasPermissions = GoogleSignIn.hasPermissions(
-                googleAccount,
-                fitnessOptions
-            )
-
-            if (hasPermissions && !authorized) {
-                accessGoogleFit(false)
-            }
-
-            promise.resolve(hasPermissions)
-        } catch (e: Exception) {
-            promiseException(promise, e)
-        }
+        return GoogleSignIn.hasPermissions(
+            googleAccount,
+            fitnessOptions
+        )
     }
 
-    fun getHistoryClient(): HistoryClient? {
+    fun getHistoryClient(): HistoryClient {
         return historyClient
     }
 
     fun getActivityHistory(): ActivityHistory {
         return activityHistory
-    }
-    private fun accessGoogleFit(resolvePromise: Boolean = true) {
-        try {
-            authorized = true
-            historyClient = HistoryClient(reactContext)
-
-            if (resolvePromise) authorisationPromise!!.resolve(true)
-        } catch (e: Exception) {
-            promiseException(authorisationPromise, e)
-        }
     }
 
     private fun promiseException(promise: Promise?, e: Exception) {
