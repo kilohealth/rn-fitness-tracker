@@ -26,14 +26,16 @@ In your project directory, run:
 npm install react-native-device-info react-native-permissions
 ```
 
-## Updating manifests
+## Setup
 
 To use HealthKit and Google fit you must first specify that your app requires access to HealthKit and Google Fit.
 
-### iOS
+## iOS
 
-Open your project's Info.plist and add the following lines inside the outermost `<dict>` tag:
-```
+### Adding usage descriptions
+
+Open your project's `Info.plist` and add the following lines inside the outermost `<dict>` tag:
+```xml
 <!-- Fitness tracker -->
 <key>NSMotionUsageDescription</key>
 <string>Reason string goes here</string>
@@ -45,16 +47,18 @@ Open your project's Info.plist and add the following lines inside the outermost 
 <string>Reason string goes here</string>
 ```
 
-### Android
+## Android
+
+### Adding permissions
 
 Open your project's AndroidManifest.xml and add the following lines inside the `<manifest>` tag:
-```
+```xml
 <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
 ```
 
-## Setting up Android Fit API permissions
+### Setting up Google Fit API permissions
 
-1. Make sure your Google account has access to app firebase project.
+1. Make sure your Google account has access to app Firebase project.
 
 2. [Create an OAuth screen](https://console.developers.google.com/apis/credentials/consent) for your project.
 
@@ -73,5 +77,5 @@ Open your project's AndroidManifest.xml and add the following lines inside the `
 
 9. The **Signing-certificate fingerprint** generation command must be pointed to your app release / staging keystore file.
 
-10. Save and submit everything. If you haven't got your google services config inside your app - download your `google-services.json` file from [firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
+10. Save and submit everything. If you haven't got your google services config inside your app - download your `google-services.json` file from [Firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
 
