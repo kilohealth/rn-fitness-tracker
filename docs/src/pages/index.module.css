@@ -16,8 +16,29 @@
   }
 }
 
+.getStarted {
+  background-color: white;
+  color: rgb(63, 72, 67);
+}
+.getStarted:hover {
+  background-color: #eeeeee;
+  color: rgb(95, 102, 96);
+}
+
 .buttons {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.featureImage {
+  margin-bottom: 1rem;
+  height: 450px;
 }
