@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'FitnessTracker',
-  tagline: 'React Native library for GoogleFit and HealthKit',
+  tagline: 'React Native library for GoogleFit and HealthKit integration via single API',
   url: 'https://kilohealth.github.io',
   baseUrl: '/rn-fitness-tracker/',
   onBrokenLinks: 'throw',
