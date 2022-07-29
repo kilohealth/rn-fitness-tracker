@@ -449,9 +449,9 @@ class RNHealthTracker: NSObject {
             var data: [String: Any] = [:]
 
             statsCollection.enumerateStatistics(from: start, to: end) { (result: HKStatistics, stop: UnsafeMutablePointer<ObjCBool>) in
-                if let quantity: HKQuantity = result.sumQuantity() {
-                    let dateString = RNFitnessUtils.formatIsoDateString(result.startDate)
+                let dateString = RNFitnessUtils.formatIsoDateString(result.startDate)
 
+                if let quantity: HKQuantity = result.sumQuantity() {
                     var value: Any = quantity.doubleValue(for: HKUnit.init(from: unit))
 
                     if unit == HKUnit.count().unitString {
@@ -461,6 +461,8 @@ class RNHealthTracker: NSObject {
                     }
 
                     data[dateString] = value;
+                } else {
+                    data[dateString] = 0;
                 }
             }
 
@@ -590,7 +592,7 @@ class RNHealthTracker: NSObject {
                 else {
                     return handleError(reject: reject, code: 1, description: "Wrong data passed to RNHealthTracker:writeDataArray, dataArray id \(index)")
                 }
-                
+
                 let metadata: Dictionary<String, Any> = (obj["metadata"] as? Dictionary<String, Any>) ?? [:]
 
                 var date: Date = Date()
@@ -982,12 +984,12 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(sampleQuery)
     }
-    
+
     @objc public func isHealthDataAvailable(
         _ resolve: @escaping RCTPromiseResolveBlock,
         reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
         resolve(HKHealthStore.isHealthDataAvailable())
     }
-    
+
 }
