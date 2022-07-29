@@ -33,6 +33,7 @@
 
 .heroSubtitle {
   color: #000000;
+  font-size: 1.25rem;
 }
 
 [data-theme='dark'] .heroSubtitle {
