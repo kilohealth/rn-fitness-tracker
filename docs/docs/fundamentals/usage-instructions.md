@@ -7,19 +7,24 @@ sidebar_position: 2
 
 ## Authorize
 
-Authorize method works differently on iOS and Android. On `iOS` it returns `true` if no errors have occurred. 
-On `Android` it returns the permission authorization status, `true` if user has given permission, `false` if user has 
-not given permission.
+:::caution
+Since HealthKit doesn't provide us to with permission status, `FitnessTracker.authorize()` works differently on **iOS** and **Android**. 
 
-Also, `iOS` does not have method to check if user has given read permission. If you call a method to get steps 
-for example that method will return `0` if user has not given permission.
+- On **iOS** it returns `true` if no errors have occurred. 
+- On **Android** it returns the permission authorization status: 
+  - `true` if user has given permission
+  - `false` if user has not given permission.
 
-Therefore, on `iOS` you should save the state if you have asked the user for permissions. And then show the data given
-back form `HealthKit`, but if there is no data, you should show a message, that there is no data in `HealthKit` or the
-user has not given permissions.
+Also, there's no method on **iOS** to check if user has given read permission. So for example, if you call a method to get steps amount and user hasn't allowed you to do so, HealthKit returned amount will be `0`.
+
+Therefore, you should save, whether you have asked the user for permissions on **iOS** and get the data from `HealthKit`. 
+
+If the returned amount is `0`, you should show a message, that possibly there's no data in `HealthKit` or
+user has not given required permissions.
+:::
 
 ## Steps
-Here you can see an example how to get steps today with FinessTracker for both platforms `iOS` and `Android`.
+Here you can see an example, how to get today's steps with FinessTracker for both platforms **iOS** and **Android**.
 
 ```js
   const permissions: AuthorizationPermissions = {
