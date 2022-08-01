@@ -4,14 +4,18 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import { fitnessTracker, googleFit, healthKit } from '@site/static/img/example';
+import ThemedImage from '@theme/ThemedImage';
+import { fitnessTracker, googleFitDark, googleFitLight, healthkitDark, healthkitLight } from '@site/static/img/example';
 
 import styles from './index.module.css';
 
 const features = [
   {
     title: 'HealthKit integration',
-    imageUrl: healthKit,
+    images: {
+      dark: healthkitDark,
+      light: healthkitLight,
+    },
     description: (
       <>
         HealthKit API helps integrating your app with HealthKit enabled devices. Write and read various data such as steps, vitals, workouts, and more.
@@ -20,7 +24,9 @@ const features = [
   },
   {
     title: 'FitnessTracker',
-    imageUrl: fitnessTracker,
+    images: {
+      light: fitnessTracker
+    },
     description: (
       <>
         Best of it? You can use both HealthKit and GoogleFit at the same time, with single API. FitnessTracker will take care of the integration for you.
@@ -29,7 +35,10 @@ const features = [
   },
   {
     title: 'Google Fit integration',
-    imageUrl: googleFit,
+    images: {
+      light: googleFitLight,
+      dark: googleFitDark,
+    },
     description: (
       <>
         GoogleFit API provides you access to various Google Fit data types. Easily write and read data such as steps, vitals, workouts, and more.
@@ -38,13 +47,18 @@ const features = [
   },
 ];
 
-function Feature({imageUrl, title, description}) {
-const imgUrl = useBaseUrl(imageUrl);
+function Feature({images, title, description}) {
+
   return (
     <div className={clsx('col col--4')}>
-      {imgUrl && (
+      {images && (
         <div className="text--center">
-          <img className={styles.featureImage} src={imgUrl} alt={title} />
+          <ThemedImage className={styles.featureImage} 
+            sources={{
+              light: useBaseUrl(images.light),
+              dark: useBaseUrl(images?.dark || images.light),
+            }}
+            alt={title} />
         </div>
       )}
       <h3 className="text--center">{title}</h3>
@@ -59,11 +73,13 @@ function Home() {
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
-      <header className={clsx('hero hero--primary', styles.heroBanner)}>
+      description="Description will go into a meta tag in <head />"
+      wrapperClassName={styles.wrapper}
+      noFooter>
+      <header className={styles.heroBanner}>
         <div className="container">
-          <h1 className="hero__title">{siteConfig.title}</h1>
-          <p className="hero__subtitle">{siteConfig.tagline}</p>
+          <h1 className={styles.heroTitle}>{siteConfig.title}</h1>
+          <p className={styles.heroSubtitle}>{siteConfig.tagline}</p>
           <div className={styles.buttons}>
             <Link
               className={clsx(
