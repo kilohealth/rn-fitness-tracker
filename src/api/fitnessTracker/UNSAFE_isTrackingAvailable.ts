@@ -27,8 +27,15 @@ export const UNSAFE_isTrackingAvailable = async (
   if (isIOS) {
     const healthKitDataType = getDataTypeForHealthKit(permission);
 
-    // todo check type returned when no data is available
-    return !!(await HealthKit.getLatestDataRecord(healthKitDataType));
+    let authorized = false;
+
+    try {
+      authorized = !!(await HealthKit.getLatestDataRecord(healthKitDataType));
+    } catch (error) {
+      return false;
+    }
+
+    return authorized;
   } else {
     const googleFitDataType = getDataTypeForGoogleFit(permission);
 
