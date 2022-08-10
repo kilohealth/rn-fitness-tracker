@@ -1,6 +1,6 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "packageManager": "yarn@3.2.1",
   "description": "GoogleFit & Health tracking package for React Native for Android & iOS",
   "homepage": "https://github.com/kilohealth/rn-fitness-tracker",
@@ -10,6 +10,7 @@
   "license": "MIT",
   "main": "src/index.ts",
   "scripts": {
+    "allow-bash": "chmod -R 777 ./scripts",
     "major": "yarn changelog -M && git add CHANGELOG.md && yarn version --major",
     "minor": "yarn changelog -m && git add CHANGELOG.md && yarn version --minor",
     "patch": "yarn changelog -p && git add CHANGELOG.md && yarn version --patch",
