@@ -13,10 +13,16 @@ react-native-iap-*.tgz
 *.md
 .travis.yml
 .ncurc.json
-.eslintrc.js
-.eslintignore
-.prettierrc.js
 .gitattributes
+.yarnrc.yml
+.editorconfig
+.eslintrc
+.prettierrc
+.gitlab-ci.yml
+babel.config.json
+jest.config.json
+jsdoc2md.json
+.husky/
 
 # Built application files
 android/*/build/
