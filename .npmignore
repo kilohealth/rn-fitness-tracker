@@ -23,6 +23,7 @@ babel.config.json
 jest.config.json
 jsdoc2md.json
 .husky/
+commitlint.config.js
 
 # Built application files
 android/*/build/
