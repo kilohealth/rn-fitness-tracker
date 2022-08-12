@@ -162,4 +162,24 @@ describe('Example', () => {
       'Latest heart rate record uuid: undefined',
     );
   });
+  it('write heart rate record', async () => {
+    await expect(element(by.id('heart_rate_uuid'))).toHaveText(
+      'Latest heart rate record uuid: undefined',
+    );
+
+    // Write button exists
+    const writeButton = element(by.id('write_heart_rate_record_button'));
+    await expect(writeButton).toExist();
+    await writeButton.tap();
+
+    // Check button exists
+    const fetchButton = element(by.id('fetch_heart_rate_record_button'));
+    await expect(fetchButton).toExist();
+    await fetchButton.tap();
+
+    // heart rate should not be undefined after fetch
+    await expect(element(by.id('heart_rate_uuid'))).not.toHaveText(
+      'Latest heart rate record uuid: undefined',
+    );
+  });
 });

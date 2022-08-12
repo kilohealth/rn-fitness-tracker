@@ -45,12 +45,13 @@ export const Delete = () => {
         <Text testID="heart_rate_uuid">{getHeartRateUUIDText()}</Text>
 
         <Button
-          testID={'fetch_heart_rate_record_button'}
-          title={'Fetch latest heart rate record'}
+          testID="fetch_heart_rate_record_button"
+          title="Fetch latest heart rate record"
           onPress={fetchHeartRateRecord}
         />
         <Button
-          title={'Write heart rate record'}
+          testID="write_heart_rate_record_button"
+          title="Write heart rate record"
           onPress={writeHeartRateRecord}
         />
       </View>
