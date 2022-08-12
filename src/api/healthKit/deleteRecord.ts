@@ -23,13 +23,16 @@ export const deleteRecord = async (options: {
   uuid?: string;
   startDate?: Date | number;
   endDate?: Date | number;
-}): Promise<number> => {
+}): Promise<number | undefined> => {
   if (isIOS) {
+    const startDate = options.startDate ? +options.startDate : 0;
+    const endDate = options.startDate ? +options.startDate : 0;
+
     return await RNHealthTracker.deleteRecord(
       options.key,
       options.uuid,
-      +options.startDate,
-      +options.endDate + 1000,
+      startDate,
+      endDate,
     );
   }
 };
