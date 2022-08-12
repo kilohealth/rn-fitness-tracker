@@ -1,24 +1,8 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
   "version": "2.0.2",
-  "packageManager": "yarn@3.2.1",
+  "private": false,
   "description": "GoogleFit & Health tracking package for React Native for Android & iOS",
-  "homepage": "https://github.com/kilohealth/rn-fitness-tracker",
-  "repository": "https://github.com/kilohealth/rn-fitness-tracker",
-  "summary": "",
-  "author": "Kilo.Health",
-  "license": "MIT",
-  "main": "src/index.ts",
-  "scripts": {
-    "major": "yarn changelog -M && git add CHANGELOG.md && yarn version --major",
-    "minor": "yarn changelog -m && git add CHANGELOG.md && yarn version --minor",
-    "patch": "yarn changelog -p && git add CHANGELOG.md && yarn version --patch",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "tests:ios:build": "cd example && yarn detox build --configuration ios",
-    "tests:ios:pod:install": "cd example && rm -rf ios/example.xcworkspace && yarn pod-install",
-    "tests:ios:test": "cd example && yarn detox test --configuration ios --loglevel warn",
-    "tests:packager:jet-ci": "cd example && cross-env TMPDIR=$HOME/.metro REACT_DEBUGGER=\"echo nope\" node_modules/.bin/react-native start --no-interactive"
-  },
   "keywords": [
     "react-native",
     "fitness",
@@ -33,9 +17,27 @@
     "googlefit",
     "fitnessapi"
   ],
-  "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
+  "homepage": "https://github.com/kilohealth/rn-fitness-tracker",
+  "repository": "https://github.com/kilohealth/rn-fitness-tracker",
+  "license": "MIT",
+  "author": "Kilo.Health",
+  "main": "src/index.ts",
+  "scripts": {
+    "allow-bash": "chmod -R a+x ./scripts && chmod a+x .husky/commit-msg",
+    "postinstall": "husky install && yarn allow-bash",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "lint-fix": "eslint 'src/**/*.{ts,tsx}' --fix",
+    "major": "yarn changelog -M && git add CHANGELOG.md && yarn version --major",
+    "minor": "yarn changelog -m && git add CHANGELOG.md && yarn version --minor",
+    "prepack": "pinst --disable",
+    "postpack": "pinst --enable",
+    "patch": "yarn changelog -p && git add CHANGELOG.md && yarn version --patch",
+    "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tests:ios:build": "cd example && yarn detox build --configuration ios",
+    "tests:ios:pod:install": "cd example && rm -rf ios/example.xcworkspace && yarn pod-install",
+    "tests:ios:test": "cd example && yarn detox test --configuration ios --loglevel warn",
+    "tests:packager:jet-ci": "cd example && cross-env TMPDIR=$HOME/.metro REACT_DEBUGGER=\"echo nope\" node_modules/.bin/react-native start --no-interactive"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.6",
@@ -44,6 +46,8 @@
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-export-default-from": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "@types/react-native": "^0.69.2",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
@@ -54,11 +58,20 @@
     "eslint-plugin-react": "^7.30.1",
     "eslint-watch": "^8.0.0",
     "generate-changelog": "^1.8.0",
+    "husky": "^8.0.0",
     "lint-staged": "^12.5.0",
+    "pinst": "^3.0.0",
     "prettier": "^2.7.1",
     "react-native": "0.67.0",
     "react-native-device-info": "^8.7.1",
     "react-native-permissions": "^3.4.0",
+    "sort-package-json": "^1.57.0",
     "typescript": "^4.7.4"
-  }
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "packageManager": "yarn@3.2.1",
+  "summary": ""
 }
