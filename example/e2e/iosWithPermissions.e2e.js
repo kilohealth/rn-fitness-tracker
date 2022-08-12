@@ -1,6 +1,6 @@
 describe('Example', () => {
   beforeAll(async () => {
-    await device.launchApp({permissions: {health: 'YES'}});
+    await device.launchApp({ permissions: { health: 'YES' } });
   });
 
   beforeEach(async () => {
@@ -140,6 +140,26 @@ describe('Example', () => {
     // data available should be true
     await expect(element(by.id('data_is_available_for_device'))).toHaveText(
       'Data available for device: true',
+    );
+  });
+
+  /**
+   * Delete Section
+   * Heart rate data
+   */
+  it('heart rate record should not exist', async () => {
+    await expect(element(by.id('heart_rate_uuid'))).toHaveText(
+      'Latest heart rate record uuid: undefined',
+    );
+
+    // Check button exists
+    const fetchButton = element(by.id('fetch_heart_rate_record_button'));
+    await expect(fetchButton).toExist();
+    await fetchButton.tap();
+
+    // heart rate should be undefined after initial fetch
+    await expect(element(by.id('heart_rate_uuid'))).toHaveText(
+      'Latest heart rate record uuid: undefined',
     );
   });
 });
