@@ -1,3 +1,53 @@
+#### 2.0.3 (2022-08-16)
+
+##### Build System / Dependencies
+
+*  github workflow install dependencies before running npm publish (5976a5d5)
+*  create release workflow uses default github token (3312896b)
+*  added package.tgz to .npmignore (47b93f9e)
+*  create github release when tag is pushed (d5c70a3e)
+*  added increase versions script to package.json (266261ef)
+*  increase version script only adds changelog.md and package.json to git staged (cf4bedd6)
+*  husky pre-commit just check and don't add new files to git staged (4432f80e)
+*  github actions cancels previous runs (458c3f0e)
+*  pack rn-fitness-tracker before installing example dependencies (098b0edf)
+*  added husky (874f11f8)
+*  added prettier script (6630b2bb)
+*  added versioning script (b9e3cbc8)
+*  updated .npmignore file (e5b582c3)
+*  added publish-package workflow (35ae296b)
+
+##### Documentation Changes
+
+*  Updated usage instructions (5aa0beb5)
+*  Centered fitness tracker image (81de43bd)
+*  Cropped iphone images (348d86bb)
+*  Add dark theme images (baeec24b)
+*  Change dark code theme (180859af)
+*  Increase landing subtitle size (3d1e4e43)
+*  Update documentation landing (bc844c32)
+
+##### New Features
+
+* **docs:**  added usage-instructions.md with authorize and step examples (87b0148f)
+
+##### Bug Fixes
+
+* **ios:**
+  *  healthKit deleteRecord method takes correct endDate parameter (16179ae9)
+  *  deleteRecord method deletes with only uuid provided (b061fdd2)
+
+##### Refactors
+
+*  example use nullish coalescing operator (a5142613)
+
+##### Tests
+
+*  delete heart rate record with date (9de02113)
+*  delete heart rate record with record uuid (9a2df732)
+*  write heart rate record to healthKit (103a0b29)
+*  latest record fetch for heart rate (f9d4b9a6)
+
 #### 1.5.4 (2022-04-25)
 
 ##### Chores
