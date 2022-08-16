@@ -24,6 +24,7 @@ jest.config.json
 jsdoc2md.json
 .husky/
 commitlint.config.js
+package.tgz
 
 # Built application files
 android/*/build/
