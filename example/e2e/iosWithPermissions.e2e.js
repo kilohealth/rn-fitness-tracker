@@ -209,4 +209,36 @@ describe('Example', () => {
       'Latest heart rate record uuid: undefined',
     );
   });
+  it('delete heart rate record with date', async () => {
+    // Write button exists
+    const writeButton = element(by.id('write_heart_rate_record_button'));
+    await expect(writeButton).toExist();
+    await writeButton.tap();
+
+    // Fetch button exists
+    const fetchButton = element(by.id('fetch_heart_rate_record_button'));
+    await expect(fetchButton).toExist();
+    await fetchButton.tap();
+
+    // heart rate should not be undefined
+    await expect(element(by.id('heart_rate_uuid'))).not.toHaveText(
+      'Latest heart rate record uuid: undefined',
+    );
+
+    // Delete button exists
+    const deleteButton = element(
+      by.id('delete_heart_rate_record_with_date_button'),
+    );
+    await expect(deleteButton).toExist();
+    await deleteButton.tap();
+
+    // Fetch
+    await expect(fetchButton).toExist();
+    await fetchButton.tap();
+
+    // heart rate should be undefined after delete
+    await expect(element(by.id('heart_rate_uuid'))).toHaveText(
+      'Latest heart rate record uuid: undefined',
+    );
+  });
 });

@@ -6,6 +6,7 @@ import {
   HealthKitUnitType,
 } from '@kilohealth/rn-fitness-tracker';
 import { HealthDataRecord } from '@kilohealth/rn-fitness-tracker/src/types';
+import { addDays, startOfDay } from 'date-fns';
 
 const data = {
   key: HealthKitDataType.HeartRate,
@@ -46,6 +47,14 @@ export const Delete = () => {
     });
   };
 
+  const deleteHeartRateRecordWithDate = async () => {
+    await HealthKit.deleteRecord({
+      key: HealthKitDataType.HeartRate,
+      startDate: +startOfDay(addDays(new Date(), -1)),
+      endDate: +new Date(),
+    });
+  };
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -63,8 +72,13 @@ export const Delete = () => {
         />
         <Button
           testID="delete_heart_rate_record_with_uuid_button"
-          title="Delete heart rate record"
+          title="Delete heart rate record with uuid"
           onPress={deleteHeartRateRecordWithUUID}
+        />
+        <Button
+          testID="delete_heart_rate_record_with_date_button"
+          title="Delete heart rate record with date"
+          onPress={deleteHeartRateRecordWithDate}
         />
       </View>
     </SafeAreaView>
