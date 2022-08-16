@@ -1,0 +1,26 @@
+name: Create release draft
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
+
+      - uses: ncipollo/release-action@v1
+        with:
+          bodyFile: "CHANGELOG.md"
+          draft: true
+          name: ${{ steps.get_version.outputs.VERSION }}
+          token: ${{ secrets.YOUR_GITHUB_TOKEN }}

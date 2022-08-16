@@ -1,5 +1,5 @@
 import startOfDay from 'date-fns/startOfDay';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -9,7 +9,6 @@ import {
   Text,
   View,
 } from 'react-native';
-
 import {
   AuthorizationPermissions,
   FitnessDataType,
@@ -20,6 +19,8 @@ import {
   HealthKitWriteData,
   HealthKitUnitType,
 } from '@kilohealth/rn-fitness-tracker';
+
+import { Delete } from './sections/Delete';
 
 const permissions: AuthorizationPermissions = {
   healthReadPermissions: [
@@ -272,6 +273,8 @@ const App = () => {
             testID="check_tracking_unsafe_button"
           />
         </View>
+
+        <Delete />
       </ScrollView>
     </SafeAreaView>
   );

@@ -13,6 +13,6 @@ fi
 
 PACKAGE_VERION=v$(node -p -e "require('./package.json').version")
 
-git add . && git commit -m $PACKAGE_VERION && git push
+git add CHANGELOG.md && git add package.json && git commit -m $PACKAGE_VERION && git push
 git tag $PACKAGE_VERION
 git push origin --tags

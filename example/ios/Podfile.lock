@@ -351,7 +351,7 @@ PODS:
     - React-perflogger (= 0.68.2)
   - RNDeviceInfo (9.0.2):
     - React-Core
-  - RNFitnessTracker (2.0.0):
+  - RNFitnessTracker (2.0.2):
     - React
   - RNPermissions (3.3.1):
     - React-Core
@@ -557,7 +557,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: b960b687d2dfef0d3761fbb187e01812ebab8b23
   ReactCommon: 095366164a276d91ea704ce53cb03825c487a3f2
   RNDeviceInfo: 1e3f62b9ec32f7754fac60bd06b8f8a27124e7f0
-  RNFitnessTracker: cc2c287b13fd6cea4760f27ee05a010da667377b
+  RNFitnessTracker: d880f6d8b80505d2867fe38d2ed467f510045c27
   RNPermissions: 34d678157c800b25b22a488e4d8babb57456e796
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 99652481fcd320aefa4a7ef90095b95acd181952

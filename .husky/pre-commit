@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-yarn prettier && yarn lint-fix && yarn lint && yarn sort-package-json && git add .
+yarn prettier &&
+yarn lint &&
+printf "\nChecking if package.json is sorted\nRun   'yarn sort-package-json'    if package json is not sorted!\n\n" &&
+yarn sort-package-json --check
