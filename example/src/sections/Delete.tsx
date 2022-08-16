@@ -13,7 +13,7 @@ const data = {
   amount: 60,
   metadata: {
     HKWasUserEntered: 1,
-    cardiLogId: 8290,
+    logId: 8290,
   },
 };
 
@@ -21,7 +21,7 @@ export const Delete = () => {
   const [record, setRecord] = useState<HealthDataRecord | undefined>(undefined);
 
   const getHeartRateUUIDText = () => {
-    const text = record === undefined ? 'undefined' : JSON.stringify(record);
+    const text = record === undefined ? 'undefined' : record.uuid;
 
     return `Latest heart rate record uuid: ${text}`;
   };
@@ -39,6 +39,13 @@ export const Delete = () => {
     await HealthKit.writeData(data);
   };
 
+  const deleteHeartRateRecordWithUUID = async () => {
+    await HealthKit.deleteRecord({
+      key: HealthKitDataType.HeartRate,
+      uuid: record?.uuid,
+    });
+  };
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -53,6 +60,11 @@ export const Delete = () => {
           testID="write_heart_rate_record_button"
           title="Write heart rate record"
           onPress={writeHeartRateRecord}
+        />
+        <Button
+          testID="delete_heart_rate_record_with_uuid_button"
+          title="Delete heart rate record"
+          onPress={deleteHeartRateRecordWithUUID}
         />
       </View>
     </SafeAreaView>
