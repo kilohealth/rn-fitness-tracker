@@ -26,7 +26,7 @@ export const deleteRecord = async (options: {
 }): Promise<number | undefined> => {
   if (isIOS) {
     const startDate = options.startDate ? +options.startDate : 0;
-    const endDate = options.startDate ? +options.startDate : 0;
+    const endDate = options.endDate ? +options.endDate : 0;
 
     return await RNHealthTracker.deleteRecord(
       options.key,
