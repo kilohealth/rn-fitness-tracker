@@ -23,4 +23,3 @@ jobs:
           bodyFile: "CHANGELOG.md"
           draft: true
           name: ${{ steps.get_version.outputs.VERSION }}
-          token: ${{ secrets.YOUR_GITHUB_TOKEN }}
