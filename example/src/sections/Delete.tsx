@@ -22,7 +22,7 @@ export const Delete = () => {
   const [record, setRecord] = useState<HealthDataRecord | undefined>(undefined);
 
   const getHeartRateUUIDText = () => {
-    const text = record === undefined ? 'undefined' : record.uuid;
+    const text = record?.uuid ?? 'undefined';
 
     return `Latest heart rate record uuid: ${text}`;
   };
