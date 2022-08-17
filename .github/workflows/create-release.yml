@@ -18,8 +18,19 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
 
+      - name: Prepare body
+        id: get_body
+        run: |
+          echo "Removing first line"
+          changelog=$(sed -e '1,2d' CHANGELOG.md)
+  
+          echo "Stripping changelog to only include the latest release"
+          changelog=$(echo "$changelog" | sed -n '/\(.##* [0-9].*\)/q;p')
+  
+          echo ::set-output name=BODY::$(echo "$changelog")
+
       - uses: ncipollo/release-action@v1
         with:
-          bodyFile: "CHANGELOG.md"
+          body: ${{ steps.get_body.outputs.BODY }}
           draft: true
           name: ${{ steps.get_version.outputs.VERSION }}
