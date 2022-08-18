@@ -6,6 +6,7 @@ import com.facebook.react.bridge.*
 import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.data.DataType
 
 
@@ -90,6 +91,20 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
         )
     }
 
+    fun disableGoogleFit(promise: Promise, permissions: ArrayList<Permission>) {
+        val fitnessOptions = Helpers.buildFitnessOptionsFromPermissions(permissions)
+        val googleAccount = Helpers.getGoogleAccount(reactContext, fitnessOptions)
+
+        Fitness.getConfigClient(reactContext,  googleAccount)
+            .disableFit()
+            .addOnSuccessListener {
+                promise.resolve(true)
+            }
+            .addOnFailureListener { e ->
+                promise.reject(E_FAILED_TO_DISABLE_GOOGLE_FIT, e)
+            }
+    }
+
     fun getHistoryClient(): HistoryClient {
         return historyClient
     }
@@ -105,5 +120,6 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
 
     companion object {
         private const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 111
+        private const val E_FAILED_TO_DISABLE_GOOGLE_FIT = "Failed to disable google."
     }
 }

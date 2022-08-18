@@ -47,6 +47,21 @@ class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) 
         googleFitManager.authorize(promise, activity, permissions)
     }
 
+    @ReactMethod
+    fun disableGoogleFit(
+        readPermissions: ReadableArray,
+        writePermission: ReadableArray,
+        promise: Promise
+    ) {
+        val permissions: ArrayList<Permission> =
+            createPermissionsFromReactArray(readPermissions, writePermission, promise)
+
+        if (googleFitManager.isTrackingAvailable(permissions)) {
+            return promise.resolve(true)
+        }
+
+        googleFitManager.disableGoogleFit(promise, permissions)
+    }
 
     @ReactMethod
     fun isTrackingAvailable(

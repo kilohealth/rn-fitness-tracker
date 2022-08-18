@@ -8,7 +8,7 @@ class DateHelper {
         private const val DATE_FORMAT = "yyyy-MM-dd"
         private val dateFormat = SimpleDateFormat(DATE_FORMAT)
 
-        fun setMidnight(date: Date): Calendar {
+        private fun setMidnight(date: Date): Calendar {
             val calendar = Calendar.getInstance()
             calendar.time = date
             val year = calendar[Calendar.YEAR]
