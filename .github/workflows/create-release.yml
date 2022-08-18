@@ -21,13 +21,13 @@ jobs:
       - name: Prepare body
         id: get_body
         run: |
-          echo "Removing first line"
+          echo "Removing first line two lines"
           changelog=$(sed -e '1,2d' CHANGELOG.md)
   
           echo "Stripping changelog to only include the latest release"
           changelog=$(echo "$changelog" | sed -n '/\(.##* [0-9].*\)/q;p')
   
-          echo ::set-output name=BODY::$(echo "$changelog")
+          echo ::set-output name=BODY::$(sed -n '1,2p' CHANGELOG.md && echo "$changelog")
 
       - uses: ncipollo/release-action@v1
         with:
