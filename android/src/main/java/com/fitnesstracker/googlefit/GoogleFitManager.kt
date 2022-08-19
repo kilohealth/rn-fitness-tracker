@@ -97,12 +97,8 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
 
         Fitness.getConfigClient(reactContext,  googleAccount)
             .disableFit()
-            .addOnSuccessListener {
-                promise.resolve(true)
-            }
-            .addOnFailureListener { e ->
-                promise.reject(E_FAILED_TO_DISABLE_GOOGLE_FIT, e)
-            }
+            .addOnSuccessListener { unused: Void? -> promise.resolve(true) }
+            .addOnFailureListener { e: java.lang.Exception? -> promise.reject(E_FAILED_TO_DISABLE_GOOGLE_FIT, e) }
     }
 
     fun getHistoryClient(): HistoryClient {
