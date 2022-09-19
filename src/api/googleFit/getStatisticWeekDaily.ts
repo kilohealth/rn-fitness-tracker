@@ -4,7 +4,7 @@ import { DailyData, FitnessDataType } from '../../types';
 import { isIOS } from '../../utils';
 
 /** @internal */
-const { RNFitnessTracker } = NativeModules;
+const { RNGoogleFit } = NativeModules;
 
 /**
  * Gets statistic daily total for current week of given data type.
@@ -13,6 +13,6 @@ export const getStatisticWeekDaily = async (
   dataType: FitnessDataType,
 ): Promise<DailyData> => {
   if (!isIOS) {
-    return RNFitnessTracker.getStatisticWeekDaily(dataType);
+    return RNGoogleFit.getStatisticWeekDaily(dataType);
   }
 };

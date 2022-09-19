@@ -9,15 +9,12 @@ import com.facebook.react.uimanager.ViewManager
 
 class RNFitnessTrackerPackage : ReactPackage {
 
-    override fun createViewManagers(reactContext: ReactApplicationContext): MutableList<ViewManager<out View, out ReactShadowNode<*>>> {
-        return mutableListOf()
-    }
+    override fun createViewManagers(
+        reactContext: ReactApplicationContext
+    ): MutableList<ViewManager<View, ReactShadowNode<*>>> = mutableListOf()
 
-    override fun createNativeModules(reactContext: ReactApplicationContext):
-            MutableList<NativeModule> {
-        val modules: MutableList<NativeModule> = mutableListOf()
-
-        modules.add(RNFitnessTrackerModule(reactContext))
-        return modules
-    }
+    override fun createNativeModules(
+        reactContext: ReactApplicationContext
+    ): MutableList<NativeModule> =
+        listOf(RNGoogleFitModule(reactContext), RNHealthConnectModule(reactContext)).toMutableList()
 }

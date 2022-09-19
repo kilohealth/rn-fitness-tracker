@@ -4,7 +4,7 @@ import { DailyData, FitnessDataType } from '../../types';
 import { isIOS } from '../../utils';
 
 /** @internal */
-const { RNFitnessTracker } = NativeModules;
+const { RNGoogleFit } = NativeModules;
 
 /**
  * Gets statistic daily total for specified time period.
@@ -19,6 +19,6 @@ export const queryDailyTotals = async (
   endDate: Date | number,
 ): Promise<DailyData> => {
   if (!isIOS) {
-    return RNFitnessTracker.queryDailyTotals(dataType, +startDate, +endDate);
+    return RNGoogleFit.queryDailyTotals(dataType, +startDate, +endDate);
   }
 };

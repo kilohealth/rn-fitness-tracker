@@ -4,7 +4,7 @@ import { FitnessDataType } from '../../types';
 import { isIOS } from '../../utils';
 
 /** @internal */
-const { RNFitnessTracker } = NativeModules;
+const { RNGoogleFit } = NativeModules;
 
 /**
  * This method currently works with dataTypes: `Weight`, `Height`.
@@ -16,6 +16,6 @@ export const getLatestDataRecord = async (
   dataType: FitnessDataType,
 ): Promise<number | null> => {
   if (!isIOS) {
-    return RNFitnessTracker.getLatestDataRecord(dataType);
+    return RNGoogleFit.getLatestDataRecord(dataType);
   }
 };

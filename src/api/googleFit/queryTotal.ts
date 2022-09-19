@@ -4,7 +4,7 @@ import { FitnessDataType } from '../../types';
 import { isIOS } from '../../utils';
 
 /** @internal */
-const { RNFitnessTracker } = NativeModules;
+const { RNGoogleFit } = NativeModules;
 
 /**
  * Gets statistic accumulated total for specified time period of given data type.
@@ -19,6 +19,6 @@ export const queryTotal = async (
   endDate: Date | number,
 ): Promise<number> => {
   if (!isIOS) {
-    return RNFitnessTracker.queryTotal(dataType, +startDate, +endDate);
+    return RNGoogleFit.queryTotal(dataType, +startDate, +endDate);
   }
 };

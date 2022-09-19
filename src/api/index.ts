@@ -18,5 +18,12 @@ import * as HealthKit from './healthKit';
  * You can find api methods for both platforms [FitnessTracker](./FitnessTracker.md)
  */
 import * as GoogleFit from './googleFit';
+/**
+ * Api methods for HealthConnect.
+ * These methods only work for `Android`.
+ *
+ * You can find api methods for both platforms [FitnessTracker](./FitnessTracker.md)
+ */
+import * as HealthConnect from './healthConnect';
 
-export { FitnessTracker, GoogleFit, HealthKit };
+export { FitnessTracker, GoogleFit, HealthKit, HealthConnect };

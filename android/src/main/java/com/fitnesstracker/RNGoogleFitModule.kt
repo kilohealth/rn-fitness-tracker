@@ -10,13 +10,13 @@ import com.google.android.gms.fitness.FitnessOptions
 import java.util.*
 
 
-class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) :
+class RNGoogleFitModule(private val reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
 
     private var googleFitManager: GoogleFitManager = GoogleFitManager(reactContext)
 
     override fun getName(): String {
-        return "RNFitnessTracker"
+        return "RNGoogleFit"
     }
 
     private fun getActivity(promise: Promise): Activity? {

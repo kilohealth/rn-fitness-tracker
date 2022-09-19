@@ -4,7 +4,7 @@ import { FitnessDataType } from '../../types';
 import { isIOS } from '../../utils';
 
 /** @internal */
-const { RNFitnessTracker } = NativeModules;
+const { RNGoogleFit } = NativeModules;
 
 /**
  * Gets statistic total for given data type for current day.
@@ -13,6 +13,6 @@ export const getStatisticTodayTotal = async (
   dataType: FitnessDataType,
 ): Promise<number> => {
   if (!isIOS) {
-    return RNFitnessTracker.getStatisticTodayTotal(dataType);
+    return RNGoogleFit.getStatisticTodayTotal(dataType);
   }
 };

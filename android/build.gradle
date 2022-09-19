@@ -1,15 +1,14 @@
 buildscript {
     ext {
-        compileSdkVersion = 30
-        kotlinVersion = "1.6.0"
-        minSdkVersion = 21
-        targetSdkVersion = 30
+        compileSdkVersion = 33
+        kotlinVersion = "1.6.21"
+        minSdkVersion = 26
+        targetSdkVersion = 33
     }
 
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
@@ -45,7 +44,6 @@ android {
 
 repositories {
     mavenCentral()
-    jcenter()
     google()
 
     def found = false
@@ -117,7 +115,12 @@ repositories {
 dependencies {
     // noinspection GradleDynamicVersion
     api 'com.facebook.react:react-native:+'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    implementation 'com.google.android.gms:play-services-fitness:21.0.0'
-    implementation 'com.google.android.gms:play-services-auth:20.0.0'
+    implementation 'com.google.android.gms:play-services-fitness:21.1.0'
+    implementation 'com.google.android.gms:play-services-auth:20.3.0'
+
+    implementation 'androidx.health.connect:connect-client:1.0.0-alpha04'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.activity:activity-ktx:1.5.1'
 }

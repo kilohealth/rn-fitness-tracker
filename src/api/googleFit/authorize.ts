@@ -4,7 +4,7 @@ import { GoogleFitDataType } from '../../enums';
 import { handleAndroidMotionTrackingPermissions, isIOS } from '../../utils';
 
 /** @internal */
-const { RNFitnessTracker } = NativeModules;
+const { RNGoogleFit } = NativeModules;
 
 /**
  * Sets up GoogleFit tracking and returns status
@@ -20,10 +20,7 @@ export const authorize = async (
   if (!isIOS) {
     let motionAuthResult = await handleAndroidMotionTrackingPermissions(true);
     if (motionAuthResult) {
-      motionAuthResult = await RNFitnessTracker.authorize(
-        readTypes,
-        shareTypes,
-      );
+      motionAuthResult = await RNGoogleFit.authorize(readTypes, shareTypes);
     }
 
     return motionAuthResult;
