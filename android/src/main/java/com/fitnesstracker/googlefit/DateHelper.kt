@@ -6,9 +6,9 @@ import java.util.*
 class DateHelper {
     companion object {
         private const val DATE_FORMAT = "yyyy-MM-dd"
-        private val dateFormat = SimpleDateFormat(DATE_FORMAT)
+        private val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
 
-        fun setMidnight(date: Date): Calendar {
+        private fun setMidnight(date: Date): Calendar {
             val calendar = Calendar.getInstance()
             calendar.time = date
             val year = calendar[Calendar.YEAR]
