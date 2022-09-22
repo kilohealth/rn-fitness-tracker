@@ -7,6 +7,8 @@ on:
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
+      - 'android/**'
+      - 'scripts/**'
 
   push:
     branches:
@@ -14,6 +16,8 @@ on:
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
+      - 'android/**'
+      - 'scripts/**'
 
 jobs:
   ios:
