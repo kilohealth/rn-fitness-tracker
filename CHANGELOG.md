@@ -1,3 +1,17 @@
+#### 2.0.4 (2022-09-22)
+
+##### Build System / Dependencies
+
+*  skip ios e2e tests workflow if updated directories are android and scripts (8ebceaa0)
+*  workflow include new version inside release body (d2501bae)
+*  github workflow truncate changelog to latest version when creating release (d7b6984e)
+*  add .yarn/verions/ folder to git staged before commiting version files (3ffab78b)
+* **android:**  updated gradle gms:play-services dependencies (638de59e)
+
+##### Bug Fixes
+
+* **android:**  use english locale instead of local locale for formatting date (f0035389)
+
 #### 2.0.3 (2022-08-16)
 
 ##### Build System / Dependencies
