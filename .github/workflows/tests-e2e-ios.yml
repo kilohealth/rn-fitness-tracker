@@ -8,7 +8,6 @@ on:
       - 'docs/**'
       - '**/*.md'
       - 'android/**'
-      - 'scripts/**'
 
   push:
     branches:
@@ -17,7 +16,6 @@ on:
       - 'docs/**'
       - '**/*.md'
       - 'android/**'
-      - 'scripts/**'
 
 jobs:
   ios:
