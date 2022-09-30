@@ -22,7 +22,7 @@
   "author": "Kilo.Health",
   "main": "src/index.ts",
   "scripts": {
-    "allow-bash": "chmod -R a+x ./scripts && chmod a+x .husky/commit-msg",
+    "allow-bash": "chmod a+x .husky/commit-msg",
     "postinstall": "husky install && yarn allow-bash",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "lint-fix": "eslint 'src/**/*.{ts,tsx}' --fix",
