@@ -23,7 +23,6 @@
   "main": "src/index.ts",
   "scripts": {
     "allow-bash": "chmod -R a+x ./scripts && chmod a+x .husky/commit-msg",
-    "inc": "./scripts/incVersion.sh",
     "postinstall": "husky install && yarn allow-bash",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "lint-fix": "eslint 'src/**/*.{ts,tsx}' --fix",
@@ -59,7 +58,6 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "^7.30.1",
     "eslint-watch": "^8.0.0",
-    "generate-changelog": "^1.8.0",
     "husky": "^8.0.0",
     "lint-staged": "^12.5.0",
     "pinst": "^3.0.0",
