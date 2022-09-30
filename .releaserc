@@ -1,0 +1,36 @@
+{
+  "branches": [ "master" ],
+  "dryRun": true,
+  "repositoryUrl": "https://github.com/kilohealth/rn-fitness-tracker",
+  "plugins": [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "conventionalcommits",
+        "releaseRules": [
+          { "type": "build", "release": "patch" },
+          { "type": "chore", "release": "patch" }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "releaseRules": [
+          { "type": "build", "release": "patch" },
+          { "type": "chore", "release": "patch" }
+        ]
+      }
+    ],
+    "@semantic-release/npm",
+    "@semantic-release/github",
+    "@semantic-release/changelog",
+    [
+      "@semantic-release/git",
+      {
+        "assets": [ "CHANGELOG.md", "package.json", "yarn.lock" ]
+      }
+    ]
+  ]
+}
