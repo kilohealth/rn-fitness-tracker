@@ -1,3 +1,5 @@
+## [2.0.5](https://github.com/kilohealth/rn-fitness-tracker/compare/v2.0.4...v2.0.5) (2022-09-30)
+
 #### 2.0.4 (2022-09-22)
 
 ##### Build System / Dependencies
