@@ -66,6 +66,7 @@
     "react-native-device-info": "^8.7.1",
     "react-native-permissions": "^3.4.0",
     "semantic-release": "^19.0.5",
+    "semantic-release-slack-bot": "^3.5.3",
     "sort-package-json": "^1.57.0",
     "typescript": "^4.7.4"
   },

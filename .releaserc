@@ -40,6 +40,20 @@
       {
         "assets": [ "CHANGELOG.md", "package.json", "yarn.lock" ]
       }
+    ],
+    [
+      "semantic-release-slack-bot",
+      {
+        "notifyOnSuccess": false,
+        "notifyOnFail": false,
+        "branchesConfig": [
+          {
+            "pattern": "master1",
+            "notifyOnSuccess": true,
+            "notifyOnFail": false
+          }
+        ]
+      }
     ]
   ]
 }
