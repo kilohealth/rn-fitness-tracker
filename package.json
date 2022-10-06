@@ -24,18 +24,26 @@
   "scripts": {
     "allow-bash": "chmod a+x .husky/commit-msg",
     "postinstall": "husky install && yarn allow-bash",
-    "lint": "eslint 'src/**/*.{ts,tsx}'",
-    "lint-fix": "eslint 'src/**/*.{ts,tsx}' --fix",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
-    "prettier": "prettier --check 'src/**/*.{ts,tsx}'",
-    "prettier-fix": "prettier --write 'src/**/*.{ts,tsx}'",
     "sort-package-json": "npx sort-package-json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tests:ios:build": "cd example && yarn detox build --configuration ios",
     "tests:ios:pod:install": "cd example && rm -rf ios/example.xcworkspace && yarn pod-install",
     "tests:ios:test": "cd example && yarn detox test --configuration ios --loglevel warn",
     "tests:packager:jet-ci": "cd example && cross-env TMPDIR=$HOME/.metro REACT_DEBUGGER=\"echo nope\" node_modules/.bin/react-native start --no-interactive"
+  },
+  "lint-staged": {
+    "package.json": [
+      "sort-package-json"
+    ],
+    "*.{js,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,yml}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
     "@babel/cli": "^7.18.6",
@@ -67,7 +75,7 @@
     "eslint-restricted-globals": "^0.2.0",
     "eslint-watch": "^8.0.0",
     "husky": "^8.0.0",
-    "lint-staged": "^12.5.0",
+    "lint-staged": "^13.0.3",
     "pinst": "^3.0.0",
     "prettier": "^2.7.1",
     "react-native": "0.67.0",
