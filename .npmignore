@@ -25,6 +25,7 @@ jsdoc2md.json
 .husky/
 commitlint.config.js
 package.tgz
+.releaserc
 
 # Built application files
 android/*/build/
