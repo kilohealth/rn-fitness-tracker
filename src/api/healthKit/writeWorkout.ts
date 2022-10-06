@@ -37,7 +37,7 @@ export const writeWorkout = async (options: {
       metadata = {},
     } = options;
 
-    return await RNHealthTracker.writeWorkout(
+    return RNHealthTracker.writeWorkout(
       key,
       +startDate,
       +endDate,

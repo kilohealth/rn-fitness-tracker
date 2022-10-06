@@ -19,6 +19,7 @@ export const authorize = async (
 ): Promise<boolean> => {
   if (isIOS) {
     const authorized = await RNHealthTracker.authorize(shareTypes, readTypes);
+
     return !!authorized;
   }
 };

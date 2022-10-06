@@ -31,6 +31,7 @@ export const getReadStatusForType = async (options: {
 }): Promise<HealthKitAuthStatus> => {
   if (isIOS) {
     const { key, unit } = options;
-    return await RNHealthTracker.getReadStatus(key, unit);
+
+    return RNHealthTracker.getReadStatus(key, unit);
   }
 };

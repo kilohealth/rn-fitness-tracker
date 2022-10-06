@@ -15,6 +15,6 @@ export const writeDataArray = async (
   dataArray: Array<HealthKitWriteData>,
 ): Promise<boolean> => {
   if (isIOS) {
-    return await RNHealthTracker.writeDataArray(dataArray);
+    return RNHealthTracker.writeDataArray(dataArray);
   }
 };

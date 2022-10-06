@@ -27,12 +27,6 @@ export const writeData = async (options: {
   if (isIOS) {
     const { key, unit, amount, metadata = {}, timestamp = -1 } = options;
 
-    return await RNHealthTracker.writeData(
-      key,
-      unit,
-      amount,
-      metadata,
-      timestamp,
-    );
+    return RNHealthTracker.writeData(key, unit, amount, metadata, timestamp);
   }
 };

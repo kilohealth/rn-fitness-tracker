@@ -14,6 +14,7 @@ const { RNHealthTracker } = NativeModules;
 export const isHealthDataAvailable = async (): Promise<boolean> => {
   if (isIOS) {
     const response = await RNHealthTracker.isHealthDataAvailable();
+
     return !!response;
   }
 };

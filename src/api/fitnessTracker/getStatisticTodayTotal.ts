@@ -12,6 +12,7 @@ export const getStatisticTodayTotal = async (
     const healthKitDataType = getDataTypeForHealthKit(dataType);
 
     const total = await HealthKit.getStatisticTotalForToday(healthKitDataType);
+
     return Number(total);
   } else {
     return GoogleFit.getStatisticTodayTotal(dataType);

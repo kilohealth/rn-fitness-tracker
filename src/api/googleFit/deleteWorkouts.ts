@@ -18,6 +18,6 @@ export const deleteWorkouts = async (
   endDate: Date | number,
 ): Promise<boolean> => {
   if (!isIOS) {
-    return await RNFitnessTracker.deleteWorkouts(+startDate, +endDate);
+    return RNFitnessTracker.deleteWorkouts(+startDate, +endDate);
   }
 };

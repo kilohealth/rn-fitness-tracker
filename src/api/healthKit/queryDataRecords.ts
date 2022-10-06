@@ -22,6 +22,7 @@ export const queryDataRecords = async (options: {
 }): Promise<HealthDataRecordQuery> => {
   if (isIOS) {
     const { key, unit, startDate, endDate } = options;
+
     return RNHealthTracker.queryDataRecords(key, unit, +startDate, +endDate);
   }
 };

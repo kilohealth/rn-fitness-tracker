@@ -12,6 +12,7 @@ export interface HealthWorkoutRecord {
   startDate: string;
   endDate: string;
   type: HealthKitWorkoutType | 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata: { [name: string]: any };
   source: {
     name: string;
@@ -25,6 +26,7 @@ export type HealthWorkoutRecordQuery = Array<HealthWorkoutRecord>;
 export interface HealthDataRecord {
   date: string;
   quantity: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata: { [name: string]: any } | null;
   source: {
     device: string;
@@ -43,6 +45,7 @@ export interface HealthKitKeyWithUnit {
 }
 
 export interface HealthKitMetadata {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 

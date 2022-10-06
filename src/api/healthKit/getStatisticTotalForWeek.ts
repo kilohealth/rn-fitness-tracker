@@ -18,6 +18,7 @@ export const getStatisticTotalForWeek = async (options: {
   if (isIOS) {
     const { key, unit } = options;
     const total = await RNHealthTracker.getStatisticTotalForWeek(key, unit);
+
     return Number(total);
   }
 };

@@ -16,6 +16,6 @@ export const getAuthStatusForType = async (
   key: HealthKitDataType,
 ): Promise<HealthKitAuthStatus> => {
   if (isIOS) {
-    return await RNHealthTracker.getAuthorizationStatusForType(key);
+    return RNHealthTracker.getAuthorizationStatusForType(key);
   }
 };

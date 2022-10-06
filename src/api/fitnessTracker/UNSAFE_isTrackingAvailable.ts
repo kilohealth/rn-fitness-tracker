@@ -39,6 +39,6 @@ export const UNSAFE_isTrackingAvailable = async (
   } else {
     const googleFitDataType = getDataTypeForGoogleFit(permission);
 
-    return await GoogleFit.isTrackingAvailable([googleFitDataType], []);
+    return GoogleFit.isTrackingAvailable([googleFitDataType], []);
   }
 };

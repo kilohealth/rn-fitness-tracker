@@ -28,7 +28,7 @@ export const deleteRecord = async (options: {
     const startDate = options.startDate ? +options.startDate : 0;
     const endDate = options.endDate ? +options.endDate : 0;
 
-    return await RNHealthTracker.deleteRecord(
+    return RNHealthTracker.deleteRecord(
       options.key,
       options.uuid,
       startDate,
