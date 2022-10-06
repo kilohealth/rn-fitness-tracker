@@ -46,9 +46,10 @@
       {
         "notifyOnSuccess": false,
         "notifyOnFail": false,
+        "markdownReleaseNotes": true,
         "branchesConfig": [
           {
-            "pattern": "master1",
+            "pattern": "master",
             "notifyOnSuccess": true,
             "notifyOnFail": false
           }
