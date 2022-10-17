@@ -18,8 +18,14 @@ const data = {
   },
 };
 
+enum Status {
+  Done = 'Done',
+  InProgress = 'In progress',
+}
+
 export const Delete = () => {
   const [record, setRecord] = useState<HealthDataRecord | undefined>(undefined);
+  const [status, setStatus] = useState<Status>(Status.Done);
 
   const getHeartRateUUIDText = () => {
     const text = record?.uuid ?? 'undefined';
@@ -28,36 +34,45 @@ export const Delete = () => {
   };
 
   const fetchHeartRateRecord = async () => {
+    setStatus(Status.InProgress);
     const latestRecord = await HealthKit.getLatestDataRecord({
       key: HealthKitDataType.HeartRate,
       unit: HealthKitUnitType.BeatsPerMinute,
     });
 
     setRecord(latestRecord);
+    setStatus(Status.Done);
   };
 
   const writeHeartRateRecord = async () => {
+    setStatus(Status.InProgress);
     await HealthKit.writeData(data);
+    setStatus(Status.Done);
   };
 
   const deleteHeartRateRecordWithUUID = async () => {
+    setStatus(Status.InProgress);
     await HealthKit.deleteRecord({
       key: HealthKitDataType.HeartRate,
       uuid: record?.uuid,
     });
+    setStatus(Status.Done);
   };
 
   const deleteHeartRateRecordWithDate = async () => {
+    setStatus(Status.InProgress);
     await HealthKit.deleteRecord({
       key: HealthKitDataType.HeartRate,
       startDate: +startOfDay(addDays(new Date(), -1)),
       endDate: +new Date(),
     });
+    setStatus(Status.Done);
   };
 
   return (
     <SafeAreaView>
       <View style={styles.container}>
+        <Text testID="heart_rate_status">Heart rate status: {status}</Text>
         <Text testID="heart_rate_uuid">{getHeartRateUUIDText()}</Text>
 
         <Button
