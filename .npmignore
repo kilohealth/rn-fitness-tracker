@@ -1,6 +1,7 @@
 example/
 docs/
 .idea/
+.fleet/
 gen/
 android/react-native-iap.iml
 android/android.iml
