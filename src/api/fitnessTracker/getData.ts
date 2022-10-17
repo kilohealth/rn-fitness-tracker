@@ -10,6 +10,7 @@ export const getData = async (
   dataType: FitnessDataType,
 ): Promise<TodayAndDailyData> => {
   let daily: DailyData;
+
   if (isIOS) {
     const healthKitDataType = getDataTypeForHealthKit(dataType);
 

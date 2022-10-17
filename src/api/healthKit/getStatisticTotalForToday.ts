@@ -18,6 +18,7 @@ export const getStatisticTotalForToday = async (options: {
   if (isIOS) {
     const { key, unit } = options;
     const total = await RNHealthTracker.getStatisticTotalForToday(key, unit);
+
     return Number(total);
   }
 };

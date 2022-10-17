@@ -25,6 +25,6 @@ export const queryTotal = async (
 
     return Number(total);
   } else {
-    return await GoogleFit.queryTotal(dataType, startDate, endDate);
+    return GoogleFit.queryTotal(dataType, startDate, endDate);
   }
 };

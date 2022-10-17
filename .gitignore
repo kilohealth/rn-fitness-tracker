@@ -43,6 +43,7 @@ project.xcworkspace
 # Android/IntelliJ
 #
 .idea
+.fleet/
 .gradle
 local.properties
 *.iml

@@ -18,6 +18,7 @@ export const getStatisticWeekDaily = async (options: {
 }): Promise<DailyData> => {
   if (isIOS) {
     const { key, unit } = options;
+
     return RNHealthTracker.getStatisticWeekDaily(key, unit);
   }
 };

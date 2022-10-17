@@ -7,8 +7,9 @@ import {
 } from '../constants/fitness';
 import { GoogleFitDataType } from '../enums';
 
-export const isObject = function (obj: unknown): boolean {
+export const isObject = (obj: unknown): boolean => {
   const type = typeof obj;
+
   return type === 'function' || (type === 'object' && !!obj);
 };
 
@@ -20,8 +21,9 @@ export const getDataTypeForHealthKit = (
   dataType: FitnessDataType,
 ): HealthKitKeyWithUnit => {
   const HealthKitDataType = HealthKitKeyUnitByKey?.[dataType];
+
   if (!HealthKitDataType) {
-    throw 'Provided incorrect dataType';
+    throw new Error('Provided incorrect dataType');
   }
 
   return HealthKitDataType;
@@ -31,8 +33,9 @@ export const getDataTypeForGoogleFit = (
   dataType: FitnessDataType,
 ): GoogleFitDataType => {
   const googleFitDataType = GoogleFitDataTypeByKey?.[dataType];
+
   if (!googleFitDataType) {
-    throw 'Provided incorrect dataType';
+    throw new Error('Provided incorrect dataType');
   }
 
   return googleFitDataType;

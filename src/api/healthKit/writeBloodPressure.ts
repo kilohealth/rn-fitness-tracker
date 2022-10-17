@@ -32,7 +32,7 @@ export const writeBloodPressure = async (options: {
       metadata = {},
     } = options;
 
-    return await RNHealthTracker.writeBloodPressure(
+    return RNHealthTracker.writeBloodPressure(
       systolicPressure,
       diastolicPressure,
       +startDate,

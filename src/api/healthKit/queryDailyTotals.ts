@@ -22,6 +22,7 @@ export const queryDailyTotals = async (options: {
 }): Promise<{ [date: string]: number }> => {
   if (isIOS) {
     const { key, unit, startDate, endDate } = options;
+
     return RNHealthTracker.queryDailyTotals(key, unit, +startDate, +endDate);
   }
 };

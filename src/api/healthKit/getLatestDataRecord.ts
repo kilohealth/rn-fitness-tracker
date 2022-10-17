@@ -18,6 +18,7 @@ export const getLatestDataRecord = async (options: {
 }): Promise<HealthDataRecord | undefined> => {
   if (isIOS) {
     const { key, unit } = options;
+
     return RNHealthTracker.getLatestDataRecord(key, unit);
   }
 };

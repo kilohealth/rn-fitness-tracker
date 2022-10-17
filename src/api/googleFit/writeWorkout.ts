@@ -31,13 +31,13 @@ export const writeWorkout = async (options: {
   steps?: number;
 }): Promise<boolean> => {
   if (!isIOS) {
-    Object.keys(options).forEach((key) =>
+    Object.keys(options).forEach((key: string) =>
       options[key as keyof typeof options] === undefined
         ? delete options[key as keyof typeof options]
         : {},
     );
 
-    return await RNFitnessTracker.writeWorkout(
+    return RNFitnessTracker.writeWorkout(
       +options.startDate,
       +options.endDate,
       options,

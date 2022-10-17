@@ -20,13 +20,13 @@ export const authorize = async (
     const shareTypes: HealthKitDataType[] =
       permissions.healthWritePermissions || [];
 
-    return await HealthKit.authorize(shareTypes, readTypes);
+    return HealthKit.authorize(shareTypes, readTypes);
   } else {
     const readTypes: GoogleFitDataType[] =
       permissions.googleFitReadPermissions || [];
     const shareTypes: GoogleFitDataType[] =
       permissions.googleFitWritePermissions || [];
 
-    return await GoogleFit.authorize(shareTypes, readTypes);
+    return GoogleFit.authorize(shareTypes, readTypes);
   }
 };

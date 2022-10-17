@@ -1,6 +1,7 @@
 example/
 docs/
 .idea/
+.fleet/
 gen/
 android/react-native-iap.iml
 android/android.iml
@@ -25,6 +26,7 @@ jsdoc2md.json
 .husky/
 commitlint.config.js
 package.tgz
+.releaserc
 
 # Built application files
 android/*/build/

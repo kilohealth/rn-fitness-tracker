@@ -147,46 +147,55 @@ describe('Example', () => {
    * Delete Section
    * Heart rate data
    */
+  const waitForTaskToFinish = async () => {
+    await waitFor(element(by.id('heart_rate_status')))
+      .toHaveText('Heart rate status: Done')
+      .withTimeout(6000);
+  };
+
+  const fetchLatestHeartRateRecord = async () => {
+    const fetchButton = element(by.id('fetch_heart_rate_record_button'));
+    await expect(fetchButton).toExist();
+    await fetchButton.tap();
+    await waitForTaskToFinish();
+  };
+
+  const writeHeartRateRecord = async () => {
+    const writeButton = element(by.id('write_heart_rate_record_button'));
+    await expect(writeButton).toExist();
+    await writeButton.tap();
+    await waitForTaskToFinish();
+  };
+
   it('heart rate record should not exist', async () => {
     await expect(element(by.id('heart_rate_uuid'))).toHaveText(
       'Latest heart rate record uuid: undefined',
     );
 
-    // Fetch button exists
-    const fetchButton = element(by.id('fetch_heart_rate_record_button'));
-    await expect(fetchButton).toExist();
-    await fetchButton.tap();
+    await fetchLatestHeartRateRecord();
 
     // heart rate should be undefined after initial fetch
     await expect(element(by.id('heart_rate_uuid'))).toHaveText(
       'Latest heart rate record uuid: undefined',
     );
   });
+
   it('write heart rate record', async () => {
     await expect(element(by.id('heart_rate_uuid'))).toHaveText(
       'Latest heart rate record uuid: undefined',
     );
 
-    // Write button exists
-    const writeButton = element(by.id('write_heart_rate_record_button'));
-    await expect(writeButton).toExist();
-    await writeButton.tap();
-
-    // Fetch button exists
-    const fetchButton = element(by.id('fetch_heart_rate_record_button'));
-    await expect(fetchButton).toExist();
-    await fetchButton.tap();
+    await writeHeartRateRecord();
+    await fetchLatestHeartRateRecord();
 
     // heart rate should not be undefined after fetch
     await expect(element(by.id('heart_rate_uuid'))).not.toHaveText(
       'Latest heart rate record uuid: undefined',
     );
   });
+
   it('delete heart rate record with uuid', async () => {
-    // Fetch button exists
-    const fetchButton = element(by.id('fetch_heart_rate_record_button'));
-    await expect(fetchButton).toExist();
-    await fetchButton.tap();
+    await fetchLatestHeartRateRecord();
 
     // heart rate should not be undefined
     await expect(element(by.id('heart_rate_uuid'))).not.toHaveText(
@@ -199,26 +208,19 @@ describe('Example', () => {
     );
     await expect(deleteButton).toExist();
     await deleteButton.tap();
+    await waitForTaskToFinish();
 
-    // Fetch
-    await expect(fetchButton).toExist();
-    await fetchButton.tap();
+    await fetchLatestHeartRateRecord();
 
     // heart rate should be undefined after delete
     await expect(element(by.id('heart_rate_uuid'))).toHaveText(
       'Latest heart rate record uuid: undefined',
     );
   });
-  it('delete heart rate record with date', async () => {
-    // Write button exists
-    const writeButton = element(by.id('write_heart_rate_record_button'));
-    await expect(writeButton).toExist();
-    await writeButton.tap();
 
-    // Fetch button exists
-    const fetchButton = element(by.id('fetch_heart_rate_record_button'));
-    await expect(fetchButton).toExist();
-    await fetchButton.tap();
+  it('delete heart rate record with date', async () => {
+    await writeHeartRateRecord();
+    await fetchLatestHeartRateRecord();
 
     // heart rate should not be undefined
     await expect(element(by.id('heart_rate_uuid'))).not.toHaveText(
@@ -231,10 +233,9 @@ describe('Example', () => {
     );
     await expect(deleteButton).toExist();
     await deleteButton.tap();
+    await waitForTaskToFinish();
 
-    // Fetch
-    await expect(fetchButton).toExist();
-    await fetchButton.tap();
+    await fetchLatestHeartRateRecord();
 
     // heart rate should be undefined after delete
     await expect(element(by.id('heart_rate_uuid'))).toHaveText(

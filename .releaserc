@@ -7,16 +7,27 @@
       {
         "preset": "conventionalcommits",
         "releaseRules": [
-          { "type": "build", "release": "patch" },
-          { "type": "chore", "release": "patch" },
-          { "type": "ci", "release": "patch" }
+          { "type": "build", "release": "patch" }
         ]
       }
     ],
     [
       "@semantic-release/release-notes-generator",
       {
-        "preset": "conventionalcommits"
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "types": [
+            { "type": "feat", "section": "Features" },
+            { "type": "fix", "section": "Bug Fixes" },
+            { "type": "build", "section": "Build System / Dependencies" },
+            { "type": "chore", "hidden": true },
+            { "type": "docs", "hidden": true },
+            { "type": "style", "hidden": true },
+            { "type": "refactor", "hidden": true },
+            { "type": "perf", "hidden": true },
+            { "type": "test", "hidden": true }
+          ]
+        }
       }
     ],
     "@semantic-release/changelog",
@@ -26,6 +37,21 @@
       "@semantic-release/git",
       {
         "assets": [ "CHANGELOG.md", "package.json", "yarn.lock" ]
+      }
+    ],
+    [
+      "semantic-release-slack-bot",
+      {
+        "notifyOnSuccess": false,
+        "notifyOnFail": false,
+        "markdownReleaseNotes": true,
+        "branchesConfig": [
+          {
+            "pattern": "master",
+            "notifyOnSuccess": true,
+            "notifyOnFail": false
+          }
+        ]
       }
     ]
   ]

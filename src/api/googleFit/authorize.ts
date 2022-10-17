@@ -19,6 +19,7 @@ export const authorize = async (
 ): Promise<boolean> => {
   if (!isIOS) {
     let motionAuthResult = await handleAndroidMotionTrackingPermissions(true);
+
     if (motionAuthResult) {
       motionAuthResult = await RNFitnessTracker.authorize(
         readTypes,

@@ -24,10 +24,12 @@ import { Delete } from './sections/Delete';
 
 const permissions: AuthorizationPermissions = {
   healthReadPermissions: [
+    HealthKitDataType.HeartRate,
     HealthKitDataType.StepCount,
     HealthKitDataType.Workout,
   ],
   healthWritePermissions: [
+    HealthKitDataType.HeartRate,
     HealthKitDataType.StepCount,
     HealthKitDataType.Workout,
   ],
