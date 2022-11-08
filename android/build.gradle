@@ -1,10 +1,5 @@
 buildscript {
-    ext {
-        compileSdkVersion = 30
-        kotlinVersion = "1.7.10"
-        minSdkVersion = 21
-        targetSdkVersion = 30
-    }
+    def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : "1.7.20"
 
     repositories {
         google()
@@ -13,23 +8,23 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:4.2.2"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-def getExt(name) {
-    return rootProject.ext.get(name)
+def getExtOrDefault(name, defaultValue) {
+    return rootProject.ext.has(name) ? rootProject.ext.get(name) : defaultValue
 }
 
 android {
-    compileSdkVersion getExt('compileSdkVersion')
+    compileSdkVersion getExtOrDefault('compileSdkVersion', 31)
 
     defaultConfig {
-        minSdkVersion getExt('minSdkVersion')
-        targetSdkVersion getExt('targetSdkVersion')
+        minSdkVersion getExtOrDefault('minSdkVersion', 21)
+        targetSdkVersion getExtOrDefault('targetSdkVersion', 31)
     }
 
     lintOptions {
