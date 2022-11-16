@@ -23,7 +23,7 @@
   "main": "src/index.ts",
   "scripts": {
     "allow-bash": "chmod a+x .husky/commit-msg",
-    "postinstall": "husky install && yarn allow-bash",
+    "postinstall": "test -n \"$CI\" || husky install && yarn allow-bash",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
     "sort-package-json": "npx sort-package-json",
