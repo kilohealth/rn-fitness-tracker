@@ -1,3 +1,15 @@
+## [2.0.6](https://github.com/kilohealth/rn-fitness-tracker/compare/v2.0.5...v2.0.6) (2022-11-16)
+
+
+### Bug Fixes
+
+* get rootProject values for build.gradle ([83506d9](https://github.com/kilohealth/rn-fitness-tracker/commit/83506d93add8b427d3cd2200d9d28f40d35833a1))
+
+
+### Build System / Dependencies
+
+* **deps:** bump loader-utils from 2.0.2 to 2.0.4 in /docs ([430b051](https://github.com/kilohealth/rn-fitness-tracker/commit/430b05159168bdb663eecdf973ce08a49e13e1fb))
+
 ## [2.0.5](https://github.com/kilohealth/rn-fitness-tracker/compare/v2.0.4...v2.0.5) (2022-09-30)
 
 #### 2.0.4 (2022-09-22)
