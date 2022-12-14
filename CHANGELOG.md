@@ -1,3 +1,10 @@
+## [2.0.7](https://github.com/kilohealth/rn-fitness-tracker/compare/v2.0.6...v2.0.7) (2022-12-14)
+
+
+### Build System / Dependencies
+
+* **deps:** bump decode-uri-component from 0.2.0 to 0.2.2 ([b4a0cfb](https://github.com/kilohealth/rn-fitness-tracker/commit/b4a0cfb37ced48313160b9f08c27040c62fb4021))
+
 ## [2.0.6](https://github.com/kilohealth/rn-fitness-tracker/compare/v2.0.5...v2.0.6) (2022-11-16)
 
 
