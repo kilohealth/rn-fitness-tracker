@@ -23,7 +23,7 @@
   "main": "src/index.ts",
   "scripts": {
     "allow-bash": "chmod a+x .husky/commit-msg",
-    "postinstall": "test -n \"$CI\" || husky install && yarn allow-bash",
+    "postinstall": "test -n \"$CI\" || (yarn allow-bash && husky install)",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
     "sort-package-json": "npx sort-package-json",
@@ -51,6 +51,7 @@
     "@babel/eslint-parser": "^7.19.1",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-export-default-from": "^7.18.6",
+    "@babel/preset-env": "^7.20.2",
     "@babel/preset-typescript": "^7.18.6",
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
