@@ -35,6 +35,7 @@ To use HealthKit and Google fit you must first specify that your app requires ac
 ### Adding usage descriptions
 
 Open your project's `Info.plist` and add the following lines inside the outermost `<dict>` tag:
+
 ```xml
 <!-- Fitness tracker -->
 <key>NSMotionUsageDescription</key>
@@ -52,6 +53,7 @@ Open your project's `Info.plist` and add the following lines inside the outermos
 ### Adding permissions
 
 Open your project's AndroidManifest.xml and add the following lines inside the `<manifest>` tag:
+
 ```xml
 <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
 ```
@@ -79,3 +81,7 @@ Open your project's AndroidManifest.xml and add the following lines inside the `
 
 10. Save and submit everything. If you haven't got your google services config inside your app - download your `google-services.json` file from [Firebase console](https://console.firebase.google.com) and place it inside `android/app` directory within your project.
 
+:::Note
+For authorization to work in **debug** mode(locally), you must add credentials with debug.keystore.
+For **production** build to work, you must add credentials with SHA-1 key from release.keystore.
+:::
