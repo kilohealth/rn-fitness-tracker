@@ -52,19 +52,33 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
                 authorisationPromise?.resolve(false)
             } catch (e: ApiException) {
                 val code = e.statusCode
-                val errorCodeMessage = "ErrorCode: $code; "
-                println(errorCodeMessage)
-                if (e.statusCode == 10 || e.statusCode == 12500) {
+
+                if (code == SIGN_IN_CANCELLED_CODE) {
+                    authorisationPromise?.resolve(false)
+                    return
+                }
+
+                if (code == SIGN_IN_FAILED_CODE) {
+                    authorisationPromise?.reject(
+                        E_SIGN_IN_FAILED,
+                        SIGN_IN_FAILED_ERROR_MESSAGE
+                    )
+                    return
+                }
+
+                if (code == DEVELOPER_ERROR_CODE) {
                     authorisationPromise?.reject(
                         E_DEVELOPER_ERROR,
-                        errorCodeMessage + E_DEVELOPER_ERROR_MESSAGE
+                        DEVELOPER_ERROR_MESSAGE
                     )
-                } else {
-                    authorisationPromise?.reject(
-                        E_UNKNOWN_ERROR,
-                        errorCodeMessage + E_UNKNOWN_ERROR_MESSAGE
-                    )
+                    return
                 }
+
+                val errorCodeMessage = "ErrorCode: $code; "
+                authorisationPromise?.reject(
+                    E_UNKNOWN_ERROR,
+                    errorCodeMessage + E_UNKNOWN_ERROR_MESSAGE
+                )
             }
         }
     }
@@ -134,11 +148,17 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
     }
 
     companion object {
+        private const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 111
+        private const val DEVELOPER_ERROR_CODE = 10
         private const val E_DEVELOPER_ERROR = "E_DEVELOPER_ERROR"
-        private const val E_DEVELOPER_ERROR_MESSAGE =
-            "Developer error, please check if you correctly setup SHA1 and Package Name in the Google API console"
+        private const val DEVELOPER_ERROR_MESSAGE =
+            "Error: $DEVELOPER_ERROR_CODE; Developer error, please check if you correctly setup SHA1 and Package Name in the Google API console"
         private const val E_UNKNOWN_ERROR = "E_UNKNOWN_ERROR"
         private const val E_UNKNOWN_ERROR_MESSAGE = "Undefined error occurred."
-        private const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 111
+        private const val SIGN_IN_CANCELLED_CODE = 12501
+        private const val SIGN_IN_FAILED_CODE = 12500
+        private const val E_SIGN_IN_FAILED = "E_SIGN_IN_FAILED"
+        private const val SIGN_IN_FAILED_ERROR_MESSAGE =
+            "Error: $SIGN_IN_FAILED_CODE; The sign in attempt didn't succeed with the current account."
     }
 }
