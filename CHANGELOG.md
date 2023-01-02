@@ -1,3 +1,20 @@
+## [3.0.0](https://github.com/kilohealth/rn-fitness-tracker/compare/v2.0.7...v3.0.0) (2023-01-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* **android:** If Google cloud console credential setup is incorrect
+throw exception when authorize method is run.
+
+### Features
+
+* **android:** throw exception on authorize when setup is incorrect ([918eb29](https://github.com/kilohealth/rn-fitness-tracker/commit/918eb294f3e438d80d7cb8da8cf74f2cb58c2ad3))
+
+
+### Bug Fixes
+
+* **android:** authorization resolve false if user cancelled ([2e9ec83](https://github.com/kilohealth/rn-fitness-tracker/commit/2e9ec83ef18f8a80d414d1a732ac54718047b698))
+
 ## [2.0.7](https://github.com/kilohealth/rn-fitness-tracker/compare/v2.0.6...v2.0.7) (2022-12-14)
 
 
