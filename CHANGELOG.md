@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.0.0...v3.0.1) (2023-01-09)
+
+
+### Build System / Dependencies
+
+* **deps:** bump json5 from 1.0.1 to 1.0.2 ([6bd9bc1](https://github.com/kilohealth/rn-fitness-tracker/commit/6bd9bc11ef75c41e3a6a0d7efca30beb2fda38df))
+
 ## [3.0.0](https://github.com/kilohealth/rn-fitness-tracker/compare/v2.0.7...v3.0.0) (2023-01-02)
 
 
