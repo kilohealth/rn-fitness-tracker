@@ -8,9 +8,10 @@ import { HealthDataRecord } from '../../types';
 const { RNHealthTracker } = NativeModules;
 
 /**
- * Returns the latest record for specified data type and unit.
  * @param options.key e.g. `HealthKitDataType.Fiber`
  * @param options.unit e.g. `HealthKitUnitType.grams`
+ *
+ * @return Returns the latest record for specified data type and unit.
  */
 export const getLatestDataRecord = async (options: {
   key: HealthKitDataType;

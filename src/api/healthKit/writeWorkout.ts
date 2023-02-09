@@ -26,7 +26,7 @@ export const writeWorkout = async (options: {
   energyBurned?: number;
   totalDistance?: number;
   metadata?: HealthKitMetadata;
-}): Promise<boolean> => {
+}): Promise<boolean | undefined> => {
   if (isIOS) {
     const {
       key,

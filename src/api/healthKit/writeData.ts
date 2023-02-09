@@ -15,6 +15,7 @@ const { RNHealthTracker } = NativeModules;
  * @param options.amount
  * @param options.metadata
  * @param options.timestamp optional unix timestamp for record date
+ *
  * @return Returns status if no errors occurred.
  */
 export const writeData = async (options: {
@@ -23,7 +24,7 @@ export const writeData = async (options: {
   amount: number;
   metadata?: HealthKitMetadata;
   timestamp?: number;
-}): Promise<boolean> => {
+}): Promise<boolean | undefined> => {
   if (isIOS) {
     const { key, unit, amount, metadata = {}, timestamp = -1 } = options;
 

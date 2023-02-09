@@ -16,7 +16,7 @@ const { RNHealthTracker } = NativeModules;
 export const authorize = async (
   shareTypes: HealthKitDataType[],
   readTypes: HealthKitDataType[],
-): Promise<boolean> => {
+): Promise<boolean | undefined> => {
   if (isIOS) {
     const authorized = await RNHealthTracker.authorize(shareTypes, readTypes);
 
