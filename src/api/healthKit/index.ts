@@ -11,6 +11,7 @@ export * from './getStatisticTotalForToday';
 export * from './getStatisticTotalForWeek';
 export * from './getStatisticWeekDaily';
 export * from './isHealthDataAvailable';
+export * from './queryAnchoredWorkouts';
 export * from './queryDailyTotals';
 export * from './queryDataRecords';
 export * from './queryTotal';
