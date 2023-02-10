@@ -28,7 +28,7 @@ export type HealthWorkoutRecordQuery = Array<HealthWorkoutRecord>;
 export interface HealthKitAnchoredWorkoutResult {
   anchor: number;
   newRecords: HealthWorkoutRecordQuery;
-  deletedRecords: HealthKitDeletedWorkoutRecord;
+  deletedRecords: HealthKitDeletedWorkoutRecord[];
 }
 
 export interface HealthDataRecord {
