@@ -24,6 +24,7 @@
   "license": "MIT",
   "author": "Kilo.Health",
   "main": "src/index.ts",
+  "source": "src/index",
   "scripts": {
     "allow-bash": "chmod a+x .husky/commit-msg",
     "postinstall": "test -n \"$CI\" || (yarn allow-bash && husky install)",
