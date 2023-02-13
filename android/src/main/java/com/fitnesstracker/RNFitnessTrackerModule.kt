@@ -8,6 +8,7 @@ import com.fitnesstracker.permission.Permission
 import com.fitnesstracker.permission.PermissionKind
 import com.google.android.gms.fitness.FitnessOptions
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) :
@@ -106,6 +107,34 @@ class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) 
                     permission,
                     Arguments.createMap()
                 )
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
+    }
+
+    @ReactMethod
+    fun queryDailyBucket(dataType: String, startDate: Double, endDate: Double, bucketUnit: String, promise: Promise,) {
+        try {
+            val endTime: Long = endDate.toLong()
+            val startTime: Long = startDate.toLong()
+            val permission = Permission(PermissionKind.getByValue(dataType))
+
+            if (!googleFitManager.isAuthorized()) {
+                return promise.reject(Exception(UNAUTHORIZED_GOOGLE_FIT))
+            }
+
+            val unit = processBucketUnit(bucketUnit)
+
+            googleFitManager
+                    .getHistoryClient()
+                    .queryDailyBucket(
+                            promise,
+                            Date(startTime),
+                            Date(endTime),
+                            permission,
+                            Arguments.createMap(),
+                            unit,
+                    )
         } catch (e: Exception) {
             promise.reject(e)
         }
@@ -264,6 +293,19 @@ class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) 
         }
 
         return result
+    }
+
+    private fun processBucketUnit(bucketUnit: String ?= null): TimeUnit {
+        return when (bucketUnit) {
+            "NANOSECOND" -> TimeUnit.NANOSECONDS
+            "MICROSECOND" -> TimeUnit.MICROSECONDS
+            "MILLISECOND" -> TimeUnit.MILLISECONDS
+            "SECOND" -> TimeUnit.SECONDS
+            "MINUTE" -> TimeUnit.MINUTES
+            "HOUR" -> TimeUnit.HOURS
+            "DAY" -> TimeUnit.DAYS
+            else -> TimeUnit.DAYS
+        }
     }
 
     companion object {

@@ -50,3 +50,12 @@ export enum FitnessDataType {
   Steps = 'Steps',
   Weight = 'Weight',
 }
+
+/**
+ * Returned data ordered by date for specific data type.
+ */
+export interface DailyBucket {
+  from: string;
+  to: string;
+  value: number;
+}

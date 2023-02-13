@@ -2278,56 +2278,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kilohealth/rn-fitness-tracker@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@kilohealth/rn-fitness-tracker@workspace:."
-  dependencies:
-    "@babel/cli": ^7.18.6
-    "@babel/core": ^7.19.3
-    "@babel/eslint-parser": ^7.19.1
-    "@babel/plugin-proposal-class-properties": ^7.18.6
-    "@babel/plugin-proposal-export-default-from": ^7.18.6
-    "@babel/preset-env": ^7.20.2
-    "@babel/preset-typescript": ^7.18.6
-    "@commitlint/cli": ^17.0.3
-    "@commitlint/config-conventional": ^17.0.3
-    "@kilohealth/eslint-config": ^2.0.0
-    "@semantic-release/changelog": ^6.0.1
-    "@semantic-release/git": ^10.0.1
-    "@types/react-native": ^0.69.2
-    "@typescript-eslint/eslint-plugin": ^5.39.0
-    "@typescript-eslint/parser": ^5.39.0
-    conventional-changelog-conventionalcommits: ^5.0.0
-    cross-env: ^7.0.3
-    eslint: ^8.24.0
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-import: ^2.26.0
-    eslint-plugin-jest: ^27.1.1
-    eslint-plugin-prettier: ^4.2.1
-    eslint-plugin-promise: ^6.0.1
-    eslint-plugin-react: ^7.31.8
-    eslint-plugin-react-hooks: ^4.6.0
-    eslint-plugin-react-native: ^4.0.0
-    eslint-plugin-react-native-a11y: ^3.2.1
-    eslint-restricted-globals: ^0.2.0
-    eslint-watch: ^8.0.0
-    husky: ^8.0.0
-    lint-staged: ^13.0.3
-    pinst: ^3.0.0
-    prettier: ^2.7.1
-    react-native: 0.67.0
-    react-native-device-info: ^8.7.1
-    react-native-permissions: ^3.4.0
-    semantic-release: ^19.0.5
-    semantic-release-slack-bot: ^3.5.3
-    sort-package-json: ^1.57.0
-    typescript: ^4.7.4
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  languageName: unknown
-  linkType: soft
-
 "@nicolo-ribaudo/chokidar-2@npm:2.1.8-no-fsevents.3":
   version: 2.1.8-no-fsevents.3
   resolution: "@nicolo-ribaudo/chokidar-2@npm:2.1.8-no-fsevents.3"
@@ -11110,6 +11060,56 @@ __metadata:
   checksum: 3ea587b981a19016297edb96d1ffe48af7e6af69660e3b371dbfc73722a73a0b0e9be5c88089fbeeb866c389c1098e07f64929c7414290504b855f54f901ab10
   languageName: node
   linkType: hard
+
+"rn-fitness-tracker-with-bucket@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "rn-fitness-tracker-with-bucket@workspace:."
+  dependencies:
+    "@babel/cli": ^7.18.6
+    "@babel/core": ^7.19.3
+    "@babel/eslint-parser": ^7.19.1
+    "@babel/plugin-proposal-class-properties": ^7.18.6
+    "@babel/plugin-proposal-export-default-from": ^7.18.6
+    "@babel/preset-env": ^7.20.2
+    "@babel/preset-typescript": ^7.18.6
+    "@commitlint/cli": ^17.0.3
+    "@commitlint/config-conventional": ^17.0.3
+    "@kilohealth/eslint-config": ^2.0.0
+    "@semantic-release/changelog": ^6.0.1
+    "@semantic-release/git": ^10.0.1
+    "@types/react-native": ^0.69.2
+    "@typescript-eslint/eslint-plugin": ^5.39.0
+    "@typescript-eslint/parser": ^5.39.0
+    conventional-changelog-conventionalcommits: ^5.0.0
+    cross-env: ^7.0.3
+    eslint: ^8.24.0
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: ^2.26.0
+    eslint-plugin-jest: ^27.1.1
+    eslint-plugin-prettier: ^4.2.1
+    eslint-plugin-promise: ^6.0.1
+    eslint-plugin-react: ^7.31.8
+    eslint-plugin-react-hooks: ^4.6.0
+    eslint-plugin-react-native: ^4.0.0
+    eslint-plugin-react-native-a11y: ^3.2.1
+    eslint-restricted-globals: ^0.2.0
+    eslint-watch: ^8.0.0
+    husky: ^8.0.0
+    lint-staged: ^13.0.3
+    pinst: ^3.0.0
+    prettier: ^2.7.1
+    react-native: 0.67.0
+    react-native-device-info: ^8.7.1
+    react-native-permissions: ^3.4.0
+    semantic-release: ^19.0.5
+    semantic-release-slack-bot: ^3.5.3
+    sort-package-json: ^1.57.0
+    typescript: ^4.7.4
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  languageName: unknown
+  linkType: soft
 
 "rsvp@npm:^4.8.4":
   version: 4.8.5

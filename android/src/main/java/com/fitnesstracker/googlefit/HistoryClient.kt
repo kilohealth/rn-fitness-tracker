@@ -1,8 +1,10 @@
 package com.fitnesstracker.googlefit
 
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableArray
 import com.fitnesstracker.permission.Permission
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
@@ -57,6 +59,87 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
                             promise.reject(e)
                         }
                     })
+            }
+        } catch (e: Exception) {
+            promise.reject(e)
+            e.printStackTrace()
+        }
+    }
+
+    fun queryDailyBucket(
+        promise: Promise,
+        startDate: Date,
+        endDate: Date,
+        permission: Permission,
+        dataMap: WritableMap,
+        bucketUnit: TimeUnit
+    ) {
+         try {
+            var end = DateHelper.getEndOfDay(endDate)
+            if (DateHelper.isToday(endDate)) {
+                end =
+                    Calendar.getInstance().time // make sure current day query time is until current time, not end of the day
+            }
+            val start = DateHelper.getStartOfDay(endDate)
+
+            if (permission.isFloat) {
+                getFloatBucketDataHistory(
+                        start.time,
+                        end.time,
+                        1,
+                        permission,
+                        bucketUnit,
+                        object : OnBucketFetch {
+                            override fun onSuccess(data: WritableArray) {
+                                if (startDate.time < endDate.time) {
+                                    dataMap.putArray(DateHelper.formatDate(start), data)
+                                    val previousDate = DateHelper.addDays(endDate, -1)
+                                    queryDailyBucket(
+                                            promise,
+                                            startDate,
+                                            previousDate,
+                                            permission,
+                                            dataMap,
+                                            bucketUnit
+                                    )
+                                } else {
+                                    promise.resolve(dataMap)
+                                }
+                            }
+
+                            override fun onFailure(e: Exception?) {
+                                promise.reject(e)
+                            }
+                })
+            } else {
+                getIntBucketDataHistory(
+                        start.time,
+                        end.time,
+                        1,
+                        permission,
+                        bucketUnit,
+                        object : OnBucketFetch {
+                            override fun onSuccess(data: WritableArray) {
+                                if (startDate.time < endDate.time) {
+                                    dataMap.putArray(DateHelper.formatDate(start), data)
+                                    val previousDate = DateHelper.addDays(endDate, -1)
+                                    queryDailyBucket(
+                                            promise,
+                                            startDate,
+                                            previousDate,
+                                            permission,
+                                            dataMap,
+                                            bucketUnit
+                                    )
+                                } else {
+                                    promise.resolve(dataMap)
+                                }
+                            }
+
+                            override fun onFailure(e: Exception?) {
+                                promise.reject(e)
+                            }
+                })
             }
         } catch (e: Exception) {
             promise.reject(e)
@@ -195,13 +278,14 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
         startTime: Long,
         endTime: Long,
         dayCount: Int,
-        dataTypes: ArrayList<DataType>
+        dataTypes: ArrayList<DataType>,
+        bucketUnit: TimeUnit = TimeUnit.DAYS
     ): DataReadRequest {
         val readRequestBuilder = DataReadRequest.Builder()
 
         for (i in dataTypes) readRequestBuilder.aggregate(i)
 
-        readRequestBuilder.bucketByTime(dayCount, TimeUnit.DAYS)
+        readRequestBuilder.bucketByTime(dayCount, bucketUnit)
         readRequestBuilder.setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
 
         return readRequestBuilder.build()
@@ -254,6 +338,111 @@ class HistoryClient(private val reactContext: ReactApplicationContext) {
         }
 
         getHistoryClient(readRequest, permission, onFailure, onSuccess)
+    }
+
+    private fun getIntBucketDataHistory(
+            startTime: Long,
+            endTime: Long,
+            dayCount: Int,
+            permission: Permission,
+            bucketUnit: TimeUnit,
+            fetchCompleteCallback: OnBucketFetch
+    ) {
+        val readRequest: DataReadRequest =
+                createReadRequest(startTime, endTime, dayCount, permission.dataTypes, bucketUnit)
+        val onFailure = { e: Exception -> fetchCompleteCallback.onFailure(e) }
+        val onSuccess = { task: Task<DataReadResponse> ->
+            if (task.isSuccessful) {
+                val data = parseIntBucket(task.result, permission.dataTypes)
+                fetchCompleteCallback.onSuccess(data)
+            }
+        }
+
+        getHistoryClient(readRequest, permission, onFailure, onSuccess)
+    }
+
+    private fun getFloatBucketDataHistory(
+            startTime: Long,
+            endTime: Long,
+            dayCount: Int,
+            permission: Permission,
+            bucketUnit: TimeUnit,
+            fetchCompleteCallback: OnBucketFetch
+    ) {
+        val readRequest: DataReadRequest =
+                createReadRequest(startTime, endTime, dayCount, permission.dataTypes, bucketUnit)
+        val onFailure = { e: Exception -> fetchCompleteCallback.onFailure(e) }
+        val onSuccess = { task: Task<DataReadResponse> ->
+            if (task.isSuccessful) {
+                val data = parseFloatBucket(task.result, permission.dataTypes)
+                fetchCompleteCallback.onSuccess(data)
+            }
+        }
+
+        getHistoryClient(readRequest, permission, onFailure, onSuccess)
+    }
+
+
+    private fun parseIntBucket(response: DataReadResponse, type: ArrayList<DataType>): WritableArray {
+        val buckets: List<Bucket> = response.buckets
+        var list: WritableArray = Arguments.createArray()
+
+        for (bucket in buckets) {
+            val dataSets: List<DataSet> = bucket.dataSets
+            var count = 0
+
+            for (dataSet in dataSets) {
+                val dataPoints: List<DataPoint> = dataSet.dataPoints
+
+                for (dataPoint in dataPoints) {
+                    if (type.contains(dataPoint.dataType)) {
+                        for (field in dataPoint.dataType.fields) {
+                            count += dataPoint.getValue(field).asInt()
+                        }
+                    }
+                }
+
+                val map: WritableMap = Arguments.createMap()
+
+                map.putString("from", bucket.getStartTime(TimeUnit.MILLISECONDS).toString())
+                map.putString("to", bucket.getEndTime(TimeUnit.MILLISECONDS).toString())
+                map.putInt("value", count)
+                list.pushMap(map)
+            }
+        }
+
+        return list
+    }
+
+    private fun parseFloatBucket(response: DataReadResponse, type: ArrayList<DataType>): WritableArray {
+        val buckets: List<Bucket> = response.buckets
+        var list: WritableArray = Arguments.createArray()
+
+        for (bucket in buckets) {
+            val dataSets: List<DataSet> = bucket.dataSets
+            var count = 0f
+
+            for (dataSet in dataSets) {
+                val dataPoints: List<DataPoint> = dataSet.dataPoints
+
+                for (dataPoint in dataPoints) {
+                    if (type.contains(dataPoint.dataType)) {
+                        for (field in dataPoint.dataType.fields) {
+                            count += dataPoint.getValue(field).asFloat()
+                        }
+                    }
+                }
+
+                val map: WritableMap = Arguments.createMap()
+
+                map.putString("from", bucket.getStartTime(TimeUnit.MILLISECONDS).toString())
+                map.putString("to", bucket.getEndTime(TimeUnit.MILLISECONDS).toString())
+                map.putDouble("value", count.toDouble())
+                list.pushMap(map)
+            }
+        }
+
+        return list
     }
 
     private fun parseIntDataDelta(response: DataReadResponse, type: ArrayList<DataType>): Int {
@@ -331,5 +520,10 @@ interface OnFloatFetch {
 
 interface OnIntFetch {
     fun onSuccess(data: Int)
+    fun onFailure(e: Exception?)
+}
+
+interface OnBucketFetch {
+    fun onSuccess(data: WritableArray)
     fun onFailure(e: Exception?)
 }

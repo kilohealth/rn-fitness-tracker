@@ -9,5 +9,6 @@ export * from './getStatisticWeekDaily';
 export * from './getStatisticWeekTotal';
 export * from './isTrackingAvailable';
 export * from './queryDailyTotals';
+export * from './queryDailyBucket';
 export * from './queryTotal';
 export * from './writeWorkout';

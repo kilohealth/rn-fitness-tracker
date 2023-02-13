@@ -1,6 +1,6 @@
 {
-  "name": "@kilohealth/rn-fitness-tracker",
-  "version": "3.0.1",
+  "name": "rn-fitness-tracker-with-bucket",
+  "version": "1.0.5",
   "description": "React native module for tracking fitness data with Google Fit and Apple Health Kit for Android & iOS",
   "keywords": [
     "react-native",
@@ -19,10 +19,8 @@
     "googlefit",
     "fitnessapi"
   ],
-  "homepage": "https://github.com/kilohealth/rn-fitness-tracker",
-  "repository": "https://github.com/kilohealth/rn-fitness-tracker",
   "license": "MIT",
-  "author": "Kilo.Health",
+  "author": "Macadam",
   "main": "src/index.ts",
   "scripts": {
     "allow-bash": "chmod a+x .husky/commit-msg",
