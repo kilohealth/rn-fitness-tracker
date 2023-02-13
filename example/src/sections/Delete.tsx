@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import {
+  HealthDataRecord,
   HealthKit,
   HealthKitDataType,
   HealthKitUnitType,
 } from '@kilohealth/rn-fitness-tracker';
-import { HealthDataRecord } from '@kilohealth/rn-fitness-tracker/src/types';
 import { addDays, startOfDay } from 'date-fns';
 
 const data = {

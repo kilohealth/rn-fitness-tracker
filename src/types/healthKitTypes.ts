@@ -4,6 +4,9 @@ import {
   HealthKitWorkoutType,
 } from '../enums';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type HealthKitMetadata = { [key: string]: any } | null;
+
 export interface HealthWorkoutRecord {
   uuid: string;
   duration: number;
@@ -12,8 +15,7 @@ export interface HealthWorkoutRecord {
   startDate: string;
   endDate: string;
   type: HealthKitWorkoutType | 0;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metadata: { [name: string]: any };
+  metadata: HealthKitMetadata;
   source: {
     name: string;
     device: string;
@@ -23,11 +25,16 @@ export interface HealthWorkoutRecord {
 
 export type HealthWorkoutRecordQuery = Array<HealthWorkoutRecord>;
 
+export interface HealthKitAnchoredWorkoutResult {
+  anchor: number;
+  newRecords: HealthWorkoutRecordQuery;
+  deletedRecords: HealthKitDeletedWorkoutRecord[];
+}
+
 export interface HealthDataRecord {
   date: string;
   quantity: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metadata: { [name: string]: any } | null;
+  metadata: HealthKitMetadata;
   source: {
     device: string;
     id: string;
@@ -37,16 +44,16 @@ export interface HealthDataRecord {
   uuid: string;
 }
 
+export interface HealthKitDeletedWorkoutRecord {
+  uuid: string;
+  metadata: HealthKitMetadata;
+}
+
 export type HealthDataRecordQuery = Array<HealthDataRecord>;
 
 export interface HealthKitKeyWithUnit {
   key: HealthKitDataType;
   unit: HealthKitUnitType;
-}
-
-export interface HealthKitMetadata {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
 }
 
 export enum HealthKitAuthStatus {

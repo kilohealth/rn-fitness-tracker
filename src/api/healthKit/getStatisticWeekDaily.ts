@@ -15,7 +15,7 @@ const { RNHealthTracker } = NativeModules;
 export const getStatisticWeekDaily = async (options: {
   key: HealthKitDataType;
   unit: HealthKitUnitType;
-}): Promise<DailyData> => {
+}): Promise<DailyData | undefined> => {
   if (isIOS) {
     const { key, unit } = options;
 

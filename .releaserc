@@ -1,5 +1,5 @@
 {
-  "branches": [ "master" ],
+  "branches": [ "master", { name: 'alpha', prerelease: true } ],
   "repositoryUrl": "https://github.com/kilohealth/rn-fitness-tracker",
   "plugins": [
     [

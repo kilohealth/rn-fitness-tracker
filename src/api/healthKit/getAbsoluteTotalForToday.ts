@@ -14,7 +14,7 @@ const { RNHealthTracker } = NativeModules;
 export const getAbsoluteTotalForToday = async (options: {
   key: HealthKitDataType;
   unit: HealthKitUnitType;
-}): Promise<number> => {
+}): Promise<number | undefined> => {
   if (isIOS) {
     const { key, unit } = options;
     const total = await RNHealthTracker.getAbsoluteTotalForToday(key, unit);

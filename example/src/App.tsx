@@ -21,6 +21,7 @@ import {
 } from '@kilohealth/rn-fitness-tracker';
 
 import { Delete } from './sections/Delete';
+import { Workout } from './sections/Workout';
 
 const permissions: AuthorizationPermissions = {
   healthReadPermissions: [
@@ -207,7 +208,10 @@ const App = () => {
   return (
     <SafeAreaView>
       <StatusBar />
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        testID="scroll_view"
+      >
         <View style={styles.container}>
           <Text testID="authorization_status">Status: {isAuthorized}</Text>
           <Text testID="unsafe_tracking_status">
@@ -277,6 +281,8 @@ const App = () => {
         </View>
 
         <Delete />
+
+        <Workout />
       </ScrollView>
     </SafeAreaView>
   );

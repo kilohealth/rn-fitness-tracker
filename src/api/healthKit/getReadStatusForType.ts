@@ -28,7 +28,7 @@ const { RNHealthTracker } = NativeModules;
 export const getReadStatusForType = async (options: {
   key: HealthKitDataType;
   unit: HealthKitUnitType;
-}): Promise<HealthKitAuthStatus> => {
+}): Promise<HealthKitAuthStatus | undefined> => {
   if (isIOS) {
     const { key, unit } = options;
 
