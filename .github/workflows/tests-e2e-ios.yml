@@ -30,6 +30,10 @@ jobs:
         with:
           all_but_latest: true
 
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 50
+
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -41,10 +45,6 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '13'
-
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 50
 
       # Set path variables needed for caches
       - name: Set workflow variables
