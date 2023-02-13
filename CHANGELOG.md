@@ -1,3 +1,15 @@
+## [3.1.0-alpha.1](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.0.1...v3.1.0-alpha.1) (2023-02-13)
+
+
+### Features
+
+* **ios:** add HealthKit.queryAnchoredWorkouts method ([799d3f2](https://github.com/kilohealth/rn-fitness-tracker/commit/799d3f2ed4298be871a5a361b040101ac37abe14))
+
+
+### Bug Fixes
+
+* **ios:** add array type to HealthKitAnchoredWorkoutResult deleteRecords ([13d8207](https://github.com/kilohealth/rn-fitness-tracker/commit/13d82079854b4057972404108e6114431e08a894))
+
 ## [3.0.1](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.0.0...v3.0.1) (2023-01-09)
 
 
