@@ -1,7 +1,7 @@
 import { NativeModules } from 'react-native';
 
 import { HealthKitDataType, HealthKitUnitType } from '../../enums';
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -19,10 +19,12 @@ export const queryTotal = async (options: {
   unit: HealthKitUnitType;
   startDate: Date | number;
   endDate: Date | number;
-}): Promise<{ [date: string]: number } | undefined> => {
+}): Promise<{ [date: string]: number }> => {
   if (isIOS) {
     const { key, unit, startDate, endDate } = options;
 
     return RNHealthTracker.queryTotal(key, unit, +startDate, +endDate);
   }
+
+  throw new Error(wrongPlatformErrorMessage('queryTotal'));
 };

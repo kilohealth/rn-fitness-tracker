@@ -1,8 +1,8 @@
 import { NativeModules } from 'react-native';
 
-import { HealthKitDataType, HealthKitUnitType } from '../../enums';
-import { isIOS } from '../../utils';
 import { HealthDataRecordQuery } from '../../types';
+import { HealthKitDataType, HealthKitUnitType } from '../../enums';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -20,10 +20,12 @@ export const queryDataRecords = async (options: {
   unit: HealthKitUnitType;
   startDate: Date | number;
   endDate: Date | number;
-}): Promise<HealthDataRecordQuery | undefined> => {
+}): Promise<HealthDataRecordQuery> => {
   if (isIOS) {
     const { key, unit, startDate, endDate } = options;
 
     return RNHealthTracker.queryDataRecords(key, unit, +startDate, +endDate);
   }
+
+  throw new Error(wrongPlatformErrorMessage('queryDataRecords'));
 };

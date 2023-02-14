@@ -1,7 +1,7 @@
 import { NativeModules } from 'react-native';
 
 import { FitnessDataType } from '../../types';
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNFitnessTracker } = NativeModules;
@@ -15,4 +15,6 @@ export const getStatisticWeekTotal = async (
   if (!isIOS) {
     return RNFitnessTracker.getStatisticWeekTotal(dataType);
   }
+
+  throw new Error(wrongPlatformErrorMessage('authorize'));
 };

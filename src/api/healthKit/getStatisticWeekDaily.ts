@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 
 import { DailyData } from '../../types';
 import { HealthKitDataType, HealthKitUnitType } from '../../enums';
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -15,10 +15,12 @@ const { RNHealthTracker } = NativeModules;
 export const getStatisticWeekDaily = async (options: {
   key: HealthKitDataType;
   unit: HealthKitUnitType;
-}): Promise<DailyData | undefined> => {
+}): Promise<DailyData> => {
   if (isIOS) {
     const { key, unit } = options;
 
     return RNHealthTracker.getStatisticWeekDaily(key, unit);
   }
+
+  throw new Error(wrongPlatformErrorMessage('getStatisticWeekDaily'));
 };

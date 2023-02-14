@@ -1,8 +1,8 @@
 import { NativeModules } from 'react-native';
 
-import { HealthKitWorkoutType } from '../../enums';
 import { HealthKitAnchoredWorkoutResult } from '../../types';
-import { isIOS } from '../../utils';
+import { HealthKitWorkoutType } from '../../enums';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -28,5 +28,5 @@ export const queryAnchoredWorkouts = async (options?: {
     return RNHealthTracker.anchoredQueryWorkouts(key, anchor, limit);
   }
 
-  throw new Error('queryAnchoredWorkouts is implemented only for iOS platform');
+  throw new Error(wrongPlatformErrorMessage('queryAnchoredWorkouts'));
 };

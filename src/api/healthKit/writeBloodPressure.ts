@@ -1,7 +1,7 @@
 import { NativeModules } from 'react-native';
 
-import { isIOS } from '../../utils';
 import { HealthKitMetadata } from '../../types';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -23,7 +23,7 @@ export const writeBloodPressure = async (options: {
   startDate: Date | number;
   endDate: Date | number;
   metadata?: HealthKitMetadata;
-}): Promise<boolean | undefined> => {
+}): Promise<boolean> => {
   if (isIOS) {
     const {
       systolicPressure,
@@ -41,4 +41,6 @@ export const writeBloodPressure = async (options: {
       metadata,
     );
   }
+
+  throw new Error(wrongPlatformErrorMessage('writeBloodPressure'));
 };

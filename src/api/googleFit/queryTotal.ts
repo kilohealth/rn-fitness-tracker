@@ -1,7 +1,7 @@
 import { NativeModules } from 'react-native';
 
 import { FitnessDataType } from '../../types';
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNFitnessTracker } = NativeModules;
@@ -21,4 +21,6 @@ export const queryTotal = async (
   if (!isIOS) {
     return RNFitnessTracker.queryTotal(dataType, +startDate, +endDate);
   }
+
+  throw new Error(wrongPlatformErrorMessage('authorize'));
 };

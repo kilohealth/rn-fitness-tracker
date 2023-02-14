@@ -1,7 +1,7 @@
 import { NativeModules } from 'react-native';
 
 import { HealthKitWriteData } from '../../types';
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -13,8 +13,10 @@ const { RNHealthTracker } = NativeModules;
  */
 export const writeDataArray = async (
   dataArray: Array<HealthKitWriteData>,
-): Promise<boolean | undefined> => {
+): Promise<boolean> => {
   if (isIOS) {
     return RNHealthTracker.writeDataArray(dataArray);
   }
+
+  throw new Error(wrongPlatformErrorMessage('writeDataArray'));
 };

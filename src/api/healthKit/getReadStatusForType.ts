@@ -1,8 +1,8 @@
 import { NativeModules } from 'react-native';
 
-import { HealthKitDataType, HealthKitUnitType } from '../../enums';
-import { isIOS } from '../../utils';
 import { HealthKitAuthStatus } from '../../types';
+import { HealthKitDataType, HealthKitUnitType } from '../../enums';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -28,10 +28,12 @@ const { RNHealthTracker } = NativeModules;
 export const getReadStatusForType = async (options: {
   key: HealthKitDataType;
   unit: HealthKitUnitType;
-}): Promise<HealthKitAuthStatus | undefined> => {
+}): Promise<HealthKitAuthStatus> => {
   if (isIOS) {
     const { key, unit } = options;
 
     return RNHealthTracker.getReadStatus(key, unit);
   }
+
+  throw new Error(wrongPlatformErrorMessage('getReadStatusForType'));
 };

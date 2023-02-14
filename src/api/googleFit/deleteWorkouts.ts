@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNFitnessTracker } = NativeModules;
@@ -20,4 +20,6 @@ export const deleteWorkouts = async (
   if (!isIOS) {
     return RNFitnessTracker.deleteWorkouts(+startDate, +endDate);
   }
+
+  throw new Error(wrongPlatformErrorMessage('authorize'));
 };

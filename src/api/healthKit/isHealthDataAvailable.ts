@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -11,10 +11,12 @@ const { RNHealthTracker } = NativeModules;
  *
  * @return Returns true if HealthKit is available; otherwise, false.
  */
-export const isHealthDataAvailable = async (): Promise<boolean | undefined> => {
+export const isHealthDataAvailable = async (): Promise<boolean> => {
   if (isIOS) {
     const response = await RNHealthTracker.isHealthDataAvailable();
 
     return !!response;
   }
+
+  throw new Error(wrongPlatformErrorMessage('isHealthDataAvailable'));
 };

@@ -1,7 +1,7 @@
 import { NativeModules } from 'react-native';
 
 import { HealthKitDataType } from '../../enums';
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -23,7 +23,7 @@ export const deleteRecord = async (options: {
   uuid?: string;
   startDate?: Date | number;
   endDate?: Date | number;
-}): Promise<number | undefined> => {
+}): Promise<number> => {
   if (isIOS) {
     const startDate = options.startDate ? +options.startDate : 0;
     const endDate = options.endDate ? +options.endDate : 0;
@@ -35,4 +35,6 @@ export const deleteRecord = async (options: {
       endDate,
     );
   }
+
+  throw new Error(wrongPlatformErrorMessage('deleteRecord'));
 };

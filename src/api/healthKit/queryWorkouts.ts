@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 
 import { HealthKitWorkoutType } from '../../enums';
 import { HealthWorkoutRecordQuery } from '../../types';
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -18,10 +18,12 @@ export const queryWorkouts = async (options: {
   startDate: Date | number;
   endDate: Date | number;
   key?: HealthKitWorkoutType;
-}): Promise<HealthWorkoutRecordQuery | undefined> => {
+}): Promise<HealthWorkoutRecordQuery> => {
   if (isIOS) {
     const { startDate, endDate, key = 0 } = options;
 
     return RNHealthTracker.queryWorkouts(key, +startDate, +endDate);
   }
+
+  throw new Error(wrongPlatformErrorMessage('queryWorkouts'));
 };

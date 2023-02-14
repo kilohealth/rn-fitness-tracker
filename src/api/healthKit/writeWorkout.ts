@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 
 import { HealthKitMetadata } from '../../types';
 import { HealthKitWorkoutType } from '../../enums';
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -26,7 +26,7 @@ export const writeWorkout = async (options: {
   energyBurned?: number;
   totalDistance?: number;
   metadata?: HealthKitMetadata;
-}): Promise<boolean | undefined> => {
+}): Promise<boolean> => {
   if (isIOS) {
     const {
       key,
@@ -46,4 +46,6 @@ export const writeWorkout = async (options: {
       metadata,
     );
   }
+
+  throw new Error(wrongPlatformErrorMessage('writeWorkout'));
 };

@@ -1,7 +1,11 @@
 import { NativeModules } from 'react-native';
 
 import { GoogleFitDataType } from '../../enums';
-import { handleAndroidMotionTrackingPermissions, isIOS } from '../../utils';
+import {
+  handleAndroidMotionTrackingPermissions,
+  isIOS,
+  wrongPlatformErrorMessage,
+} from '../../utils';
 
 /** @internal */
 const { RNFitnessTracker } = NativeModules;
@@ -29,4 +33,6 @@ export const authorize = async (
 
     return motionAuthResult;
   }
+
+  throw new Error(wrongPlatformErrorMessage('authorize'));
 };

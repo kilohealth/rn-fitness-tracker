@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 
 import { HealthKitDataType, HealthKitUnitType } from '../../enums';
 import { HealthKitMetadata } from '../../types';
-import { isIOS } from '../../utils';
+import { isIOS, wrongPlatformErrorMessage } from '../../utils';
 
 /** @internal */
 const { RNHealthTracker } = NativeModules;
@@ -24,10 +24,12 @@ export const writeData = async (options: {
   amount: number;
   metadata?: HealthKitMetadata;
   timestamp?: number;
-}): Promise<boolean | undefined> => {
+}): Promise<boolean> => {
   if (isIOS) {
     const { key, unit, amount, metadata = {}, timestamp = -1 } = options;
 
     return RNHealthTracker.writeData(key, unit, amount, metadata, timestamp);
   }
+
+  throw new Error(wrongPlatformErrorMessage('writeData'));
 };
