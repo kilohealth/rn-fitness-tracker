@@ -9,7 +9,8 @@ const { RNHealthTracker } = NativeModules;
 
 /**
  * Returns write (share) status for data type in Health API.
- * @param key {HealthKitDataType} e.g. `HealthKitDataType.Fiber`
+ * @param key e.g. `HealthKitDataType.Fiber`
+ *
  * @return {Promise<HealthKitAuthStatus>} 0 - NotDetermined, 1 - Denied, 2 - Authorized
  */
 export const getAuthStatusForType = async (
