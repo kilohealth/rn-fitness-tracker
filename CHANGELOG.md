@@ -1,3 +1,17 @@
+## [3.1.0-alpha.3](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.1.0-alpha.2...v3.1.0-alpha.3) (2023-02-14)
+
+
+### Build System / Dependencies
+
+* bump vulnerable packages ([d9e76f4](https://github.com/kilohealth/rn-fitness-tracker/commit/d9e76f48ba095dec32af8a49702e88fae36491fe))
+
+## [3.1.0-alpha.2](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.1.0-alpha.1...v3.1.0-alpha.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* **ios:** make query timeout after 30s ([7c14f4d](https://github.com/kilohealth/rn-fitness-tracker/commit/7c14f4d23f34e282c933c773c0dba093640fc625))
+
 ## [3.1.0-alpha.1](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.0.1...v3.1.0-alpha.1) (2023-02-13)
 
 
