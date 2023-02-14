@@ -1,6 +1,6 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
-  "version": "3.1.0-alpha.2",
+  "version": "3.1.0-alpha.3",
   "description": "React native module for tracking fitness data with Google Fit and Apple Health Kit for Android & iOS",
   "keywords": [
     "react-native",
