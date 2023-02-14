@@ -20,7 +20,7 @@ export const queryDataRecords = async (options: {
   unit: HealthKitUnitType;
   startDate: Date | number;
   endDate: Date | number;
-}): Promise<HealthDataRecordQuery | undefined> => {
+}): Promise<HealthDataRecordQuery> => {
   if (isIOS) {
     const { key, unit, startDate, endDate } = options;
 

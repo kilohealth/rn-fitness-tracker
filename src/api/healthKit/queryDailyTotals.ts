@@ -19,7 +19,7 @@ export const queryDailyTotals = async (options: {
   unit: HealthKitUnitType;
   startDate: Date | number;
   endDate: Date | number;
-}): Promise<{ [date: string]: number } | undefined> => {
+}): Promise<{ [date: string]: number }> => {
   if (isIOS) {
     const { key, unit, startDate, endDate } = options;
 

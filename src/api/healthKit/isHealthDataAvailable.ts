@@ -11,7 +11,7 @@ const { RNHealthTracker } = NativeModules;
  *
  * @return Returns true if HealthKit is available; otherwise, false.
  */
-export const isHealthDataAvailable = async (): Promise<boolean | undefined> => {
+export const isHealthDataAvailable = async (): Promise<boolean> => {
   if (isIOS) {
     const response = await RNHealthTracker.isHealthDataAvailable();
 

@@ -18,7 +18,7 @@ export const queryWorkouts = async (options: {
   startDate: Date | number;
   endDate: Date | number;
   key?: HealthKitWorkoutType;
-}): Promise<HealthWorkoutRecordQuery | undefined> => {
+}): Promise<HealthWorkoutRecordQuery> => {
   if (isIOS) {
     const { startDate, endDate, key = 0 } = options;
 

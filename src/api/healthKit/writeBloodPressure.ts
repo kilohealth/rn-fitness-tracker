@@ -23,7 +23,7 @@ export const writeBloodPressure = async (options: {
   startDate: Date | number;
   endDate: Date | number;
   metadata?: HealthKitMetadata;
-}): Promise<boolean | undefined> => {
+}): Promise<boolean> => {
   if (isIOS) {
     const {
       systolicPressure,

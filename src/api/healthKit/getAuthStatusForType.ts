@@ -14,7 +14,7 @@ const { RNHealthTracker } = NativeModules;
  */
 export const getAuthStatusForType = async (
   key: HealthKitDataType,
-): Promise<HealthKitAuthStatus | undefined> => {
+): Promise<HealthKitAuthStatus> => {
   if (isIOS) {
     return RNHealthTracker.getAuthorizationStatusForType(key);
   }

@@ -24,7 +24,7 @@ export const writeData = async (options: {
   amount: number;
   metadata?: HealthKitMetadata;
   timestamp?: number;
-}): Promise<boolean | undefined> => {
+}): Promise<boolean> => {
   if (isIOS) {
     const { key, unit, amount, metadata = {}, timestamp = -1 } = options;
 

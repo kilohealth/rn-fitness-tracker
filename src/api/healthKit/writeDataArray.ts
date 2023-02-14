@@ -13,7 +13,7 @@ const { RNHealthTracker } = NativeModules;
  */
 export const writeDataArray = async (
   dataArray: Array<HealthKitWriteData>,
-): Promise<boolean | undefined> => {
+): Promise<boolean> => {
   if (isIOS) {
     return RNHealthTracker.writeDataArray(dataArray);
   }
