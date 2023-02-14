@@ -13,6 +13,7 @@ import HealthKit
 @objc(RNHealthTracker)
 class RNHealthTracker: NSObject {
     private let healthStore: HKHealthStore = HKHealthStore()
+    private let QUERY_TIMEOUT_IN_SECONDS = 30.0
 
     @objc static func requiresMainQueueSetup() -> Bool {
         return true
@@ -286,7 +287,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -344,7 +345,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -404,7 +405,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 20) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -471,7 +472,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -535,7 +536,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -680,6 +681,10 @@ class RNHealthTracker: NSObject {
         ) else { return }
 
         healthStore.execute(sampleQuery)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
+            self.healthStore.stop(sampleQuery)
+        }
     }
 
     @objc public func getLatestDataRecord(
@@ -864,7 +869,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -941,7 +946,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
