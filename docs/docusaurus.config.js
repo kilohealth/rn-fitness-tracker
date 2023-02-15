@@ -7,7 +7,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/nightOwl');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Fitness Tracker',
-  tagline: 'React Native library for Google Fit and HealthKit integration via single API',
+  tagline:
+    'React Native library for Google Fit and HealthKit integration via single API',
   url: 'https://kilohealth.github.io',
   baseUrl: '/rn-fitness-tracker/',
   onBrokenLinks: 'throw',
@@ -15,10 +16,8 @@ const config = {
   favicon: 'img/favicon.ico',
   trailingSlash: false,
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'kilohealth', // Usually your GitHub org/user name.
-  projectName: 'rn-fitness-tracker', // Usually your repo name.
+  organizationName: 'kilohealth',
+  projectName: 'rn-fitness-tracker',
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want

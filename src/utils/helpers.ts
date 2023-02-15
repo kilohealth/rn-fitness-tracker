@@ -10,7 +10,7 @@ import { GoogleFitDataType } from '../enums';
 export const isObject = (obj: unknown): boolean => {
   const type = typeof obj;
 
-  return type === 'function' || (type === 'object' && !!obj);
+  return type === 'function' || (type === 'object' && Boolean(obj));
 };
 
 export const isIOS = Platform.OS === 'ios';

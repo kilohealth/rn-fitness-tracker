@@ -1,3 +1,6 @@
 {
-  "extends": "@kilohealth/eslint-config/react-native"
+  "extends": ["@kilohealth/eslint-config-react-native"],
+  "rules": {
+    "import/no-deprecated": "warn"
+  }
 }

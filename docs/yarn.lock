@@ -6076,8 +6076,8 @@ __metadata:
     prism-react-renderer: ^1.3.5
     react: ^17.0.2
     react-dom: ^17.0.2
-    typedoc: 0.23.25
-    typedoc-plugin-markdown: 3.14.0
+    typedoc: ^0.23.25
+    typedoc-plugin-markdown: ^3.14.0
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -11635,7 +11635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-plugin-markdown@npm:3.14.0":
+"typedoc-plugin-markdown@npm:^3.14.0":
   version: 3.14.0
   resolution: "typedoc-plugin-markdown@npm:3.14.0"
   dependencies:
@@ -11646,7 +11646,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:0.23.25":
+"typedoc@npm:^0.23.25":
   version: 0.23.25
   resolution: "typedoc@npm:0.23.25"
   dependencies:
@@ -11690,11 +11690,11 @@ __metadata:
   linkType: hard
 
 "uglify-js@npm:^3.1.4":
-  version: 3.16.0
-  resolution: "uglify-js@npm:3.16.0"
+  version: 3.17.4
+  resolution: "uglify-js@npm:3.17.4"
   bin:
     uglifyjs: bin/uglifyjs
-  checksum: be0207e57ef70b13e92196cd0351f28908b80121d809901b511593c0bd1043d9c0b21d22f2a83001da873407a02572b67ccd21ce5e053cf7c787b2ca8a3773fb
+  checksum: 7b3897df38b6fc7d7d9f4dcd658599d81aa2b1fb0d074829dd4e5290f7318dbca1f4af2f45acb833b95b1fe0ed4698662ab61b87e94328eb4c0a0d3435baf924
   languageName: node
   linkType: hard
 

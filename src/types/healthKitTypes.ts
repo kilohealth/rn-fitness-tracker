@@ -23,7 +23,7 @@ export interface HealthWorkoutRecord {
   };
 }
 
-export type HealthWorkoutRecordQuery = Array<HealthWorkoutRecord>;
+export type HealthWorkoutRecordQuery = HealthWorkoutRecord[];
 
 export interface HealthKitAnchoredWorkoutResult {
   anchor: number;
@@ -49,7 +49,7 @@ export interface HealthKitDeletedWorkoutRecord {
   metadata: HealthKitMetadata;
 }
 
-export type HealthDataRecordQuery = Array<HealthDataRecord>;
+export type HealthDataRecordQuery = HealthDataRecord[];
 
 export interface HealthKitKeyWithUnit {
   key: HealthKitDataType;
@@ -74,10 +74,10 @@ export enum HealthKitAuthStatus {
   Authorized = 2,
 }
 
-export type HealthKitWriteData = {
+export interface HealthKitWriteData {
   key: HealthKitDataType;
   unit: HealthKitUnitType;
   amount: number;
   metadata?: HealthKitMetadata;
   timestamp?: number;
-};
+}
