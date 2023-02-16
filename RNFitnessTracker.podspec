@@ -19,7 +19,6 @@ Pod::Spec.new do |s|
   s.description  = package['description']
   s.license      = package['license']
   s.author       = package['author']
-  s.homepage     = package['homepage']
   s.license = { :type => 'MIT', :text => <<-LICENSE
                      MIT License
                      Permission is hereby granted, free of charge, to any person obtaining a copy
