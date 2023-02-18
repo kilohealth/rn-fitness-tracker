@@ -119,10 +119,15 @@ class GoogleFitManager(private val reactContext: ReactApplicationContext) : Acti
         val fitnessOptions = Helpers.buildFitnessOptionsFromPermissions(permissions)
         val googleAccount = Helpers.getGoogleAccount(reactContext, fitnessOptions)
 
-        return GoogleSignIn.hasPermissions(
+
+        val isTrackingAvailable = GoogleSignIn.hasPermissions(
             googleAccount,
             fitnessOptions
         )
+
+        authorized = isTrackingAvailable
+
+        return isTrackingAvailable
     }
 
     fun getHistoryClient(): HistoryClient {
