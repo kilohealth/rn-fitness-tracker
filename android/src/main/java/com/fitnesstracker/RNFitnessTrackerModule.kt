@@ -10,24 +10,13 @@ import com.google.android.gms.fitness.FitnessOptions
 import java.util.*
 
 
-class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) :
+class RNFitnessTrackerModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
 
-    private var googleFitManager: GoogleFitManager = GoogleFitManager(reactContext)
+    private val googleFitManager: GoogleFitManager = GoogleFitManager(reactContext)
 
     override fun getName(): String {
         return "RNFitnessTracker"
-    }
-
-    private fun getActivity(promise: Promise): Activity? {
-        val activity: Activity? = currentActivity
-
-        if (activity == null) {
-            promise.reject(E_ACTIVITY_DOES_NOT_EXIST, "Activity doesn't exist")
-            return null
-        }
-
-        return activity
     }
 
     @ReactMethod
@@ -43,7 +32,12 @@ class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) 
             return promise.resolve(true)
         }
 
-        val activity: Activity = getActivity(promise) ?: return
+        val activity: Activity? = currentActivity
+        if (activity == null) {
+            promise.reject(E_ACTIVITY_DOES_NOT_EXIST, ACTIVITY_DOES_NOT_EXIST_MESSAGE)
+            return
+        }
+
         googleFitManager.authorize(promise, activity, permissions)
     }
 
@@ -60,7 +54,12 @@ class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) 
         val hasPermissions = googleFitManager.isTrackingAvailable(permissions)
 
         if (hasPermissions && !googleFitManager.isAuthorized()) {
-            val activity: Activity = getActivity(promise) ?: return
+            val activity: Activity? = currentActivity
+            if (activity == null) {
+                promise.reject(E_ACTIVITY_DOES_NOT_EXIST, ACTIVITY_DOES_NOT_EXIST_MESSAGE)
+                return
+            }
+
             googleFitManager.authorize(promise, activity, permissions)
         }
 
@@ -268,6 +267,7 @@ class RNFitnessTrackerModule(private val reactContext: ReactApplicationContext) 
 
     companion object {
         const val E_ACTIVITY_DOES_NOT_EXIST = "E_ACTIVITY_DOES_NOT_EXIST"
+        const val ACTIVITY_DOES_NOT_EXIST_MESSAGE = "currentActivity returned null"
         const val UNAUTHORIZED_GOOGLE_FIT = "Unauthorized GoogleFit. You must first run authorize method or isTrackingAvailable method."
     }
 }
