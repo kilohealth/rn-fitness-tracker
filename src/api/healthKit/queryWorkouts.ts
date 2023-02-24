@@ -8,11 +8,11 @@ import { isIOS } from '../../utils';
 const { RNHealthTracker } = NativeModules;
 
 /**
- * Returns workouts array for specified timeframe, filters by workout type if specified
- *
- * @param options.startDate Unix timestamp or Date for record start date.
- * @param options.endDate Unix timestamp or Date for record end date.
+ * @param options.startDate Unix timestamp or Date for record start date
+ * @param options.endDate Unix timestamp or Date for record end date
  * @param options.key e.g. `HealthKitWorkoutType.Running`HealthKit
+ *
+ * @return Returns workouts array for specified timeframe, filters by workout type if specified
  */
 export const queryWorkouts = async (options: {
   startDate: Date | number;

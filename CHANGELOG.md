@@ -1,3 +1,68 @@
+## [3.1.0-alpha.2](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.1.0-alpha.1...v3.1.0-alpha.2) (2023-02-22)
+
+
+### Bug Fixes
+
+* **ios:** make query timeout after 30s ([a859c28](https://github.com/kilohealth/rn-fitness-tracker/commit/a859c28398ea17f9026de7528d1f7d8396f55e23))
+
+
+### Build System / Dependencies
+
+* bump vulnerable packages ([b059640](https://github.com/kilohealth/rn-fitness-tracker/commit/b059640fd4f82109695167620ce136401d73a36d))
+* update podfile.lock ([9d84a5b](https://github.com/kilohealth/rn-fitness-tracker/commit/9d84a5b38b4e7d84d24c382f5e7419f6513ac458))
+
+## [3.1.0-alpha.2](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.1.0-alpha.1...v3.1.0-alpha.2) (2023-02-22)
+
+
+### Bug Fixes
+
+* **ios:** make query timeout after 30s ([a859c28](https://github.com/kilohealth/rn-fitness-tracker/commit/a859c28398ea17f9026de7528d1f7d8396f55e23))
+
+
+### Build System / Dependencies
+
+* bump vulnerable packages ([b059640](https://github.com/kilohealth/rn-fitness-tracker/commit/b059640fd4f82109695167620ce136401d73a36d))
+* update podfile.lock ([9d84a5b](https://github.com/kilohealth/rn-fitness-tracker/commit/9d84a5b38b4e7d84d24c382f5e7419f6513ac458))
+
+## [3.1.0-alpha.2](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.1.0-alpha.1...v3.1.0-alpha.2) (2023-02-15)
+
+
+### Bug Fixes
+
+* **ios:** make query timeout after 30s ([a859c28](https://github.com/kilohealth/rn-fitness-tracker/commit/a859c28398ea17f9026de7528d1f7d8396f55e23))
+
+
+### Build System / Dependencies
+
+* bump vulnerable packages ([b059640](https://github.com/kilohealth/rn-fitness-tracker/commit/b059640fd4f82109695167620ce136401d73a36d))
+* update podfile.lock ([9d84a5b](https://github.com/kilohealth/rn-fitness-tracker/commit/9d84a5b38b4e7d84d24c382f5e7419f6513ac458))
+
+## [3.1.0-alpha.3](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.1.0-alpha.2...v3.1.0-alpha.3) (2023-02-14)
+
+
+### Build System / Dependencies
+
+* bump vulnerable packages ([d9e76f4](https://github.com/kilohealth/rn-fitness-tracker/commit/d9e76f48ba095dec32af8a49702e88fae36491fe))
+
+## [3.1.0-alpha.2](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.1.0-alpha.1...v3.1.0-alpha.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* **ios:** make query timeout after 30s ([7c14f4d](https://github.com/kilohealth/rn-fitness-tracker/commit/7c14f4d23f34e282c933c773c0dba093640fc625))
+
+## [3.1.0-alpha.1](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.0.1...v3.1.0-alpha.1) (2023-02-13)
+
+
+### Features
+
+* **ios:** add HealthKit.queryAnchoredWorkouts method ([799d3f2](https://github.com/kilohealth/rn-fitness-tracker/commit/799d3f2ed4298be871a5a361b040101ac37abe14))
+
+
+### Bug Fixes
+
+* **ios:** add array type to HealthKitAnchoredWorkoutResult deleteRecords ([13d8207](https://github.com/kilohealth/rn-fitness-tracker/commit/13d82079854b4057972404108e6114431e08a894))
+
 ## [3.0.1](https://github.com/kilohealth/rn-fitness-tracker/compare/v3.0.0...v3.0.1) (2023-01-09)
 
 

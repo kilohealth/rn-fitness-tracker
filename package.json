@@ -1,6 +1,6 @@
 {
   "name": "@kilohealth/rn-fitness-tracker",
-  "version": "3.0.1",
+  "version": "3.1.0-alpha.2",
   "description": "React native module for tracking fitness data with Google Fit and Apple Health Kit for Android & iOS",
   "keywords": [
     "react-native",
@@ -24,6 +24,7 @@
   "license": "MIT",
   "author": "Kilo.Health",
   "main": "src/index.ts",
+  "source": "src/index",
   "scripts": {
     "allow-bash": "chmod a+x .husky/commit-msg",
     "postinstall": "test -n \"$CI\" || (yarn allow-bash && husky install)",

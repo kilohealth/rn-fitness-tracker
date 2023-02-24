@@ -14,6 +14,7 @@ const { RNHealthTracker } = NativeModules;
  * @param options.startDate Unix timestamp or Date for record start date.
  * @param options.endDate Unix timestamp or Date for record end date.
  * @param options.metadata
+ *
  * @return Returns status if no errors occurred.
  */
 export const writeBloodPressure = async (options: {

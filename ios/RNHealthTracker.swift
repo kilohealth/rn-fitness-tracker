@@ -13,6 +13,7 @@ import HealthKit
 @objc(RNHealthTracker)
 class RNHealthTracker: NSObject {
     private let healthStore: HKHealthStore = HKHealthStore()
+    private let QUERY_TIMEOUT_IN_SECONDS = 30.0
 
     @objc static func requiresMainQueueSetup() -> Bool {
         return true
@@ -286,7 +287,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -344,7 +345,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -404,7 +405,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 20) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -471,7 +472,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -535,7 +536,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }
@@ -680,6 +681,10 @@ class RNHealthTracker: NSObject {
         ) else { return }
 
         healthStore.execute(sampleQuery)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
+            self.healthStore.stop(sampleQuery)
+        }
     }
 
     @objc public func getLatestDataRecord(
@@ -778,6 +783,97 @@ class RNHealthTracker: NSObject {
         }
     }
 
+    @objc public func anchoredQueryWorkouts(
+        _ workoutActivityType: NSNumber,
+        lastAnchor: NSNumber,
+        limit: NSNumber,
+        resolve: @escaping RCTPromiseResolveBlock,
+        reject: @escaping RCTPromiseRejectBlock
+    ) {
+        var predicate: NSPredicate? = nil
+        var anchor: HKQueryAnchor? = nil
+
+        if workoutActivityType.uintValue > 0 {
+            guard let workoutType = HKWorkoutActivityType.init(rawValue: workoutActivityType.uintValue) else {
+                return handleError(reject: reject, code: 1, description: "Invalid workoutActivityType.")
+            }
+            predicate = HKQuery.predicateForWorkouts(with: workoutType)
+        }
+
+        if lastAnchor.intValue != 0 {
+            anchor = HKQueryAnchor(fromValue: lastAnchor.intValue)
+        }
+
+        let query: HKAnchoredObjectQuery = HKAnchoredObjectQuery.init(
+            type: HKWorkoutType.workoutType(),
+            predicate: predicate,
+            anchor: anchor,
+            limit: limit.intValue == 0 ? HKObjectQueryNoLimit : limit.intValue)
+        { (query, samplesOrNil, deletedObjectsOrNil, newAnchor, errorOrNil) in
+            if let error = errorOrNil {
+                return self.handleError(reject: reject, code: 2, error: error)
+            }
+
+            var newRecords: [Dictionary<String, Any?>] = []
+            var deletedRecords: [Dictionary<String, Any?>] = []
+
+            guard let samples = samplesOrNil as? [HKWorkout] else {
+                return self.handleError(reject: reject, description: "Error getting samples as HKWorkout")
+            }
+
+            for sample in samples {
+
+                let workout: HKWorkout = sample
+
+                let sourceDevice: String = sample.sourceRevision.productType ?? "unknown"
+
+                let distance: Double? = workout.totalDistance?.doubleValue(for: .meter())
+                let energyBurned: Double? = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie())
+                let isoStartDate = RNFitnessUtils.formatUtcIsoDateTimeString(workout.startDate)
+                let isoEndDate = RNFitnessUtils.formatUtcIsoDateTimeString(workout.endDate)
+
+                newRecords.append([
+                    "uuid": workout.uuid.uuidString,
+                    "duration": workout.duration,
+                    "startDate": isoStartDate,
+                    "endDate": isoEndDate,
+                    "energyBurned": energyBurned,
+                    "distance": distance,
+                    "type": workout.workoutActivityType.rawValue,
+                    "metadata": workout.metadata,
+                    "source": [
+                        "name": workout.sourceRevision.source.name,
+                        "device": sourceDevice,
+                        "id": workout.sourceRevision.source.bundleIdentifier,
+                    ]
+                ])
+            }
+
+            guard let deletedObjects = deletedObjectsOrNil else {
+                return self.handleError(reject: reject, description: "Error getting deletedObjects for anchored querry")
+            }
+
+            for deletedSample in deletedObjects {
+                deletedRecords.append([
+                    "uuid": deletedSample.uuid.uuidString,
+                    "metadata": deletedSample.metadata,
+                ])
+            }
+
+            resolve([
+                "anchor": newAnchor?.value(forKey: "rowid"),
+                "deletedRecords": deletedRecords,
+                "newRecords": newRecords
+            ]);
+        }
+
+        healthStore.execute(query)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
+            self.healthStore.stop(query)
+        }
+    }
+
     @objc public func queryWorkouts(
         _ workoutActivityType: NSNumber,
         start: NSNumber,
@@ -850,7 +946,7 @@ class RNHealthTracker: NSObject {
 
         healthStore.execute(query)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QUERY_TIMEOUT_IN_SECONDS) {
             self.healthStore.stop(query)
         }
     }

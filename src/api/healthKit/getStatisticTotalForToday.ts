@@ -8,8 +8,8 @@ const { RNHealthTracker } = NativeModules;
 
 /**
  * Gets statistic total for given health data type and unit for current day, same number as in health app
- * @param options.key {HealthKitDataType} e.g. `HealthKitDataType.Fiber`
- * @param options.unit {HealthKitUnitType} e.g. `HealthKitUnitType.grams`
+ * @param options.key e.g. `HealthKitDataType.Fiber`
+ * @param options.unit e.g. `HealthKitUnitType.grams`
  */
 export const getStatisticTotalForToday = async (options: {
   key: HealthKitDataType;

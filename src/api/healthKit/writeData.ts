@@ -15,6 +15,7 @@ const { RNHealthTracker } = NativeModules;
  * @param options.amount
  * @param options.metadata
  * @param options.timestamp optional unix timestamp for record date
+ *
  * @return Returns status if no errors occurred.
  */
 export const writeData = async (options: {

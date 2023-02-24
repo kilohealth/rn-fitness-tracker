@@ -7,12 +7,12 @@ import { isIOS } from '../../utils';
 const { RNHealthTracker } = NativeModules;
 
 /**
- * Returns total for specified data type and unit for specified time frame
- *
  * @param options.key e.g. `HealthKitDataType.Fiber`
  * @param options.unit e.g. `HealthKitUnitType.grams`
  * @param options.startDate Unix timestamp or Date for record start date.
  * @param options.endDate Unix timestamp or Date for record end date.
+ *
+ * @return Returns total for specified data type and unit for specified time frame
  */
 export const queryTotal = async (options: {
   key: HealthKitDataType;

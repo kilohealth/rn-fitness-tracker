@@ -1,3 +1,5 @@
+const SCROLL_VIEW_ID = 'scroll_view';
+
 describe('Example', () => {
   beforeAll(async () => {
     await device.launchApp({ permissions: { health: 'YES' } });
@@ -240,6 +242,119 @@ describe('Example', () => {
     // heart rate should be undefined after delete
     await expect(element(by.id('heart_rate_uuid'))).toHaveText(
       'Latest heart rate record uuid: undefined',
+    );
+  });
+
+  /**
+   * Workout Section
+   */
+  const waitForWorkoutTaskToFinish = async () => {
+    await waitFor(element(by.id('workout_status')))
+      .toHaveText('Workout status: Done')
+      .withTimeout(6000);
+  };
+
+  const scrollToBottom = async () => {
+    await element(by.id(SCROLL_VIEW_ID)).scrollTo('bottom');
+  };
+
+  const tapButtonWithId = async (buttonId) => {
+    const button = element(by.id(buttonId));
+    await expect(button).toExist();
+    await button.tap();
+  };
+
+  const writeWorkoutRecord = async () => {
+    await tapButtonWithId('workout_write_button');
+
+    await waitForWorkoutTaskToFinish();
+  };
+
+  const queryDayWorkoutRecords = async () => {
+    await tapButtonWithId('workout_query_button');
+
+    await waitForWorkoutTaskToFinish();
+  };
+
+  const queryWithAnchorWorkoutRecords = async () => {
+    await tapButtonWithId('workout_query_anchored_button');
+
+    await waitForWorkoutTaskToFinish();
+  };
+
+  const deleteAllWorkoutRecords = async () => {
+    await tapButtonWithId('workout_delete_all_button');
+
+    await waitForWorkoutTaskToFinish();
+
+    await queryDayWorkoutRecords();
+
+    await expect(element(by.id('new_workouts_count'))).toHaveText(
+      'New workouts: 0',
+    );
+
+    await queryWithAnchorWorkoutRecords();
+
+    await expect(element(by.id('new_workouts_count'))).toHaveText(
+      'New workouts: 0',
+    );
+  };
+
+  it('should delete all workouts', async () => {
+    await scrollToBottom();
+    await deleteAllWorkoutRecords();
+  });
+
+  it('write one workout', async () => {
+    await scrollToBottom();
+    await writeWorkoutRecord();
+    await queryDayWorkoutRecords();
+
+    await expect(element(by.id('new_workouts_count'))).toHaveText(
+      'New workouts: 1',
+    );
+
+    await queryWithAnchorWorkoutRecords();
+
+    await expect(element(by.id('new_workouts_count'))).toHaveText(
+      'New workouts: 1',
+    );
+    await expect(element(by.id('workout_anchor'))).not.toHaveText('Anchor: 0');
+  });
+
+  it('write two new workouts', async () => {
+    await scrollToBottom();
+
+    await queryWithAnchorWorkoutRecords();
+
+    await writeWorkoutRecord();
+    await writeWorkoutRecord();
+    await queryDayWorkoutRecords();
+
+    await expect(element(by.id('new_workouts_count'))).toHaveText(
+      'New workouts: 3',
+    );
+
+    await queryWithAnchorWorkoutRecords();
+
+    await expect(element(by.id('new_workouts_count'))).toHaveText(
+      'New workouts: 2',
+    );
+    await expect(element(by.id('workout_anchor'))).not.toHaveText('Anchor: 0');
+    await expect(element(by.id('deleted_workouts_count'))).toHaveText(
+      'Deleted workouts: 0',
+    );
+  });
+
+  it('cleanup, delete all workout records', async () => {
+    await scrollToBottom();
+
+    await deleteAllWorkoutRecords();
+    await queryDayWorkoutRecords();
+
+    await expect(element(by.id('workout_anchor'))).not.toHaveText('Anchor: 0');
+    await expect(element(by.id('deleted_workouts_count'))).not.toHaveText(
+      'Deleted workouts: 0',
     );
   });
 });

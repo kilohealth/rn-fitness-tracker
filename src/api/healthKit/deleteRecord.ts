@@ -23,7 +23,7 @@ export const deleteRecord = async (options: {
   uuid?: string;
   startDate?: Date | number;
   endDate?: Date | number;
-}): Promise<number | undefined> => {
+}): Promise<number> => {
   if (isIOS) {
     const startDate = options.startDate ? +options.startDate : 0;
     const endDate = options.endDate ? +options.endDate : 0;

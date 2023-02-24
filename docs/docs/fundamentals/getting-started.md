@@ -11,19 +11,26 @@ sidebar_position: 1
 
 ## Installation
 
-Install the required packages in your React Native project:
+Add `@kilohealth/rn-fitness-tracker` to your dependencies list by running command:
 
 ```bash npm2yarn
 npm install @kilohealth/rn-fitness-tracker
-npx pod-install
 ```
 
-## Installing dependencies into a bare React Native project
+### Install peer dependencies
 
-In your project directory, run:
+These dependencies are needed for checking and requesting android permissions.
 
 ```bash npm2yarn
 npm install react-native-device-info react-native-permissions
+```
+
+### Install cocoapods
+
+Now in the terminal go to the iOS folder and run the following command to install pods:
+
+```bash
+pod install
 ```
 
 ## Setup
