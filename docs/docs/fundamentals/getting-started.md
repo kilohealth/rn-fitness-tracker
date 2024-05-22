@@ -79,7 +79,7 @@ Open your project's AndroidManifest.xml and add the following lines inside the `
 
 2. [Create an OAuth screen](https://console.developers.google.com/apis/credentials/consent) for your project.
 
-3. Select `User Type: External` and fill out the form. Add `../auth/fitness.activity.read` to
+3. Select `User Type: External` and fill out the form. Add `https://www.googleapis.com/auth/fitness.activity.read` to
    **Scopes for Google APIs**.
 
 4. Fill out next popup forms with a brief explanation why you're using the activity tracker (no need to write much).
@@ -87,7 +87,7 @@ Open your project's AndroidManifest.xml and add the following lines inside the `
 5. Go to [Google console](https://console.developers.google.com/flows/enableapi?apiid=fitness&pli=1) (note: select the
    correct project at the top)
 
-6. Select your app's project, `Continue`, and `Go to Credentials`.
+6. Select your app's project, `Continue`, and `Credentials` and select `Create credentials` -> `Create OAuth client ID`.
 
 7. Where will you be calling the API from? Select `Android`.
 
